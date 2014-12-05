@@ -1,0 +1,137 @@
+class Visma::Article < ActiveRecord::Base
+  establish_connection(:visma)
+  self.table_name = "KuraasAS.Article"
+  self.primary_key = "ArticleNo"
+  include ::Sorting
+
+  default_scope { where("ArticleNo NOT like(?)", "%+%") }
+  scope :active, -> { where(InActiveYesNo: 0) }
+  scope :blocked, -> { where(InActiveYesNo: 1) }
+
+  has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
+
+  has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo
+
+  belongs_to :main_group, foreign_key: "MainGroupNo", primary_key: "MainGroupNo"
+  belongs_to :intermediate_group, foreign_key: "IntermediateGroupNo", primary_key: "IntermediateGroupNo"
+  belongs_to :sub_group, foreign_key: "SubGroupNo", primary_key: "SubGroupNo"
+
+  belongs_to :posting_template_article, foreign_key: "PostingTemplateNo", primary_key: "PostingTemplateNo"
+
+  has_one :output_tax_class, through: :posting_template_article
+  has_one :input_tax_class, through: :posting_template_article
+
+  def dpak
+    unit_type.where("PackingType = 'D'").first
+  end
+
+  def fpak
+    unit_type.where("PackingType = 'F'").first
+  end
+
+  def tpak
+    unit_type.where("PackingType = 'T'").first
+  end
+
+  def fpak_gtin
+    article_ean.joins(:unit_type).where("PackingType = 'F'").first.try(:EANNo)
+  end
+
+  def dpak_gtin
+    article_ean.joins(:unit_type).where("PackingType = 'D'").first.try(:EANNo)
+  end
+
+  def tpak_gtin
+    article_ean.joins(:unit_type).where("PackingType = 'T'").first.try(:EANNo)
+  end
+
+  def storage_type
+    if self.StorageTypeNo == 1
+      return "Kjøl"
+    end
+
+    if self.StorageTypeNo == 2
+      return "Frys"
+    end
+
+    if self.StorageTypeNo == 3
+      return "Tørrvare"
+    end
+  end
+
+  def sort_me
+    self.ArticleNo
+  end
+
+  # Find matching Prosim Kalkfv
+  def prosim_kalkfv
+    Prosim::Kalkfv.find(self.ArticleNo) rescue nil
+  end
+
+  # How different is the Prosim name
+  def namediff
+    100.0 - self.Name.similar(self.prosim_kalkfv.FVNAVN) rescue 100.0
+  end
+
+  # update PurchasePrice from Prosim "Sum dir.kost."
+  # Return true if new price is found, otherwise false
+  def fetch_prosim_price
+    fv = self.prosim_kalkfv
+    return false if fv.nil?
+
+    price = fv.sum_dir_kost.round(2)
+    return false if self.PurchasePrice == price
+
+    self.PurchasePrice = price
+    return true
+  end
+
+  # All articles missing in Prosim
+  def self.missing_in_prosim
+    change = File.mtime("db/Pro_d.mdb")
+    Rails.cache.fetch("prosim_missing_#{change}") do
+      list = list2 = list3 = []
+      list = Visma::Article.active.pluck(:ArticleNo).map {|a| a.to_i } - [0]
+      list2 = Prosim::Kalkfv.pluck(:FVNR)
+
+      list.sort!
+      until list.empty?
+        n = list.pop
+        unless n < 100 or list2.include?(n)
+          list3 << Visma::Article.where(ArticleNo: n.to_s).first
+        end
+      end
+      list3.compact!
+    end
+  end
+
+  # All articles present and with all values in Prosim
+  def self.complete_in_prosim
+    nr = Prosim::Kalkfv.pluck(:FVNR)
+    p = []
+    until nr.empty?
+      n = nr.pop(15)
+      p << where(ArticleNo: n.map(&:to_s)).to_a
+    end
+    p = p.flatten.compact - Prosim::Kalkfv.missing_values(true)
+    return p.sort_by {|a| a.ArticleNo.to_i }
+  end
+
+  # All product with new Prosim price
+  def self.prosim_price_diff
+    change = File.mtime("db/Pro_d.mdb")
+    Rails.cache.fetch("prosim_price_diff_#{change}") do
+      all.collect {|a| a if a.fetch_prosim_price }.compact.sort_by {|a| a.ArticleNo.to_i }
+    end
+  end
+
+  # Update all purchase prices from Prosim
+  def self.update_all_purchase_prices
+    articles = prosim_price_diff
+    articles.each {|article| article.save }
+    change = File.mtime("db/Pro_d.mdb")
+    Rails.cache.delete("prosim_price_diff_#{change}")
+    Rails.cache.delete("prosim_sync_#{change}")
+    return articles
+  end
+end
