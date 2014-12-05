@@ -2,7 +2,7 @@ class Visma::Article < ActiveRecord::Base
   establish_connection(:visma)
   self.table_name = "KuraasAS.Article"
   self.primary_key = "ArticleNo"
-  include ::Sorting
+  #include ::Sorting
 
   default_scope { where("ArticleNo NOT like(?)", "%+%") }
   scope :active, -> { where(InActiveYesNo: 0) }
