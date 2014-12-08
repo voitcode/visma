@@ -7,8 +7,8 @@ require "visma/version"
 Gem::Specification.new do |s|
   s.name        = "visma"
   s.version     = Visma::VERSION
-  s.authors     = ["Voit AS"]
-	s.email       = ["business@voit.no"]
+  s.authors     = ["Marvin Wiik","Runar Ingebrigtsen"]
+	s.email       = ["marvin@voit.no","runar@voit.no"]
 	s.homepage    = "http://voit.no"
   s.summary     = "Integrations with Visma Global"
 	s.description = "Integrations with Visma Global ERP software"
