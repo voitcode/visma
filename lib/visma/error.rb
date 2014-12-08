@@ -1,0 +1,2 @@
+class VismaError < StandardError
+end

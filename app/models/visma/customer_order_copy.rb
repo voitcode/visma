@@ -1,6 +1,7 @@
 class Visma::CustomerOrderCopy < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.CustomerOrderCopy"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "CustomerOrderCopy"
   self.primary_key = "OrderCopyNo"
 
   has_many :customer_order_line_copy, foreign_key: :OrderCopyNo, primary_key: :OrderCopyNo

@@ -1,6 +1,7 @@
 class Visma::Article < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.Article"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "Article"
   self.primary_key = "ArticleNo"
   #include ::Sorting
 
@@ -20,6 +21,8 @@ class Visma::Article < ActiveRecord::Base
 
   has_one :output_tax_class, through: :posting_template_article
   has_one :input_tax_class, through: :posting_template_article
+
+  belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo", class_name: "Visma::Supplier"
 
   def dpak
     unit_type.where("PackingType = 'D'").first

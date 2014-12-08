@@ -10,7 +10,8 @@ namespace :visma do
         doc = <<EOF
 class Visma::#{vmodel} < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.#{vmodel}"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "#{vmodel}"
   #self.primary_key = TODO
 end
 EOF

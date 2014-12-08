@@ -1,6 +1,7 @@
 class Visma::CustomerOrder < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.CustomerOrder"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "CustomerOrder"
   self.primary_key = "OrderNo"
 
   belongs_to :customer, foreign_key: :CustomerNo

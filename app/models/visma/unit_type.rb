@@ -1,6 +1,7 @@
 class Visma::UnitType < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.UnitType"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "UnitType"
   self.primary_key = "UnitTypeNo"
 
   # Don't query UnitTypes where the sales unit is inactive

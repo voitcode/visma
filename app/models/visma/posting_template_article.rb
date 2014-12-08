@@ -1,6 +1,7 @@
 class Visma::PostingTemplateArticle < ActiveRecord::Base
   establish_connection(:visma)
-  self.table_name = "KuraasAS.PostingTemplateArticle"
+  self.table_name = VISMA_CONFIG["table_name_prefix"]
+  self.table_name += "PostingTemplateArticle"
 
   has_many :article, foreign_key: "PostingTemplateNo", primary_key: "PostingTemplateNo"
 
