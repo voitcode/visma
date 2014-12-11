@@ -4,5 +4,5 @@ class Visma::SupplierEdiProfile < ActiveRecord::Base
   self.table_name += "SupplierEdiProfile"
   self.primary_key = "SupplierEdiProfileNo"
 
-  belongs_to :edi_provider, primary_key: "EDIProviderNo", foreign_key: "EDIProviderNo"
+  belongs_to :edi_provider, primary_key: "EDIProviderNo", foreign_key: "EDIProviderNo", class_name: Visma::EDIProvider
 end
