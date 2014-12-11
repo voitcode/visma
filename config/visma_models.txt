@@ -326,7 +326,7 @@ SubGroup
 #SubscriptionProfile
 #SubscriptionProfileLine
 Supplier
-#SupplierEdiProfile
+SupplierEdiProfile
 SupplierGroup
 SupplierOrder
 SupplierOrderCopy
