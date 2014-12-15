@@ -15,6 +15,8 @@ class Visma::Customer < ActiveRecord::Base
 
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
+  has_one :customer_sum, foreign_key: "CustomerNo"
+
   # The current invoice address.
   # Based on wether the Chain or the Customer is getting the bill
   def current_invoice_address

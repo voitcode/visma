@@ -1,3 +1,8 @@
+#
+# = Article
+#
+# This is the products table of Visma Global. Look here to find every product defined.
+#
 class Visma::Article < ActiveRecord::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
@@ -18,6 +23,8 @@ class Visma::Article < ActiveRecord::Base
   belongs_to :sub_group, foreign_key: "SubGroupNo", primary_key: "SubGroupNo"
 
   belongs_to :posting_template_article, foreign_key: "PostingTemplateNo", primary_key: "PostingTemplateNo"
+
+  belongs_to :price_markup_group, foreign_key: "PriceMarkUpGroup"
 
   has_one :output_tax_class, through: :posting_template_article
   has_one :input_tax_class, through: :posting_template_article
