@@ -6,5 +6,5 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
 
   has_many :discount_agreements,
     foreign_key: "DiscountGrpCustNo",
-    class_name: DiscountAgreementCustomer
+    class_name: Visma::DiscountAgreementCustomer
 end
