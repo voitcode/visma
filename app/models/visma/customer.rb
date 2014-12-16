@@ -16,11 +16,16 @@ class Visma::Customer < ActiveRecord::Base
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
   # Price list, discount group and such
+# TODO: chain price list for chain members
   belongs_to :price_list, foreign_key: "PriceListNo"
-  belongs_to :discount_group, foreign_key: "DiscountGrpCustNo", class_name: DiscountGroupCustomer
-  has_many :discount_agreements, through: :discount_group
-  has_many :campaign_price_list, foreign_key: "CustomerNo"
+  belongs_to :discount_group, foreign_key: "DiscountGrpCustNo", class_name: Visma::DiscountGroupCustomer
 
+  # TODO: figure out campaigns in Visma Global, this is wrong
+  #has_many :campaign_price_list, foreign_key: "CustomerNo"
+# TODO: chain price list for chain
+#  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
+
+  has_many :discount_agreements, foreign_key: "CustomerNo", class_name: Visma::DiscountAgreementCustomer
 
   has_one :customer_sum, foreign_key: "CustomerNo"
 
@@ -31,16 +36,23 @@ class Visma::Customer < ActiveRecord::Base
   # Return the correct price for a given article
   def prices_for(artno)
     raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
+
     prices = {}
 
-    # If there is a discount group price
-    if !self.DiscountGrpCustNo.blank?
-      prices["discount_group"] = discount_agreements.where(ArticleNo: artno.to_s).AgreedPrice rescue nil
-    end
+    prices["discount_group"]      = discount_group.discount_agreements.price_for(artno) rescue 0
+    prices["price_list"]          = price_list.discount_agreements.price_for(artno) rescue 0
 
-    prices["price"] = Visma::Article.find(artno.to_s).Price1
+    # TODO: figure out campaigns in Visma Global, this is wrong
+   # campaign_price_list.each_with_index do |cpl,i|
+   #   prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
+   # end
 
-    prices
+    # Direct discount for customer
+    prices["customer_discount"] = discount_agreements.price_for(artno) rescue 0
+
+    prices["article"] = Visma::Article.find(artno.to_s).Price1
+
+    prices.select {|k,v| v != 0 }
   end
 
   # The current invoice address.
