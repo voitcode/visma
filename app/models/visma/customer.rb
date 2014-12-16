@@ -15,7 +15,33 @@ class Visma::Customer < ActiveRecord::Base
 
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
+  # Price list, discount group and such
+  belongs_to :price_list, foreign_key: "PriceListNo"
+  belongs_to :discount_group, foreign_key: "DiscountGrpCustNo", class_name: DiscountGroupCustomer
+  has_many :discount_agreements, through: :discount_group
+  has_many :campaign_price_list, foreign_key: "CustomerNo"
+
+
   has_one :customer_sum, foreign_key: "CustomerNo"
+
+  # Isonor - Isomat custom table relationships
+  has_one :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
+  has_one :z_usr_ruter, through: :z_usr_ruter_pr_kunde
+
+  # Return the correct price for a given article
+  def prices_for(artno)
+    raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
+    prices = {}
+
+    # If there is a discount group price
+    if !self.DiscountGrpCustNo.blank?
+      prices["discount_group"] = discount_agreements.where(ArticleNo: artno.to_s).AgreedPrice rescue nil
+    end
+
+    prices["price"] = Visma::Article.find(artno.to_s).Price1
+
+    prices
+  end
 
   # The current invoice address.
   # Based on wether the Chain or the Customer is getting the bill

@@ -27,7 +27,7 @@
 #AlternativeSupplier
 #AlternativeText
 #AreaOfInterest
-#ArtType
+ArtType
 Article
 #ArticleComplementary
 #ArticleCustomer
@@ -312,7 +312,7 @@ QuantityDiscountCustomer
 #SerialNoCopy
 #SerialNoProfile
 #Shareholder
-#ShipmentType
+ShipmentType
 #SortOrder
 #SpecialDutyProfile
 #StockControl
@@ -381,7 +381,7 @@ TaxRate
 #TravelVoucherConnection
 #TypeOfGuarantee
 #TypeOfTransaction
-#TypeOfTransport
+TypeOfTransport
 #UnitLanguageText
 UnitType
 #Units
@@ -403,7 +403,7 @@ VoucherType
 #WebshopOrder
 #WebshopOrderLine
 #WebshopSettings
-#ZUsrPrislistePrKunde
-#ZUsrRuter
-#ZUsrRuterPrKunde
+ZUsrPrislistePrKunde
+ZUsrRuter
+ZUsrRuterPrKunde
 #ZpiderImportProfile

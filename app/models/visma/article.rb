@@ -29,7 +29,9 @@ class Visma::Article < ActiveRecord::Base
   has_one :output_tax_class, through: :posting_template_article
   has_one :input_tax_class, through: :posting_template_article
 
-  belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo", class_name: "Visma::Supplier"
+  belongs_to :discount_group, foreign_key: "DiscountGrpArtNo", class_name: DiscountGroupArticle
+
+  belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo"
 
   def dpak
     unit_type.where("PackingType = 'D'").first
