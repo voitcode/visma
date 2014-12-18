@@ -39,16 +39,14 @@ class Visma::Customer < ActiveRecord::Base
 
     prices = {}
 
-    prices["discount_group"]      = discount_group.discount_agreements.price_for(artno) rescue 0
-    prices["price_list"]          = price_list.discount_agreements.price_for(artno) rescue 0
+    prices["discount_group"]    = discount_group.discount_agreements.for(artno).price rescue 0
+    prices["price_list"]        = price_list.discount_agreements.for(artno).price rescue 0
+    prices["customer_discount"] = discount_agreements.for(artno).price rescue 0
 
     # TODO: figure out campaigns in Visma Global, this is wrong
    # campaign_price_list.each_with_index do |cpl,i|
    #   prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
    # end
-
-    # Direct discount for customer
-    prices["customer_discount"] = discount_agreements.price_for(artno) rescue 0
 
     prices["article"] = Visma::Article.find(artno.to_s).Price1
 

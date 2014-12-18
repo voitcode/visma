@@ -91,7 +91,7 @@ CampaignPriceList
 #CommissionProfileLine
 #CommonParameter
 CompanyDeliveryAddresses
-#CompanyInformation
+CompanyInformation
 Contact
 #Contract
 #Cost

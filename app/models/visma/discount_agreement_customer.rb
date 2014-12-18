@@ -13,11 +13,21 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
   default_scope { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
 
-  class << self
-    def price_for(artno)
-      raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
+  def price
+    p = self.AgreedPrice
+    if discount > 0
+      p = p - p * discount / 100
+    end
+    return p.round(2)
+  end
 
-      where(ArticleNo: artno.to_s).first.AgreedPrice rescue 0
+  def discount
+    self.DiscountI
+  end
+
+  class << self
+    def for(artno)
+      where(ArticleNo: artno.to_s).first rescue nil
     end
   end
 end
