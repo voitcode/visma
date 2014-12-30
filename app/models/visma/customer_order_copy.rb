@@ -24,7 +24,7 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
 
   # Select all employee orders
   def self.all_employee_orders
-    where(ChainNo: 49999).where(TypeOfChain: 1).
+    where(ChainNo: VISMA_CONFIG["employee_chain_number"]).where(TypeOfChain: 1).
       where(InvoiceDate: DateTime.new(2014)..DateTime.now).
       where("TotalGross > 0")
   end
