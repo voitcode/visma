@@ -5,10 +5,10 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   self.primary_key = "DiscountGrpCustNo"
 
   has_many :campaign_price_list, foreign_key: "DiscountGrpCustNo"
-
   has_many :discount_agreements,
     foreign_key: "DiscountGrpCustNo",
     class_name: Visma::DiscountAgreementCustomer
 
-  default_scope { where(InActiveYesNo: 0) }
+  enum :InActiveYesNo => [ :active, :inactive ]
+  default_scope { active }
 end

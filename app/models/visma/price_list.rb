@@ -9,5 +9,6 @@ class Visma::PriceList < ActiveRecord::Base
     foreign_key: "PriceListNo",
     class_name: Visma::DiscountAgreementCustomer
 
-  default_scope { where(InActiveYesNo: 0) }
+  enum :InActiveYesNo => [ :active, :inactive ]
+  default_scope { active }
 end

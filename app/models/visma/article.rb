@@ -11,8 +11,8 @@ class Visma::Article < ActiveRecord::Base
   #include ::Sorting
 
   default_scope { where("ArticleNo NOT like(?)", "%+%") }
-  scope :active, -> { where(InActiveYesNo: 0) }
-  scope :blocked, -> { where(InActiveYesNo: 1) }
+
+  enum :InActiveYesNo => [ :active, :inactive ]
 
   has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
 
