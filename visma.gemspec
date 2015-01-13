@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   s.add_dependency "rails", "~> 4.1.5"
+  s.add_dependency "activerecord_cache", "~> 0.0.9"
 
 	#Databases
 	s.add_dependency "tiny_tds", ">= 0.6.2"

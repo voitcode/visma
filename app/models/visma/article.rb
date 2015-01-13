@@ -10,6 +10,8 @@ class Visma::Article < ActiveRecord::Base
   self.primary_key = "ArticleNo"
   #include ::Sorting
 
+  self.use_activerecord_cache = true
+
   default_scope { where("ArticleNo NOT like(?)", "%+%") }
 
   enum :InActiveYesNo => [ :active, :inactive ]
