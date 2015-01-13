@@ -33,6 +33,9 @@ class Visma::Article < ActiveRecord::Base
 
   belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo"
 
+  scope :variable_weight, where("UPPER(QuantityPerUnitTextSale) = 'KG'")
+  scope :fixed_weight, where("UPPER(QuantityPerUnitTextSale) != 'KG'")
+
   def dpak
     unit_type.where("PackingType = 'D'").first
   end
@@ -45,16 +48,71 @@ class Visma::Article < ActiveRecord::Base
     unit_type.where("PackingType = 'T'").first
   end
 
+  def units
+    unit_type.where("UnitInSales != 1")
+  end
+
+  def fpak_ean
+    article_ean.joins(:unit_type).where("PackingType = 'F'").first
+  end
+
   def fpak_gtin
-    article_ean.joins(:unit_type).where("PackingType = 'F'").first.try(:EANNo)
+    fpak_ean.try(:EANNo)
+  end
+
+  # Set GTIN on FPAK
+  def fpak_gtin=(value)
+    return nil if fpak.nil?
+
+    if fpak_ean.nil?
+      article_ean.create(UnitTypeNo: fpak.UnitTypeNo, EANNo: value)
+    else
+      fpak_ean.update_attribute(:EANNo, value)
+    end
+
+    return fpak_ean.EANNo
+  end
+
+  def dpak_ean
+    article_ean.joins(:unit_type).where("PackingType = 'D'").first
   end
 
   def dpak_gtin
-    article_ean.joins(:unit_type).where("PackingType = 'D'").first.try(:EANNo)
+    dpak_ean.try(:EANNo)
+  end
+
+  # Set GTIN on DPAK
+  def dpak_gtin=(value)
+    return nil if dpak.nil?
+
+    if dpak_ean.nil?
+      article_ean.create(UnitTypeNo: dpak.UnitTypeNo, EANNo: value)
+    else
+      dpak_ean.update_attribute(:EANNo, value)
+    end
+
+    return dpak_ean.EANNo
+  end
+
+  def tpak_ean
+    article_ean.joins(:unit_type).where("PackingType = 'T'").first
   end
 
   def tpak_gtin
-    article_ean.joins(:unit_type).where("PackingType = 'T'").first.try(:EANNo)
+    tpak_ean.try(:EANNo)
+  end
+
+  # Set GTIN on TPAK
+  def tpak_gtin=(value)
+    return nil if tpak.nil?
+
+    if tpak_ean.nil?
+      article_ean.create(UnitTypeNo: tpak.UnitTypeNo, EANNo: value)
+    else
+      tpak_ean.update_attribute(:EANNo, value)
+    end
+
+    return tpak_ean.EANNo
   end
 
   def storage_type
