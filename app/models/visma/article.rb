@@ -38,6 +38,14 @@ class Visma::Article < ActiveRecord::Base
   scope :variable_weight, where("UPPER(QuantityPerUnitTextSale) = 'KG'")
   scope :fixed_weight, where("UPPER(QuantityPerUnitTextSale) != 'KG'")
 
+  def variable_weight?
+    self.QuantityPerUnitTextSale.to_s.upcase == "KG"
+  end
+
+  def fixed_weight?
+    !variable_weight?
+  end
+
   def dpak
     unit_type.where("PackingType = 'D'").first
   end
