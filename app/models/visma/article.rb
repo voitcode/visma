@@ -59,7 +59,7 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def units
-    unit_type.where("UnitInSales != 1")
+    unit_type.where("UnitInSales != ?", 1)
   end
 
   def fpak_ean

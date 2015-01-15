@@ -12,4 +12,25 @@ class Visma::UnitType < ActiveRecord::Base
   belongs_to :article, primary_key: :ArticleNo, foreign_key: :ArticleNo
 
   has_one :article_ean, primary_key: :UnitTypeNo, foreign_key: :UnitTypeNo
+
+  # Disable unit
+  def disable!
+    self.UnitInSales = 1
+    self.save
+  end
+
+  # Return GTIN number
+  def gtin
+    article_ean.try(:EANNo)
+  end
+
+  # Return Unit Status
+  def status
+    {
+      0 => "Kan brukes",
+      1 => "Ikke i bruk",
+      2 => "Grunnenhet",
+      9 => "Standard"
+    }[self.UnitInSales]
+  end
 end
