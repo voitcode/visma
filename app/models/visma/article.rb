@@ -16,9 +16,9 @@ class Visma::Article < ActiveRecord::Base
 
   enum :InActiveYesNo => [ :active, :inactive ]
 
-  has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
-
   has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo
+  has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
+  alias_attribute :gtins, :article_ean
 
   belongs_to :main_group, foreign_key: "MainGroupNo", primary_key: "MainGroupNo"
   belongs_to :intermediate_group, foreign_key: "IntermediateGroupNo", primary_key: "IntermediateGroupNo"
