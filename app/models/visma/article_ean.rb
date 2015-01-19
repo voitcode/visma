@@ -11,6 +11,8 @@ class Visma::ArticleEan < ActiveRecord::Base
 
   validates :ArticleNo, :UnitTypeNo, :SeqNo, presence: true
 
+  after_save :refresh_gtin
+
   # Initialize with sequence number
   def initialize(*args)
     super
@@ -20,16 +22,32 @@ class Visma::ArticleEan < ActiveRecord::Base
     return self
   end
 
+  # Find other ArticleEan on the same Article
   def siblings
     self.class.where(ArticleNo: self.ArticleNo)
   end
 
+  # Define the sequence numbering for all siblings
   def sequence
     siblings.map(&:SeqNo).collect {|n| n.to_s.sub(/0+$/,'').to_i }.sort
   end
 
+  # Set the sequence number to the next in range
   def set_sequence
     seq = ( sequence.last rescue 1000 ) + 1
     self.SeqNo = ("%08d" % seq.to_s.reverse).reverse.to_i
+  end
+
+  # Return the GTIN number
+  def gtin
+    Rails.cache.fetch("visma_unit_#{self.UnitTypeNo}_gtin") do
+      self.EANNo
+    end
+  end
+
+  # Refresh GTIN from DB
+  def refresh_gtin
+    Rails.cache.delete("visma_unit_#{self.UnitTypeNo}_gtin")
+    gtin
   end
 end

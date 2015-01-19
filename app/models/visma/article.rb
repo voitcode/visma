@@ -11,12 +11,16 @@ class Visma::Article < ActiveRecord::Base
   #include ::Sorting
 
   self.use_activerecord_cache = true
+  include Visma::Timestamp
 
   default_scope { where("ArticleNo NOT like(?)", "%+%") }
 
+  # Enable active? and inactive? methods based on InActiveYesNo being 0 or 1
   enum :InActiveYesNo => [ :active, :inactive ]
 
-  has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo
+  has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :article
+  alias_attribute :units, :unit_type
+
   has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
   alias_attribute :gtins, :article_ean
 
@@ -38,28 +42,29 @@ class Visma::Article < ActiveRecord::Base
   scope :variable_weight, where("UPPER(QuantityPerUnitTextSale) = 'KG'")
   scope :fixed_weight, where("UPPER(QuantityPerUnitTextSale) != 'KG'")
 
+  # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   def variable_weight?
     self.QuantityPerUnitTextSale.to_s.upcase == "KG"
   end
 
+  # The Article is a fixed weight product is it isn't a variable weight one.
   def fixed_weight?
     !variable_weight?
   end
 
+  # D-pak: http://www.stand.no/ordliste-2/?explanatory_dictionary_alphabet_letter=D
   def dpak
     unit_type.where("PackingType = 'D'").first
   end
 
+  # F-pak: http://www.stand.no/ordliste-2/?explanatory_dictionary_alphabet_letter=F
   def fpak
     unit_type.where("PackingType = 'F'").first
   end
 
+  # T-pak: A pallet, or transport unit
   def tpak
     unit_type.where("PackingType = 'T'").first
-  end
-
-  def units
-    unit_type.where("UnitInSales != ?", 1)
   end
 
   def fpak_ean
@@ -67,7 +72,9 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def fpak_gtin
-    fpak_ean.try(:EANNo)
+    Rails.cache.fetch("visma_article_#{self.ArticleNo}_fpak_gtin") do
+      fpak_ean.try(:EANNo)
+    end
   end
 
   # Set GTIN on FPAK
@@ -88,7 +95,9 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def dpak_gtin
-    dpak_ean.try(:EANNo)
+    Rails.cache.fetch("visma_article_#{self.ArticleNo}_dpak_gtin") do
+      dpak_ean.try(:EANNo)
+    end
   end
 
   # Set GTIN on DPAK
@@ -109,7 +118,9 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def tpak_gtin
-    tpak_ean.try(:EANNo)
+    Rails.cache.fetch("visma_article_#{self.ArticleNo}_tpak_gtin") do
+      tpak_ean.try(:EANNo)
+    end
   end
 
   # Set GTIN on TPAK
