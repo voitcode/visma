@@ -384,7 +384,7 @@ TaxRate
 TypeOfTransport
 #UnitLanguageText
 UnitType
-#Units
+Units
 #UserDefinedLines
 #ValidationRules
 #ValidationRulesDetails
