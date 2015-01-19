@@ -74,9 +74,7 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def fpak_gtin
-    Rails.cache.fetch("visma_article_#{self.ArticleNo}_fpak_gtin") do
-      fpak_ean.try(:EANNo)
-    end
+    fpak_ean.try(:EANNo)
   end
 
   # Set GTIN on FPAK
@@ -98,9 +96,7 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def dpak_gtin
-    Rails.cache.fetch("visma_article_#{self.ArticleNo}_dpak_gtin") do
-      dpak_ean.try(:EANNo)
-    end
+    dpak_ean.try(:EANNo)
   end
 
   # Set GTIN on DPAK
@@ -122,9 +118,7 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def tpak_gtin
-    Rails.cache.fetch("visma_article_#{self.ArticleNo}_tpak_gtin") do
-      tpak_ean.try(:EANNo)
-    end
+    tpak_ean.try(:EANNo)
   end
 
   # Set GTIN on TPAK
