@@ -11,6 +11,7 @@ module Visma
     # Set timestamp
     def set_timestamp
       self.LastUpdate = Time.zone.now
+      self.LastUpdatedBy = 1
     end
 
     # Timestamp

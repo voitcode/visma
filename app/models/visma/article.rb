@@ -87,6 +87,7 @@ class Visma::Article < ActiveRecord::Base
       fpak_ean.update_attribute(:EANNo, value)
     end
 
+    self.reload
     return fpak_ean.EANNo
   end
 
@@ -110,6 +111,7 @@ class Visma::Article < ActiveRecord::Base
       dpak_ean.update_attribute(:EANNo, value)
     end
 
+    self.reload
     return dpak_ean.EANNo
   end
 
@@ -133,6 +135,7 @@ class Visma::Article < ActiveRecord::Base
       tpak_ean.update_attribute(:EANNo, value)
     end
 
+    self.reload
     return tpak_ean.EANNo
   end
 

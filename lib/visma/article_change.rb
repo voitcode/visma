@@ -8,8 +8,9 @@ module Visma
 
     # Change timestamp on article
     def touch_article
-      article.LastUpdate = Time.now
-      article.save
+      if a = self.article
+        a.update_attribute(:LastUpdatedBy, 1)
+      end
     end
   end
 end
