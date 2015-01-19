@@ -35,7 +35,9 @@ class Visma::Article < ActiveRecord::Base
   has_one :output_tax_class, through: :posting_template_article
   has_one :input_tax_class, through: :posting_template_article
 
+  # Discount
   belongs_to :discount_group, foreign_key: "DiscountGrpArtNo", class_name: DiscountGroupArticle
+  has_many :discount_agreement_customer, foreign_key: "ArticleNo"
 
   belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo"
 

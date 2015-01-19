@@ -25,6 +25,23 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     self.DiscountI
   end
 
+  # Return the discounted party
+  def recipient
+    return customer if self.CustomerNo != 0
+    return discount_group_customer if self.DiscountGrpCustNo != 0
+    return discount_group_article if self.DiscountGrpArtNo != 0
+    price_list
+  end
+
+  # What kind of agreement is this?
+  def category
+    recipient.class
+  end
+
+  def to_s
+    recipient.Name + " (#{category})"
+  end
+
   class << self
     def for(artno)
       where(ArticleNo: artno.to_s).first rescue nil
