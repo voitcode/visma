@@ -6,6 +6,7 @@ class Visma::UnitType < ActiveRecord::Base
 
   self.use_activerecord_cache = true
   include Visma::Timestamp
+  include Visma::ArticleChange
 
   # Don't query UnitTypes where the sales unit is inactive
   default_scope { where("UnitInSales != 1") }
@@ -45,10 +46,5 @@ class Visma::UnitType < ActiveRecord::Base
   # This Unit can be used in order, for sale
   def for_sale?
     self.UnitInSales != 1
-  end
-
-  # Timestamp
-  def updated_at
-    self.LastUpdate
   end
 end
