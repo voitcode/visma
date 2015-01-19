@@ -23,9 +23,7 @@ class Visma::UnitType < ActiveRecord::Base
 
   # Return GTIN number
   def gtin
-    Rails.cache.fetch("visma_unit_#{self.UnitTypeNo}_gtin") do
-      article_ean.try(:EANNo)
-    end
+    article_ean.try(:EANNo)
   end
 
   # Return Unit Status

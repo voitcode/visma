@@ -12,8 +12,6 @@ class Visma::ArticleEan < ActiveRecord::Base
 
   validates :ArticleNo, :UnitTypeNo, :SeqNo, presence: true
 
-  after_save :refresh_gtin
-
   # Initialize with sequence number
   def initialize(*args)
     super
@@ -44,11 +42,5 @@ class Visma::ArticleEan < ActiveRecord::Base
     Rails.cache.fetch("visma_unit_#{self.UnitTypeNo}_gtin") do
       self.EANNo
     end
-  end
-
-  # Refresh GTIN from DB
-  def refresh_gtin
-    Rails.cache.delete("visma_unit_#{self.UnitTypeNo}_gtin")
-    gtin
   end
 end
