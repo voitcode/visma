@@ -12,8 +12,42 @@ class Visma::UnitType < ActiveRecord::Base
   default_scope { where("UnitInSales != 1") }
 
   belongs_to :article, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :unit_type
-
+  belongs_to :unit, primary_key: :UnitNo, foreign_key: :UnitNo
   has_one :article_ean, primary_key: :UnitTypeNo, foreign_key: :UnitTypeNo
+
+  validates :UnitTypeNo, uniqueness: true, presence: true
+
+  # Initialize with UnitTypeNo
+  def initialize(*args)
+    super
+    self.UnitTypeNo = Visma::UnitType.unscoped.order(:UnitTypeNo).last.UnitTypeNo + 1
+    self.WareHouseNo = 0
+    self.Factor = 1
+    self.UtilityBits = "\x00\x00\x00\x00\x00\x00"
+    self.LastUpdate = Time.zone.now
+    self.LastUpdatedBy = 11
+    self.Created = Time.zone.now
+    self.CreatedBy = 1
+    self.PreviousUnit = 0
+    self.Height = 0.0
+    self.VariableQtyYesNo = 1
+    self.Width = 0.0
+    self.Length = 0.0
+    self.Volume = 0.0
+    self.Rounding = 0
+    self.PriceListNo = 0
+    self.UnitInPurchase = 0
+    self.SplitPurchaseYesNo = 0
+    self.UnitInSales = 0
+    self.SplitSalesYesNo = 0
+    self.FactorCalcMethod = 0
+    self.Weight = 0.0
+    self.ComparableUnitYesNo = 0
+    self.Location = ""
+    self.Name = Visma::Unit.find(self.UnitNo).UnitName
+    self.UnitNamePurchase = self.Name
+    return self
+  end
 
   # Disable unit
   def disable!
@@ -24,6 +58,11 @@ class Visma::UnitType < ActiveRecord::Base
   # Return GTIN number
   def gtin
     article_ean.try(:EANNo)
+  end
+
+  # Return the unit text
+  def text
+    Visma::Unit.all.to_a[self.UnitNo - 1].UnitName
   end
 
   # Return Unit Status
