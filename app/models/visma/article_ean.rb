@@ -10,7 +10,8 @@ class Visma::ArticleEan < ActiveRecord::Base
   belongs_to :unit_type, foreign_key: :UnitTypeNo, primary_key: :UnitTypeNo
   belongs_to :article, primary_key: :ArticleNo, foreign_key: :ArticleNo
 
-  validates :ArticleNo, :UnitTypeNo, :SeqNo, presence: true
+  validates :ArticleNo, :UnitTypeNo, :SeqNo, :EANNo, presence: true
+  validates_with GtinValidator
 
   # Initialize with sequence number
   def initialize(*args)

@@ -84,13 +84,16 @@ class Visma::Article < ActiveRecord::Base
     return nil if fpak.nil?
 
     if fpak_ean.nil?
-      article_ean.create(UnitTypeNo: fpak.UnitTypeNo, EANNo: value)
+      ean = article_ean.create(UnitTypeNo: fpak.UnitTypeNo, EANNo: value)
     else
-      fpak_ean.update_attribute(:EANNo, value)
+      ean = fpak_ean
+      ean.update_attribute(:EANNo, value)
     end
 
     self.reload
-    return fpak_ean.EANNo
+
+    errors[:article_ean] = ean.errors unless ean.errors.blank?
+    return ean.try(:EANNo)
   end
 
   def dpak_ean
@@ -108,13 +111,15 @@ class Visma::Article < ActiveRecord::Base
     return nil if dpak.nil?
 
     if dpak_ean.nil?
-      article_ean.create(UnitTypeNo: dpak.UnitTypeNo, EANNo: value)
+      ean = article_ean.create(UnitTypeNo: dpak.UnitTypeNo, EANNo: value)
     else
-      dpak_ean.update_attribute(:EANNo, value)
+      ean = dpak_ean
+      ean.update_attribute(:EANNo, value)
     end
 
     self.reload
-    return dpak_ean.EANNo
+    errors[:article_ean] = ean.errors unless ean.errors.blank?
+    return ean.try(:EANNo)
   end
 
   def tpak_ean
@@ -132,13 +137,15 @@ class Visma::Article < ActiveRecord::Base
     return nil if tpak.nil?
 
     if tpak_ean.nil?
-      article_ean.create(UnitTypeNo: tpak.UnitTypeNo, EANNo: value)
+      ean = article_ean.create(UnitTypeNo: tpak.UnitTypeNo, EANNo: value)
     else
-      tpak_ean.update_attribute(:EANNo, value)
+      ean = tpak_ean
+      ean.update_attribute(:EANNo, value)
     end
 
     self.reload
-    return tpak_ean.EANNo
+    errors[:article_ean] = ean.errors unless ean.errors.blank?
+    return ean.try(:EANNo)
   end
 
   def storage_type
