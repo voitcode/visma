@@ -41,8 +41,9 @@ class Visma::Article < ActiveRecord::Base
 
   belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo"
 
-  scope :variable_weight, where("UPPER(QuantityPerUnitTextSale) = 'KG'")
-  scope :fixed_weight, where("UPPER(QuantityPerUnitTextSale) != 'KG'")
+  # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
+  scope :variable_weight, -> { where("UPPER(QuantityPerUnitTextSale) = 'KG'") }
+  scope :fixed_weight, -> { where("UPPER(QuantityPerUnitTextSale) != 'KG'") }
 
   # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   def variable_weight?
