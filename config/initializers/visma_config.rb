@@ -12,9 +12,9 @@ begin
   VISMA_CONFIG = YAML.load_file('config/visma.yml')
 rescue
   File.write 'config/visma.yml', config.collect {|k,v| "# #{v.first}\n#{k}: #{v.last}" }.join("\n")
-  raise VismaError, "You must configure the \"table_name_prefix:\" option in config/visma.yml"
+  raise VismaError, "You must set up the VISMA_CONFIG values in config/visma.yml"
 end
 
 config.each do |key,val|
-  raise VismaError, "Missing option value \"#{key}\" in config/visma.yml" if VISMA_CONFIG[key].blank?
+  raise VismaError, "Missing option value \"#{key}\" in config/visma.yml" if VISMA_CONFIG[key.to_s].blank?
 end
