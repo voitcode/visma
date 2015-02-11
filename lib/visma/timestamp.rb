@@ -10,7 +10,7 @@ module Visma
 
     # Set timestamp
     def set_timestamp
-      offset = Time.zone_offset(VISMA_CONFIG["time_zone"])
+      offset = TZInfo::Timezone.get(VISMA_CONFIG["time_zone"]).current_period.utc_offset
       raise VismaError, "You MUST configure a valid time_zone in config/visma.yml" if offset.nil?
 
       self.LastUpdate = Time.zone.now + offset

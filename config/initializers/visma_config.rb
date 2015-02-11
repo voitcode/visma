@@ -5,7 +5,7 @@
 config = {
   table_name_prefix: ["Visma table prefix", nil],
   employee_chain_number:  ["The Customer number employees are Chain members of", nil],
-  time_zone: ["Time zone for Timestamp", "CET"]
+  time_zone: ["Time zone for Timestamp, see http://www.timeanddate.com/time/zones/", "CET"]
 }
 
 begin
