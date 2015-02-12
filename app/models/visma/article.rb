@@ -177,19 +177,6 @@ class Visma::Article < ActiveRecord::Base
     100.0 - self.Name.similar(self.prosim_kalkfv.FVNAVN) rescue 100.0
   end
 
-  # update PurchasePrice from Prosim "Sum dir.kost."
-  # Return true if new price is found, otherwise false
-  def fetch_prosim_price
-    fv = self.prosim_kalkfv
-    return false if fv.nil?
-
-    price = fv.sum_dir_kost.round(2)
-    return false if self.PurchasePrice == price
-
-    self.PurchasePrice = price
-    return true
-  end
-
   # All articles missing in Prosim
   def self.missing_in_prosim
     change = File.mtime("db/Pro_d.mdb")
@@ -219,23 +206,5 @@ class Visma::Article < ActiveRecord::Base
     end
     p = p.flatten.compact - Prosim::Kalkfv.missing_values(true)
     return p.sort_by {|a| a.ArticleNo.to_i }
-  end
-
-  # All product with new Prosim price
-  def self.prosim_price_diff
-    change = File.mtime("db/Pro_d.mdb")
-    Rails.cache.fetch("prosim_price_diff_#{change}") do
-      all.collect {|a| a if a.fetch_prosim_price }.compact.sort_by {|a| a.ArticleNo.to_i }
-    end
-  end
-
-  # Update all purchase prices from Prosim
-  def self.update_all_purchase_prices
-    articles = prosim_price_diff
-    articles.each {|article| article.save }
-    change = File.mtime("db/Pro_d.mdb")
-    Rails.cache.delete("prosim_price_diff_#{change}")
-    Rails.cache.delete("prosim_sync_#{change}")
-    return articles
   end
 end
