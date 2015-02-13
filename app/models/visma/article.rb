@@ -166,45 +166,4 @@ class Visma::Article < ActiveRecord::Base
   def sort_me
     self.ArticleNo
   end
-
-  # Find matching Prosim Kalkfv
-  def prosim_kalkfv
-    Prosim::Kalkfv.find(self.ArticleNo) rescue nil
-  end
-
-  # How different is the Prosim name
-  def namediff
-    100.0 - self.Name.similar(self.prosim_kalkfv.FVNAVN) rescue 100.0
-  end
-
-  # All articles missing in Prosim
-  def self.missing_in_prosim
-    change = File.mtime("db/Pro_d.mdb")
-    Rails.cache.fetch("prosim_missing_#{change}") do
-      list = list2 = list3 = []
-      list = Visma::Article.active.pluck(:ArticleNo).map {|a| a.to_i } - [0]
-      list2 = Prosim::Kalkfv.pluck(:FVNR)
-
-      list.sort!
-      until list.empty?
-        n = list.pop
-        unless n < 100 or list2.include?(n)
-          list3 << Visma::Article.where(ArticleNo: n.to_s).first
-        end
-      end
-      list3.compact!
-    end
-  end
-
-  # All articles present and with all values in Prosim
-  def self.complete_in_prosim
-    nr = Prosim::Kalkfv.pluck(:FVNR)
-    p = []
-    until nr.empty?
-      n = nr.pop(15)
-      p << where(ArticleNo: n.map(&:to_s)).to_a
-    end
-    p = p.flatten.compact - Prosim::Kalkfv.missing_values(true)
-    return p.sort_by {|a| a.ArticleNo.to_i }
-  end
 end

@@ -84,7 +84,7 @@ CampaignPriceList
 #CashierTerminalReports
 #Catalog
 #ChangedLog
-#ChartererCompany
+ChartererCompany
 #Commission
 #CommissionFee
 #CommissionProfile

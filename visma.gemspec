@@ -8,10 +8,10 @@ Gem::Specification.new do |s|
   s.name        = "visma"
   s.version     = Visma::VERSION
   s.authors     = ["Marvin Wiik","Runar Ingebrigtsen"]
-	s.email       = ["marvin@voit.no","runar@voit.no"]
-	s.homepage    = "http://voit.no"
+  s.email       = ["marvin@voit.no","runar@voit.no"]
+  s.homepage    = "http://voit.no"
   s.summary     = "Integrations with Visma Global"
-	s.description = "Integrations with Visma Global ERP software"
+  s.description = "Integrations with Visma Global ERP software"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.1.5"
   s.add_dependency "activerecord_cache", "~> 0.0.9"
 
-	#Databases
-	s.add_dependency "tiny_tds", ">= 0.6.2"
-	s.add_dependency "activerecord-sqlserver-adapter", ">= 3.2.12"
+  # Databases
+  s.add_dependency "tiny_tds", ">= 0.6.2"
+  s.add_dependency "activerecord-sqlserver-adapter", ">= 3.2.12"
 
 end
