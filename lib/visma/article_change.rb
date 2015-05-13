@@ -1,4 +1,5 @@
 module Visma
+  # Change timestamp on article after save
   module ArticleChange
     extend ActiveSupport::Concern
 
@@ -6,7 +7,6 @@ module Visma
       after_save :touch_article
     end
 
-    # Change timestamp on article
     def touch_article
       if a = self.article
         a.update_attribute(:LastUpdatedBy, 1)

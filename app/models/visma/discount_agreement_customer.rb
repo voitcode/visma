@@ -4,6 +4,10 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   self.table_name += "DiscountAgreementCustomer"
   self.primary_key = "UniqueID"
 
+  self.use_activerecord_cache = true
+  include Visma::Timestamp
+  include Visma::ChangeBy
+
   belongs_to :price_list, foreign_key: "PriceListNo"
   belongs_to :article, foreign_key: "ArticleNo"
   belongs_to :customer, foreign_key: "CustomerNo"
@@ -11,7 +15,7 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   belongs_to :discount_group_article, foreign_key: "DiscountGrpArtNo"
   belongs_to :discount_group_customer, foreign_key: "DiscountGrpCustNo"
 
-  default_scope { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
+  scope :active, -> { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
 
   def price
     p = self.AgreedPrice

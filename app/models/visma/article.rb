@@ -12,6 +12,7 @@ class Visma::Article < ActiveRecord::Base
 
   self.use_activerecord_cache = true
   include Visma::Timestamp
+  include Visma::ChangeBy
 
   default_scope { where("ArticleNo NOT like(?)", "%+%") }
 

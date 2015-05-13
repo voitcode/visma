@@ -4,6 +4,9 @@ class Visma::Customer < ActiveRecord::Base
   self.table_name += "Customer"
   self.primary_key = "CustomerNo"
 
+  include Visma::Timestamp
+  include Visma::ChangeBy
+
   has_many :customer_order, foreign_key: :CustomerNo
 
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction

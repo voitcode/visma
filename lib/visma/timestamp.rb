@@ -1,4 +1,5 @@
 module Visma
+  # Update Visma-compatbile timestamp
   module Timestamp
     extend ActiveSupport::Concern
 
@@ -8,7 +9,6 @@ module Visma
 
     alias_attribute :updated_at, :LastUpdate
 
-    # Set timestamp
     def set_timestamp
       offset = TZInfo::Timezone.get(VISMA_CONFIG["time_zone"]).current_period.utc_offset
       raise VismaError, "You MUST configure a valid time_zone in config/visma.yml" if offset.nil?

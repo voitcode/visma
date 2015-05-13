@@ -7,6 +7,7 @@ class Visma::UnitType < ActiveRecord::Base
   self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ArticleChange
+  include Visma::ChangeBy
 
   # Don't query UnitTypes where the sales unit is inactive
   default_scope { where("UnitInSales != 1") }
