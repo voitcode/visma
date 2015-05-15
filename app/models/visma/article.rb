@@ -46,6 +46,10 @@ class Visma::Article < ActiveRecord::Base
   scope :variable_weight, -> { where("UPPER(QuantityPerUnitTextSale) = 'KG'") }
   scope :fixed_weight, -> { where("UPPER(QuantityPerUnitTextSale) != 'KG'") }
 
+  def price
+    self.Price1
+  end
+
   # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   def variable_weight?
     self.QuantityPerUnitTextSale.to_s.upcase == "KG"

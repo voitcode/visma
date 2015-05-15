@@ -8,6 +8,10 @@ class Visma::Customer < ActiveRecord::Base
   include Visma::ChangeBy
 
   has_many :customer_order, foreign_key: :CustomerNo
+  alias :orders :customer_order
+
+  has_many :customer_order_copy, foreign_key: :CustomerNo
+  alias :processed_orders :customer_order_copy
 
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
@@ -19,16 +23,15 @@ class Visma::Customer < ActiveRecord::Base
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
   # Price list, discount group and such
-# TODO: chain price list for chain members
   belongs_to :price_list, foreign_key: "PriceListNo"
-  belongs_to :discount_group, foreign_key: "DiscountGrpCustNo", class_name: Visma::DiscountGroupCustomer
+  belongs_to :discount_group_customer, foreign_key: "DiscountGrpCustNo"
+  alias :discount_group :discount_group_customer
+  has_many :discount_agreement_customer, foreign_key: "CustomerNo"
+  alias :discount_agreements :discount_agreement_customer
 
   # TODO: figure out campaigns in Visma Global, this is wrong
   #has_many :campaign_price_list, foreign_key: "CustomerNo"
-# TODO: chain price list for chain
 #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
-
-  has_many :discount_agreements, foreign_key: "CustomerNo", class_name: Visma::DiscountAgreementCustomer
 
   has_one :customer_sum, foreign_key: "CustomerNo"
 
@@ -42,18 +45,21 @@ class Visma::Customer < ActiveRecord::Base
 
     prices = {}
 
-    prices["discount_group"]    = discount_group.discount_agreements.for(artno).price rescue 0
-    prices["price_list"]        = price_list.discount_agreements.for(artno).price rescue 0
-    prices["customer_discount"] = discount_agreements.for(artno).price rescue 0
+    prices["discount_group"]        = discount_group.discount_agreements.for(artno) rescue nil
+    prices["chain_discount_group"]  = chain.discount_group.discount_agreements.for(artno) rescue nil
+    prices["price_list"]            = price_list.discount_agreements.for(artno) rescue nil
+    prices["chain_price_list"]      = chain.price_list.discount_agreements.for(artno) rescue nil
+    prices["customer_discount"]     = discount_agreements.for(artno) rescue nil
+    prices["chain_discount"]        = chain.discount_agreements.for(artno) rescue nil
 
     # TODO: figure out campaigns in Visma Global, this is wrong
    # campaign_price_list.each_with_index do |cpl,i|
    #   prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
    # end
 
-    prices["article"] = Visma::Article.find(artno.to_s).Price1
+    prices["article"] = Visma::Article.find(artno.to_s)
 
-    prices.select {|k,v| v != 0 }
+    prices.select {|k,v| v.try(:price).to_i != 0 }
   end
 
   # The current invoice address.

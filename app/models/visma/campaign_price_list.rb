@@ -1,3 +1,4 @@
+# TODO: map out the relationship between CampaignPriceList and DiscountAgreementCustomer
 class Visma::CampaignPriceList < ActiveRecord::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]

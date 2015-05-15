@@ -17,16 +17,16 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
   scope :active, -> { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
 
-  def price
-    p = self.AgreedPrice
-    if discount > 0
-      p = p - p * discount / 100
-    end
-    return p.round(2)
+  def agreed_price
+    self.AgreedPrice == 0 ? article.price : self.AgreedPrice
   end
 
-  def discount
-    self.DiscountI
+  def price
+    (agreed_price - discount_amount).round(2)
+  end
+
+  def discount_amount
+    agreed_price * self.DiscountI / 100
   end
 
   # Return the discounted party
