@@ -14,7 +14,8 @@ class Visma::Article < ActiveRecord::Base
   include Visma::Timestamp
   include Visma::ChangeBy
 
-  default_scope { where("ArticleNo NOT like(?)", "%+%") }
+  # default scope with strange syntax to support joins
+  default_scope { where("Article.ArticleNo NOT like(?)", "%+%") }
 
   # Enable active? and inactive? methods based on InActiveYesNo being 0 or 1
   enum :InActiveYesNo => [ :active, :inactive ]

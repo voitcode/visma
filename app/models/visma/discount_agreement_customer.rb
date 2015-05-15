@@ -17,12 +17,19 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
   scope :active, -> { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
 
+  # The agreed price deviates from the article price
+  scope :deviant, -> { joins(:article).where("DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)") }
+
   def agreed_price
     self.AgreedPrice == 0 ? article.price : self.AgreedPrice
   end
 
   def price
     (agreed_price - discount_amount).round(2)
+  end
+
+  def price_source
+    self.AgreedPrice == 0 ? "Article" : "Agreement"
   end
 
   def discount_amount
