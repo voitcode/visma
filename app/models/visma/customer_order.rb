@@ -10,5 +10,5 @@ class Visma::CustomerOrder < ActiveRecord::Base
   belongs_to :customer, foreign_key: :CustomerNo
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :ChainNo, class_name: Visma::Customer
 
-  has_many :order_line, foreign_key: :OrderNo, primary_key: :OrderNo, class_name: Visma::CustomerOrderLine
+  has_many :order_lines, foreign_key: :OrderNo, primary_key: :OrderNo, class_name: Visma::CustomerOrderLine
 end
