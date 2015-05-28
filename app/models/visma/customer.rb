@@ -78,8 +78,14 @@ class Visma::Customer < ActiveRecord::Base
     where ["LastUpdate > ?", Date.new(Time.now.year - 1)]
   end
 
-  # Find ICA stores by postcode
-  def self.ica(postcode)
-    where(PostCode: postcode.to_s).where("Name like '%rimi%' or Name like '%matkrok%' or Name like '%ica%'").all
+  class << self
+    # Find ICA stores by postcode
+    def ica(postcode)
+      where(PostCode: postcode.to_s).where("Name like '%rimi%' or Name like '%matkrok%' or Name like '%ica%'").all
+    end
+
+    def all_with_discount_agreements
+      find(Visma::DiscountAgreementCustomer.uniq_ids(:CustomerNo))
+    end
   end
 end

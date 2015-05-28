@@ -19,10 +19,21 @@ class Visma::PriceList < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: "PriceListNo"
   alias :processed_orders :customer_order_copy
 
+  has_many :customer_order_line, foreign_key: "PriceListNo"
+  alias :order_lines :customer_order_line
+  has_many :customer_order_line_copy, foreign_key: "PriceListNo"
+  alias :processed_order_lines :customer_order_line_copy
+
   enum :InActiveYesNo => [ :active, :inactive ]
   default_scope { active }
 
   def price_for(artno)
     discount_agreements.for(artno)
+  end
+
+  class << self
+    def all_with_discount_agreements
+      find(Visma::DiscountAgreementCustomer.uniq_ids(:PriceListNo))
+    end
   end
 end

@@ -25,4 +25,10 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   def price_for(artno)
     discount_agreements.for(artno)
   end
+
+  class << self
+    def all_with_discount_agreements
+      find(Visma::DiscountAgreementCustomer.uniq_ids(:DiscountGrpCustNo))
+    end
+  end
 end

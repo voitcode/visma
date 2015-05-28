@@ -54,6 +54,10 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   end
 
   class << self
+    def uniq_ids(field)
+      active.where("#{field} != 0").select(field).uniq.map {|a| a[field] }
+    end
+
     def for(artno)
       where(ArticleNo: artno.to_s).first rescue nil
     end
