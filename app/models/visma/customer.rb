@@ -9,9 +9,13 @@ class Visma::Customer < ActiveRecord::Base
 
   has_many :customer_order, foreign_key: :CustomerNo
   alias :orders :customer_order
-
   has_many :customer_order_copy, foreign_key: :CustomerNo
   alias :processed_orders :customer_order_copy
+
+  has_many :customer_order_line, foreign_key: :CustomerNo
+  alias :order_lines :customer_order_line
+  has_many :customer_order_line_copy, foreign_key: :CustomerNo
+  alias :processed_order_lines :customer_order_line_copy
 
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
