@@ -40,8 +40,8 @@ class Visma::Customer < ActiveRecord::Base
   has_one :customer_sum, foreign_key: "CustomerNo"
 
   # Isonor - Isomat custom table relationships
-  has_one :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
-  has_one :z_usr_ruter, through: :z_usr_ruter_pr_kunde
+  has_many :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
+  has_many :z_usr_ruter, through: :z_usr_ruter_pr_kunde
 
   # Return the correct price for a given article
   def prices_for(artno)
