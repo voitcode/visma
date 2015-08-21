@@ -12,11 +12,6 @@ class Visma::Customer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: :CustomerNo
   alias :processed_orders :customer_order_copy
 
-  has_many :customer_order_line, foreign_key: :CustomerNo
-  alias :order_lines :customer_order_line
-  has_many :customer_order_line_copy, foreign_key: :CustomerNo
-  alias :processed_order_lines :customer_order_line_copy
-
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
   has_one :customer_delivery_addresses, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo
@@ -80,6 +75,29 @@ class Visma::Customer < ActiveRecord::Base
 
   def active_list
     where ["LastUpdate > ?", Date.new(Time.now.year - 1)]
+  end
+
+  def cleanphone(c)
+    number,cell = c.Telephone.split("/")
+    c.Telephone = phoneme(number)
+    cphn = phoneme(cell) rescue nil
+    if c.ZUsrMobilNr.blank?
+      c.ZUsrMobilNr = cphn
+    else
+      c.Password = cphn
+    end
+
+    return c
+  end
+
+  def phoneme(number)
+    number.gsub(/-+|\s+/,"").gsub(/(\d{2,2})(\d{2,2})(\d{2,2})(\d{2,2})/, "\\1 \\2 \\3 \\4")
+  end
+
+  # Exclude some info from json output.
+  def to_json(options={})
+    options[:except] ||= [:UtilityBits]
+    super(options)
   end
 
   class << self

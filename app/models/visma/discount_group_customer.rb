@@ -19,11 +19,6 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: "DiscountGrpCustNo"
   alias :processed_orders :customer_order_copy
 
-  has_many :customer_order_line, foreign_key: "DiscountGrpCustNo"
-  alias :order_lines :customer_order_line
-  has_many :customer_order_line_copy, foreign_key: "DiscountGrpCustNo"
-  alias :processed_order_lines :customer_order_line_copy
-
   enum :InActiveYesNo => [ :active, :inactive ]
   default_scope { active }
 
