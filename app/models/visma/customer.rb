@@ -109,5 +109,11 @@ class Visma::Customer < ActiveRecord::Base
     def all_with_discount_agreements
       find(Visma::DiscountAgreementCustomer.uniq_ids(:CustomerNo))
     end
+
+    # Exclude some info from json output.
+    def to_json(options={})
+      options[:except] ||= [:UtilityBits]
+      super(options)
+    end
   end
 end
