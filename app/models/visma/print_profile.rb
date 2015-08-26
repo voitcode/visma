@@ -4,5 +4,8 @@ class Visma::PrintProfile < ActiveRecord::Base
   self.table_name += "PrintProfile"
   self.primary_key = "PrintProfileNo"
 
+  include Visma::Timestamp
+  include Visma::ChangeBy
+
   has_many :customers, foreign_key: "PrintProfileNo"
 end
