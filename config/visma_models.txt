@@ -188,7 +188,7 @@ Employee
 #FixedAddnDed
 #FormPrinterGroup
 #FormPrinterLineControl
-#FormProfileCustomer
+FormProfileCustomer
 #FormProfileLineCustomer
 #FormProfileLineSupplier
 #FormProfileSupplier
@@ -273,7 +273,7 @@ PriceHistory
 PriceList
 PriceMarkupGroup
 #PrintFormLanguageText
-#PrintProfile
+PrintProfile
 #PrintProfileLine
 #PrintProfileLineSupp
 #PrintProfileSupp

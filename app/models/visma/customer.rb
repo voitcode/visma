@@ -38,6 +38,10 @@ class Visma::Customer < ActiveRecord::Base
   has_many :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
   has_many :z_usr_ruter, through: :z_usr_ruter_pr_kunde
 
+  # Form and Print profiles
+  belongs_to :form_profile_customer, foreign_key: "FormProfileCustNo"
+  belongs_to :print_profile, foreign_key: "PrintProfileNo"
+
   # Return the correct price for a given article
   def prices_for(artno)
     raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
