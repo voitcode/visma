@@ -14,8 +14,8 @@ class Visma::Customer < ActiveRecord::Base
 
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
-  has_one :primary_delivery_address, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo, class_name: Visma::CustomerDeliveryAdresses
-  has_many :delivery_addresses, foreign_key: :CustomerNo, class_name: Visma::CustomerDeliveryAdresses
+  has_one :primary_delivery_address, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo, class_name: Visma::CustomerDeliveryAddresses
+  has_many :delivery_addresses, foreign_key: :CustomerNo, class_name: Visma::CustomerDeliveryAddresses
 
   has_one :primary_invoice_address, foreign_key: :InvoiceAdressNo, primary_key: :InvoiceAdressNo, class_name: Visma::CustomerInvoiceAdresses
   has_many :invoice_addresses, foreign_key: :InvoiceAdressCustomerNo, class_name: Visma::CustomerInvoiceAdresses
