@@ -4,6 +4,6 @@ class Visma::CustomerOrderLineCopy < ActiveRecord::Base
   self.table_name += "CustomerOrderLineCopy"
   self.primary_key = "OrderCopyNo"
 
-  include Visma::Created
+  include Visma::CreatedScopes
   belongs_to :customer_order_copy, foreign_key: :OrderCopyNo, primary_key: :OrderCopyNo
 end

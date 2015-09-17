@@ -1,7 +1,9 @@
 module Visma
 
   # Scoped queries in time ranges for created
-  module Created
+  module CreatedScopes
+    extend ActiveSupport::Concern
+
     included do
       scope :created_today,           -> { where(Created: Time.now.beginning_of_day..Time.now) }
       scope :created_this_week,       -> { where(Created: Time.now.beginning_of_week..Time.now) }
