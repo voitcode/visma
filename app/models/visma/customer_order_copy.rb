@@ -4,6 +4,7 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   self.table_name += "CustomerOrderCopy"
   self.primary_key = "OrderCopyNo"
 
+  self.use_activerecord_cache = true
   include Visma::CreatedScopes
   belongs_to :customer, foreign_key: :CustomerNo
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer

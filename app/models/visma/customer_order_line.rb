@@ -8,4 +8,8 @@ class Visma::CustomerOrderLine < ActiveRecord::Base
   include Visma::ChangeBy
 
   belongs_to :customer_order, foreign_key: :OrderNo, primary_key: :OrderNo
+  alias :order :customer_order
+  belongs_to :article, foreign_key: :ArticleNo
+
+  has_one :customer, through: :customer_order
 end

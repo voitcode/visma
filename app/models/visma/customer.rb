@@ -4,6 +4,7 @@ class Visma::Customer < ActiveRecord::Base
   self.table_name += "Customer"
   self.primary_key = "CustomerNo"
 
+  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
 
