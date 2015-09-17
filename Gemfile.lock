@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.0.38)
+    visma (0.0.42)
       activerecord-sqlserver-adapter (>= 3.2.12)
       activerecord_cache (~> 0.0.9)
       rails (~> 4.1.5)

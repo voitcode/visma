@@ -4,5 +4,8 @@ class Visma::CustomerOrderLine < ActiveRecord::Base
   self.table_name += "CustomerOrderLine"
   self.primary_key = :UniqueID
 
+  include Visma::Timestamp
+  include Visma::ChangeBy
+
   belongs_to :customer_order, foreign_key: :OrderNo, primary_key: :OrderNo
 end
