@@ -17,6 +17,11 @@ module Visma
       scope :updated_this_year,       -> { where(LastUpdate: Time.now.beginning_of_year..Time.now) }
       scope :updated_previous_year,   -> { where(LastUpdate: 1.year.ago.beginning_of_year..1.year.ago.end_of_year) }
       scope :updated_last_year,       -> { where(LastUpdate: 1.year.ago..Time.now) }
+
+      # Fetch the newest LastUpdate timestamp
+      def self.latest_update
+        order(LastUpdate: :desc).first.LastUpdate
+      end
     end
 
     alias_attribute :updated_at, :LastUpdate
