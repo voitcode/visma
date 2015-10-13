@@ -114,7 +114,7 @@ class Visma::Customer < ActiveRecord::Base
 
   class << self
     # Fetch the newest LastUpdate timestamp
-    def self.latest_update
+    def latest_update
       order(LastUpdate: :desc).first.LastUpdate
     end
 
