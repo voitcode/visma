@@ -113,6 +113,11 @@ class Visma::Customer < ActiveRecord::Base
   end
 
   class << self
+    # Fetch the newest LastUpdate timestamp
+    def self.latest_update
+      order(LastUpdate: :desc).first.LastUpdate
+    end
+
     # Find ICA stores by postcode
     def ica(postcode)
       where(PostCode: postcode.to_s).where("Name like '%rimi%' or Name like '%matkrok%' or Name like '%ica%'").all
