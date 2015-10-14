@@ -8,4 +8,10 @@ class Visma::CustomerProfile < ActiveRecord::Base
   include Visma::ChangeBy
 
   has_many :customers, foreign_key: :CustomerProfileNo
+
+  # => { "Name" => "CustomerProfileNo"}
+  def self.collection
+    a = all.map {|p| [p.Name, p.CustomerProfileNo] }.flatten
+    Hash[*a]
+  end
 end

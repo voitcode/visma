@@ -10,4 +10,10 @@ class Visma::CustomerEdiProfile < ActiveRecord::Base
   belongs_to :edi_provider, primary_key: "EDIProviderNo", foreign_key: "EDIProviderNo", class_name: Visma::EDIProvider
   has_many :edi_transactions, foreign_key: "EDIProfileNo", class_name: Visma::EDITransaction
   has_many :customers, foreign_key: :EdiProfileNo
+
+  # => { "Name" => "EdiProfileNo"}
+  def self.collection
+    a = all.map {|p| [p.Name, p.EdiProfileNo] }.flatten
+    Hash[*a]
+  end
 end
