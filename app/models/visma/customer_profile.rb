@@ -9,9 +9,13 @@ class Visma::CustomerProfile < ActiveRecord::Base
 
   has_many :customers, foreign_key: :CustomerProfileNo
 
-  # => { "Name" => "CustomerProfileNo"}
+  # => { "CustomerProfileNo" => "Name }
   def self.collection
-    a = all.map {|p| [p.Name, p.CustomerProfileNo] }.flatten
+    a = options.map(&:reverse).flatten
     Hash[*a]
+  end
+
+  def self.options
+    all.map {|p| [p.Name, p.CustomerProfileNo] }
   end
 end

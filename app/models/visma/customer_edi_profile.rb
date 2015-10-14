@@ -11,9 +11,13 @@ class Visma::CustomerEdiProfile < ActiveRecord::Base
   has_many :edi_transactions, foreign_key: "EDIProfileNo", class_name: Visma::EDITransaction
   has_many :customers, foreign_key: :EdiProfileNo
 
-  # => { "Name" => "EdiProfileNo"}
+  # => { "EdiProfileNo" => "Name }
   def self.collection
-    a = all.map {|p| [p.Name, p.EdiProfileNo] }.flatten
+    a = options.map(&:reverse).flatten
     Hash[*a]
+  end
+
+  def self.options
+    all.map {|p| [p.Name, p.EdiProfileNo] }
   end
 end
