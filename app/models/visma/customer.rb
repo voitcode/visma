@@ -73,6 +73,16 @@ class Visma::Customer < ActiveRecord::Base
     prices.select {|k,v| v.try(:price).to_i != 0 }
   end
 
+  # Return the correct price
+  def price_for(artno)
+    prices_for(artno.to_i).sort_by {|reason, source| source.price }.values.first.price
+  end
+
+  # Return the correct price, explained
+  def explained_price_for(artno)
+    prices_for(artno.to_i).sort_by {|reason, source| source.price }.collect {|reason, source| [reason, source.price] }.first
+  end
+
   # The current invoice address.
   # Based on wether the Chain or the Customer is getting the bill
   def current_invoice_address
