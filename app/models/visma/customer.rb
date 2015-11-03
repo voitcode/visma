@@ -54,33 +54,44 @@ class Visma::Customer < ActiveRecord::Base
   def prices_for(artno)
     raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
 
-    prices = {}
+    Rails.cache.fetch("customer_#{self.CustomerNo}_prices_for_#{artno}") do
+      prices = {}
 
-    prices["discount_group"]        = discount_group.discount_agreements.for(artno) rescue nil
-    prices["chain_discount_group"]  = chain.discount_group.discount_agreements.for(artno) rescue nil
-    prices["price_list"]            = price_list.discount_agreements.for(artno) rescue nil
-    prices["chain_price_list"]      = chain.price_list.discount_agreements.for(artno) rescue nil
-    prices["customer_discount"]     = discount_agreements.for(artno) rescue nil
-    prices["chain_discount"]        = chain.discount_agreements.for(artno) rescue nil
+      prices["discount_group"]            = discount_group.discount_agreements.for(artno) rescue nil
+      prices["chain:discount_group"]      = chain.discount_group.discount_agreements.for(artno) rescue nil
+      prices["price_list"]                = price_list.discount_agreements.for(artno) rescue nil
+      prices["chain:price_list"]          = chain.price_list.discount_agreements.for(artno) rescue nil
+      prices["discount_agreements"]       = discount_agreements.for(artno) rescue nil
+      prices["chain:discount_agreements"] = chain.discount_agreements.for(artno) rescue nil
 
-    # TODO: figure out campaigns in Visma Global, this is wrong
-   # campaign_price_list.each_with_index do |cpl,i|
-   #   prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
-   # end
+      # TODO: figure out campaigns in Visma Global, this is wrong
+   #   campaign_price_list.each_with_index do |cpl,i|
+   #     prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
+   #   end
 
-    prices["article"] = Visma::Article.find(artno.to_s)
+      prices["article"] = Visma::Article.find(artno.to_s)
 
-    prices.select {|k,v| v.try(:price).to_i != 0 }
+      prices.select {|k,v| v.try(:price).to_i != 0 }.sort_by {|reason, source| source.price }.to_h
+    end
   end
 
   # Return the correct price
   def price_for(artno)
-    prices_for(artno.to_i).sort_by {|reason, source| source.price }.values.first.price
+    prices_for(artno.to_i).values.first.price
   end
 
   # Return the correct price, explained
   def explained_price_for(artno)
-    prices_for(artno.to_i).sort_by {|reason, source| source.price }.collect {|reason, source| [reason, source.price] }.first
+    prices_for(artno.to_i).collect {|reason, source| [reason, source.price] }.first
+  end
+
+  # Return the discount factor for the price
+  def discount_factor(artno)
+    src1,src2 = explained_price_for(artno).first.split(":")
+    return 0 if src1 == "article"
+
+    src = src2.nil? ? self.send(src1) : self.send(src1).send(src2)
+    src.price_for(artno).discount_factor
   end
 
   # The current invoice address.

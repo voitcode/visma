@@ -3,6 +3,7 @@ class Visma::CustomerOrderLine < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "CustomerOrderLine"
   self.primary_key = :UniqueID
+  self.use_activerecord_cache = true
 
   include Visma::Timestamp
   include Visma::ChangeBy

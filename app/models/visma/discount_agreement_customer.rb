@@ -24,16 +24,20 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     self.AgreedPrice == 0 ? article.price : self.AgreedPrice
   end
 
+  def discount_factor
+    (self.DiscountI / 100.0).round(4)
+  end
+
+  def discount_amount
+    agreed_price * discount_factor
+  end
+
   def price
     (agreed_price - discount_amount).round(2)
   end
 
   def price_source
     self.AgreedPrice == 0 ? "Article" : "Agreement"
-  end
-
-  def discount_amount
-    agreed_price * self.DiscountI / 100
   end
 
   # Return the discounted party
@@ -61,5 +65,6 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     def for(artno)
       where(ArticleNo: artno.to_s).first rescue nil
     end
+    alias price_for for
   end
 end
