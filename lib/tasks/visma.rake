@@ -13,11 +13,15 @@ class Visma::#{vmodel} < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "#{vmodel}"
   #self.primary_key = TODO
+  self.use_activerecord_cache = true
 end
 EOF
 
         path = "app/models/visma/#{vmodel.strip.underscore}.rb"
-        File.open(path, 'w') {|f| f.write(doc) } unless File.exist?(path)
+        unless File.exist?(path)
+          File.open(path, 'w') {|f| f.write(doc) }
+          puts "Edit primary_key in #{path}"
+        end
       end
     end
   end
