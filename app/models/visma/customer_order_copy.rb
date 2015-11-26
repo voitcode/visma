@@ -15,6 +15,27 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   has_many :customer_order_line_copies, foreign_key: :OrderCopyNo
   alias :order_lines :customer_order_line_copies
 
+  # is this a batch invoice?
+  def is_a_batch_invoice?
+    invoice_batch.count != 1
+  end
+
+  # return batch invoice order lines
+  def invoice_lines
+    Visma::CustomerOrderLineCopy.where(InvoiceNo: self.InvoiceNo)
+  end
+
+  # return invoice batch orders
+  def invoice_batch
+    self.class.where(InvoiceNo: self.InvoiceNo)
+  end
+
+  # return sum of TotalAmount
+  def invoice_total
+    invoice_batch.map(&:TotalAmount).sum
+  end
+
+  # compatibilty method
   def OrderNo
     self.OrderCopyNo
   end
