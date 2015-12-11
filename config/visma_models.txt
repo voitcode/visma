@@ -219,7 +219,7 @@ InvoiceJournal
 #JournalSurvey
 #Language
 #LanguageText
-#LastNumbers
+LastNumbers
 #LastVoucherNo
 #LocalGovernment
 #LogRule
