@@ -131,7 +131,7 @@ class Visma::Customer < ActiveRecord::Base
 
   # When was the last invoice sent?
   def last_invoiced
-    processsed_orders.last.try(:Created)
+    processed_orders.last.try(:Created)
   end
 
   # Exclude some info from json output.
