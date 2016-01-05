@@ -7,6 +7,7 @@ class Visma::Customer < ActiveRecord::Base
   self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
+  enum :InActiveYesNo => [ :active, :inactive ]
 
   has_many :customer_order, foreign_key: :CustomerNo
   alias :orders :customer_order

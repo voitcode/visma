@@ -3,6 +3,7 @@ class Visma::Employee < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "Employee"
   self.primary_key = "EmployeeNo"
+  enum :InActiveYesNo => [ :active, :inactive ]
 
   include Visma::Timestamp
   include Visma::ChangeBy

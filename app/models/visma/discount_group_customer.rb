@@ -3,6 +3,8 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "DiscountGroupCustomer"
   self.primary_key = "DiscountGrpCustNo"
+  enum :InActiveYesNo => [ :active, :inactive ]
+  default_scope { active }
 
   self.use_activerecord_cache = true
   include Visma::Timestamp
@@ -18,9 +20,6 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   alias :orders :customer_order
   has_many :customer_order_copy, foreign_key: "DiscountGrpCustNo"
   alias :processed_orders :customer_order_copy
-
-  enum :InActiveYesNo => [ :active, :inactive ]
-  default_scope { active }
 
   def price_for(artno)
     discount_agreements.for(artno)

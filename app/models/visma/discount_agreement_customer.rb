@@ -16,6 +16,7 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   belongs_to :discount_group_customer, foreign_key: "DiscountGrpCustNo"
 
   scope :active, -> { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
+  scope :inactive, -> { where.not("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
 
   # The agreed price deviates from the article price
   scope :deviant, -> { joins(:article).where("DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)") }

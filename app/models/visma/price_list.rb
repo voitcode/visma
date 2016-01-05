@@ -7,6 +7,8 @@ class Visma::PriceList < ActiveRecord::Base
   self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
+  enum :InActiveYesNo => [ :active, :inactive ]
+  default_scope { active }
 
   has_many :customers, foreign_key: "PriceListNo"
 
@@ -23,9 +25,6 @@ class Visma::PriceList < ActiveRecord::Base
   alias :order_lines :customer_order_line
   has_many :customer_order_line_copy, foreign_key: "PriceListNo"
   alias :processed_order_lines :customer_order_line_copy
-
-  enum :InActiveYesNo => [ :active, :inactive ]
-  default_scope { active }
 
   def price_for(artno)
     discount_agreements.for(artno)
