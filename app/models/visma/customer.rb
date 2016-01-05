@@ -124,8 +124,14 @@ class Visma::Customer < ActiveRecord::Base
     return c
   end
 
+  # Clean up phone number string
   def phoneme(number)
     number.gsub(/-+|\s+/,"").gsub(/(\d{2,2})(\d{2,2})(\d{2,2})(\d{2,2})/, "\\1 \\2 \\3 \\4")
+  end
+
+  # When was the last invoice sent?
+  def last_invoiced
+    processsed_orders.last.try(:Created)
   end
 
   # Exclude some info from json output.
