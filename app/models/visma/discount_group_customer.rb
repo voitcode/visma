@@ -6,7 +6,6 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   enum :InActiveYesNo => [ :active, :inactive ]
   default_scope { active }
 
-  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
 

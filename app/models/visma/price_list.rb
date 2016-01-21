@@ -4,7 +4,6 @@ class Visma::PriceList < ActiveRecord::Base
   self.table_name += "PriceList"
   self.primary_key = "PriceListNo"
 
-  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
   enum :InActiveYesNo => [ :active, :inactive ]

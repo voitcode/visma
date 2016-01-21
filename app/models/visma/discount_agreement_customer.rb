@@ -4,7 +4,6 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   self.table_name += "DiscountAgreementCustomer"
   self.primary_key = "UniqueID"
 
-  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
 

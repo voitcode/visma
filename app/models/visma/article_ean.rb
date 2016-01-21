@@ -4,7 +4,6 @@ class Visma::ArticleEan < ActiveRecord::Base
   self.table_name += "ArticleEAN"
   self.primary_key = "UnitTypeNo"
 
-  self.use_activerecord_cache = true
   include Visma::ArticleChange
 
   belongs_to :unit_type, foreign_key: :UnitTypeNo, primary_key: :UnitTypeNo

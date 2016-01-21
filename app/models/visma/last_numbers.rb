@@ -4,7 +4,6 @@ class Visma::LastNumbers < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "LastNumbers"
   self.primary_key = "UniqueNo"
-  self.use_activerecord_cache = true
 
   class << self
     def LastCashInvoiceNo; first.LastCashInvoiceNo; end

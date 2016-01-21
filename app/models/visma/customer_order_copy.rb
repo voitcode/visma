@@ -3,7 +3,6 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "CustomerOrderCopy"
   self.primary_key = "OrderCopyNo"
-  self.use_activerecord_cache = true
 
   include Visma::StaticTimestamp
   include Visma::CreatedBy

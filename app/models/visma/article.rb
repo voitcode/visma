@@ -8,7 +8,6 @@ class Visma::Article < ActiveRecord::Base
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "Article"
   self.primary_key = "ArticleNo"
-  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ChangeBy
 

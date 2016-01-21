@@ -4,7 +4,6 @@ class Visma::UnitType < ActiveRecord::Base
   self.table_name += "UnitType"
   self.primary_key = "UnitTypeNo"
 
-  self.use_activerecord_cache = true
   include Visma::Timestamp
   include Visma::ArticleChange
   include Visma::ChangeBy
