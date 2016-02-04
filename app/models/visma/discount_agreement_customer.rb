@@ -68,7 +68,7 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     end
 
     def for(artno)
-      where(ArticleNo: artno.to_s).first rescue nil
+      active.where(ArticleNo: artno.to_s).first rescue nil
     end
     alias price_for for
   end

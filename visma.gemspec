@@ -10,14 +10,14 @@ Gem::Specification.new do |s|
   s.authors     = ["Marvin Wiik","Runar Ingebrigtsen"]
   s.email       = ["marvin@voit.no","runar@voit.no"]
   s.homepage    = "http://voit.no"
-  s.summary     = "Integrations with Visma Global"
-  s.description = "Integrations with Visma Global ERP software"
+  s.summary     = "Integrate Rails with Visma Global"
+  s.description = "Visma Global business software integrations for Ruby on Rails"
   s.license     = "MIT"
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
 
-  s.add_dependency "activerecord", "~> 4.1.14"
+  s.add_dependency "rails", "~> 4.1.14"
 
   # Databases
   s.add_dependency "tiny_tds", ">= 0.6.2"
