@@ -48,6 +48,11 @@ class Visma::Article < ActiveRecord::Base
     self.Price1
   end
 
+  # Price categorization
+  def category
+    self.class.to_s
+  end
+
   # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   def variable_weight?
     self.QuantityPerUnitTextSale.to_s.upcase == "KG"
@@ -168,5 +173,9 @@ class Visma::Article < ActiveRecord::Base
 
   def sort_me
     self.ArticleNo
+  end
+
+  def to_s
+    self.Name + " (#{self.class})"
   end
 end

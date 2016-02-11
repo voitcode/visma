@@ -52,37 +52,51 @@ class Visma::Customer < ActiveRecord::Base
 
   # Return the correct price for a given article
   def prices_for(artno)
-    raise TypeError, "price_for only takes a Fixnum" if artno.class != Fixnum
+    all_prices_for(artno).
+       sort_by {|p| p.price }.
+       inject({}) {|h,p| h[p.to_s] = p; h }
+  end
 
-    Rails.cache.fetch("customer_#{self.CustomerNo}_prices_for_#{artno}") do
-      prices = {}
-
-      prices["discount_group"]            = discount_group.discount_agreements.for(artno) rescue nil
-      prices["chain:discount_group"]      = chain.discount_group.discount_agreements.for(artno) rescue nil
-      prices["price_list"]                = price_list.discount_agreements.for(artno) rescue nil
-      prices["chain:price_list"]          = chain.price_list.discount_agreements.for(artno) rescue nil
-      prices["discount_agreements"]       = discount_agreements.for(artno) rescue nil
-      prices["chain:discount_agreements"] = chain.discount_agreements.for(artno) rescue nil
-
-      # TODO: figure out campaigns in Visma Global, this is wrong
-   #   campaign_price_list.each_with_index do |cpl,i|
-   #     prices["campaign_price_list_#{i+1}"] = cpl.discount_agreements.price_for(artno) rescue binding.pry
-   #   end
-
-      prices["article"] = Visma::Article.find(artno.to_s)
-
-      prices.select {|k,v| v.try(:price).to_i != 0 }.sort_by {|reason, source| source.price }.to_h
-    end
+  # Find all available prices for a given article number at a given date
+  def all_prices_for(artno, at_date=Date.today)
+    [ Visma::Article.find(artno) ] +
+    discounts_for(artno, at_date)
   end
 
   # Return the correct price
-  def price_for(artno)
-    prices_for(artno.to_i).values.first.price
+  def price_for(artno, at=nil)
+    if at.nil?
+      prices_for(artno.to_i).values.first.price
+    else
+      discounts_for(artno, at).sort_by {|p| p.price }.first.price rescue nil
+    end
   end
 
   # Return the correct price, explained
   def explained_price_for(artno)
     prices_for(artno.to_i).collect {|reason, source| [reason, source.price] }.first
+  end
+
+  # Find all discount agreements for given article number at a given date
+  # TODO there is more discount agreements available through campaign_price_list
+  # - @ringe: I have no data to work with to see how it works
+  def discounts_for(artno, at_date=Date.today)
+    discount_sources = ["CustomerNo"]
+    discount_sources << "PriceListNo" unless self.PriceListNo.to_i == 0
+    discount_sources << "DiscountGrpCustNo" unless self.DiscountGrpCustNo.to_i == 0
+
+    discount_ids = discount_sources.map {|ds| self.send(ds)}
+
+    discounts = Visma::DiscountAgreementCustomer.
+      includes(:customer, :discount_group_customer).
+      where("#{discount_sources.join(" = ? OR ")} = ?", *discount_ids).
+      at(at_date, artno)
+
+    if chain.nil? or self.ChainNo == 0
+      discounts
+    else
+      (discounts + chain.discounts_for(artno, at_date)).uniq
+    end
   end
 
   # Return the discount factor for the price

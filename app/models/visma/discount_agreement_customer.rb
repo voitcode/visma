@@ -55,7 +55,7 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
   # What kind of agreement is this?
   def category
-    recipient.class
+    recipient.class.to_s
   end
 
   def to_s
@@ -68,8 +68,12 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     end
 
     def for(artno)
-      active.where(ArticleNo: artno.to_s).first rescue nil
+      where(ArticleNo: artno.to_s).first rescue nil
     end
     alias price_for for
+
+    def at(date, artno)
+      where(ArticleNo: "#{artno}").where("StartDate <= ? AND StopDate >= ?", date, date)
+    end
   end
 end
