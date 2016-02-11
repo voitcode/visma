@@ -67,11 +67,13 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
       active.where("#{field} != 0").select(field).uniq.map {|a| a[field] }
     end
 
+    # Find discounts for a given ArticleNo
     def for(artno)
       where(ArticleNo: artno.to_s).first rescue nil
     end
     alias price_for for
 
+    # Find discounts for a given date
     def at(date, artno)
       where(ArticleNo: "#{artno}").where("StartDate <= ? AND StopDate >= ?", date, date)
     end

@@ -20,6 +20,7 @@ class Visma::DiscountGroupCustomer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: "DiscountGrpCustNo"
   alias :processed_orders :customer_order_copy
 
+  # Find price for ArticleNo
   def price_for(artno)
     discount_agreements.for(artno)
   end
