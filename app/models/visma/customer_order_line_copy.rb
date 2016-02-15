@@ -12,4 +12,19 @@ class Visma::CustomerOrderLineCopy < ActiveRecord::Base
   belongs_to :article, foreign_key: :ArticleNo
 
   has_one :customer, through: :customer_order_copy
+
+  # The net price after discount
+  def net_price
+    (self.NetPrice - (self.NetPrice * self.DiscountI / 100)).round(2)
+  end
+
+  # The margin per unit
+  def unit_margin
+    (net_price - self.PurchasePrice).round(2)
+  end
+
+  # The net margin for this line
+  def margin
+    (unit_margin * self.Invoiced).round(2)
+  end
 end

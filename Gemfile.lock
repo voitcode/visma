@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.0.57)
+    visma (0.0.58)
       activerecord-sqlserver-adapter (>= 3.2.12)
       rails (~> 4.1.14)
       tiny_tds (>= 0.6.2)
