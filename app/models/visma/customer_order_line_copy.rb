@@ -15,16 +15,16 @@ class Visma::CustomerOrderLineCopy < ActiveRecord::Base
 
   # The net price after discount
   def net_price
-    (self.NetPrice - (self.NetPrice * self.DiscountI / 100)).round(2)
+    (self.NetPrice - (self.NetPrice * self.DiscountI / 100)).round(2) rescue 0
   end
 
   # The margin per unit
   def unit_margin
-    (net_price - self.PurchasePrice).round(2)
+    (net_price - self.PurchasePrice).round(2) rescue 0
   end
 
   # The net margin for this line
   def margin
-    (unit_margin * self.Invoiced).round(2)
+    (unit_margin * self.Invoiced).round(2) rescue 0
   end
 end
