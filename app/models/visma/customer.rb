@@ -26,6 +26,7 @@ class Visma::Customer < ActiveRecord::Base
   has_one :invoice_contact, foreign_key: :ContactNo, primary_key: :ContactNoInvoice, class_name: Visma::Contact
 
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
+  has_many :chain_members, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
   # Price list, discount group and such
   belongs_to :price_list, foreign_key: "PriceListNo"
@@ -81,21 +82,23 @@ class Visma::Customer < ActiveRecord::Base
   # TODO there is more discount agreements available through campaign_price_list
   # - @ringe: I have no data to work with to see how it works
   def discounts_for(artno, at_date=Date.today)
-    discount_sources = ["CustomerNo"]
-    discount_sources << "PriceListNo" unless self.PriceListNo.to_i == 0
-    discount_sources << "DiscountGrpCustNo" unless self.DiscountGrpCustNo.to_i == 0
+    Rails.cache.fetch ["discounts_for", cache_key, artno, at_date] do
+      discount_sources = ["CustomerNo"]
+      discount_sources << "PriceListNo" unless self.PriceListNo.to_i == 0
+      discount_sources << "DiscountGrpCustNo" unless self.DiscountGrpCustNo.to_i == 0
 
-    discount_ids = discount_sources.map {|ds| self.send(ds)}
+      discount_ids = discount_sources.map {|ds| self.send(ds)}
 
-    discounts = Visma::DiscountAgreementCustomer.
-      includes(:customer, :discount_group_customer).
-      where("#{discount_sources.join(" = ? OR ")} = ?", *discount_ids).
-      at(at_date, artno)
+      discounts = Visma::DiscountAgreementCustomer.
+        includes(:customer, :discount_group_customer, :article).
+        where("#{discount_sources.join(" = ? OR ")} = ?", *discount_ids).
+        at(at_date, artno)
 
-    if chain.nil? or self.ChainNo == 0
-      discounts
-    else
-      (discounts + chain.discounts_for(artno, at_date)).uniq
+      if self.ChainNo == 0 or self.ChainNo == self.CustomerNo or chain.nil? 
+        discounts
+      else
+        (discounts + chain.discounts_for(artno, at_date)).uniq
+      end
     end
   end
 
