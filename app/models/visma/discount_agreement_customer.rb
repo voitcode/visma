@@ -75,7 +75,7 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
     # Find discounts for a given date
     def at(date, artno)
-      where(ArticleNo: "#{artno}").where("StartDate <= ? AND StopDate >= ?", date, date)
+      where(ArticleNo: "#{artno}").where("StartDate <= ? AND StopDate >= ?", date.to_date, date.to_date)
     end
   end
 end
