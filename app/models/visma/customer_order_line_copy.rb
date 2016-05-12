@@ -27,4 +27,11 @@ class Visma::CustomerOrderLineCopy < ActiveRecord::Base
   def margin
     (unit_margin * self.Invoiced).round(2) rescue 0
   end
+
+  class << self
+    # Find order lines for given customer
+    def for_customer_no(customer_number)
+      joins(:customer).where(customer: {CustomerNo: "#{customer_number}"})
+    end
+  end
 end
