@@ -44,6 +44,8 @@ class Visma::Article < ActiveRecord::Base
   scope :variable_weight, -> { where("UPPER(QuantityPerUnitTextSale) = 'KG'") }
   scope :fixed_weight, -> { where("UPPER(QuantityPerUnitTextSale) != 'KG'") }
 
+  has_many :customer_order_line_copies, foreign_key: "ArticleNo"
+
   def price
     self.Price1
   end
