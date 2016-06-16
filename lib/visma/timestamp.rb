@@ -7,16 +7,17 @@ module Visma
       before_save :set_timestamp
 
       # Scope queries in time ranges
-      scope :updated_today,           -> { where(LastUpdate: Time.now.beginning_of_day..Time.now) }
-      scope :updated_this_week,       -> { where(LastUpdate: Time.now.beginning_of_week..Time.now) }
-      scope :updated_previous_week,   -> { where(LastUpdate: 1.week.ago.beginning_of_week..1.week.ago.end_of_week) }
-      scope :updated_last_week,       -> { where(LastUpdate: 1.week.ago..Time.now) }
-      scope :updated_this_month,      -> { where(LastUpdate: Time.now.beginning_of_month..Time.now) }
-      scope :updated_previous_month,  -> { where(LastUpdate: 1.month.ago.beginning_of_month..1.month.ago.end_of_month) }
-      scope :updated_last_month,      -> { where(LastUpdate: 1.month.ago..Time.now) }
-      scope :updated_this_year,       -> { where(LastUpdate: Time.now.beginning_of_year..Time.now) }
-      scope :updated_previous_year,   -> { where(LastUpdate: 1.year.ago.beginning_of_year..1.year.ago.end_of_year) }
-      scope :updated_last_year,       -> { where(LastUpdate: 1.year.ago..Time.now) }
+      scope :updated_between, ->(range) { where(LastUpdate: range) }
+      scope :updated_today,           -> { updated_between(Time.now.beginning_of_day..Time.now) }
+      scope :updated_this_week,       -> { updated_between(Time.now.beginning_of_week..Time.now) }
+      scope :updated_previous_week,   -> { updated_between(1.week.ago.beginning_of_week..1.week.ago.end_of_week) }
+      scope :updated_last_week,       -> { updated_between(1.week.ago..Time.now) }
+      scope :updated_this_month,      -> { updated_between(Time.now.beginning_of_month..Time.now) }
+      scope :updated_previous_month,  -> { updated_between(1.month.ago.beginning_of_month..1.month.ago.end_of_month) }
+      scope :updated_last_month,      -> { updated_between(1.month.ago..Time.now) }
+      scope :updated_this_year,       -> { updated_between(Time.now.beginning_of_year..Time.now) }
+      scope :updated_previous_year,   -> { updated_between(1.year.ago.beginning_of_year..1.year.ago.end_of_year) }
+      scope :updated_last_year,       -> { updated_between(1.year.ago..Time.now) }
 
       # Fetch the newest LastUpdate timestamp
       def self.latest_update

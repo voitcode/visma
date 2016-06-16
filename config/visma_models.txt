@@ -231,9 +231,9 @@ LastNumbers
 LogonUser
 #LogonUserInGroup
 #Lot
-#MailArchive
-#MailArchiveAttachemts
-#MailRecipients
+MailArchive
+MailArchiveAttachemts
+MailRecipients
 MainGroup
 #MaventaCompanies
 #NotesIndex
