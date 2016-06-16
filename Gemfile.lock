@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.1.0)
+    visma (0.1.2)
       activerecord-sqlserver-adapter (>= 3.2.12)
       rails (~> 4.1.14)
       tiny_tds (>= 0.6.2)
@@ -46,7 +46,7 @@ GEM
     json (1.8.3)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mime-types (2.99.1)
+    mime-types (2.99.2)
     mini_portile (0.6.2)
     minitest (5.8.4)
     rack (1.5.5)
