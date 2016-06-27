@@ -13,6 +13,7 @@ class Visma::Customer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: :CustomerNo
   alias :processed_orders :customer_order_copy
 
+  has_many :transactions, foreign_key: :CustomerNo, class_name: Visma::GLAccountTransaction
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
   has_one :primary_delivery_address, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo, class_name: Visma::CustomerDeliveryAddresses
