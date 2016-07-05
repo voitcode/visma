@@ -5,7 +5,11 @@ module Visma
     extend ActiveSupport::Concern
 
     included do
-      scope :created_between, ->(range) { where(Created: range) }
+      scope :created_between, ->(range) {
+        first = range.first.strftime("%Y-%m-%d %H:%M:%S")
+        last  =  range.last.strftime("%Y-%m-%d %H:%M:%S")
+        where("Created BETWEEN ? AND ?", first, last)
+      }
       scope :created_today,           -> { created_between(Time.now.beginning_of_day..Time.now) }
       scope :created_yesterday,       -> { created_between(1.day.ago.beginning_of_day..1.day.ago.end_of_day) }
       scope :created_this_week,       -> { created_between(Time.now.beginning_of_week..Time.now) }

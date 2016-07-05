@@ -9,6 +9,7 @@ class Visma::Article < ActiveRecord::Base
   self.table_name += "Article"
   self.primary_key = "ArticleNo"
   include Visma::Timestamp
+  include Visma::CreatedScopes
   include Visma::ChangeBy
 
   # default scope with strange syntax to support joins
