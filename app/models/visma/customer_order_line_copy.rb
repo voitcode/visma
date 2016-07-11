@@ -11,6 +11,9 @@ class Visma::CustomerOrderLineCopy < ActiveRecord::Base
   alias :order :customer_order_copy
   belongs_to :article, foreign_key: :ArticleNo
 
+  belongs_to :sub_group, foreign_key: :SubGroupNo
+  belongs_to :main_group, foreign_key: :MainGroupNo
+
   has_one :customer, through: :customer_order_copy
 
   # The net price after discount
