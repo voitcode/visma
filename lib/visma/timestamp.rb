@@ -33,10 +33,7 @@ module Visma
     alias_attribute :updated_at, :LastUpdate
 
     def set_timestamp
-      offset = TZInfo::Timezone.get(VISMA_CONFIG["time_zone"]).current_period.utc_offset
-      raise VismaError, "You MUST configure a valid time_zone in config/visma.yml" if offset.nil?
-
-      self.LastUpdate = Time.zone.now + offset
+      self.LastUpdate = Time.now.strftime("%Y.%m.%d %H:%M:%S")
       self.LastUpdatedBy = 1
     end
 
