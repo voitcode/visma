@@ -51,6 +51,10 @@ class Visma::Article < ActiveRecord::Base
     self.Price1
   end
 
+  def agreed_price
+    price
+  end
+
   # Price categorization
   def category
     self.class.to_s
