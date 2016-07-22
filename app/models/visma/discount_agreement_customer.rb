@@ -29,10 +29,17 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
     self.AgreedPrice == 0 ? article.price : self.AgreedPrice
   end
 
+  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
+  def discount
+    self.DiscountI
+  end
+
+  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
   def discount_factor
     (self.DiscountI / 100.0).round(4)
   end
 
+  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
   def discount_amount
     agreed_price * discount_factor
   end

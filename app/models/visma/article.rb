@@ -55,6 +55,14 @@ class Visma::Article < ActiveRecord::Base
     price
   end
 
+  def discount
+    0
+  end
+
+  def discount_factor
+    0
+  end
+
   # Price categorization
   def category
     self.class.to_s

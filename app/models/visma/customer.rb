@@ -55,8 +55,7 @@ class Visma::Customer < ActiveRecord::Base
   # Return the correct price for a given article
   def prices_for(artno)
     all_prices_for(artno).
-       sort_by {|p| p.price }.
-       inject({}) {|h,p| h[p.to_s] = p; h }
+       sort_by {|p| p.price }
   end
 
   # Find all available prices for a given article number at a given date
