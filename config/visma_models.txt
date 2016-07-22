@@ -213,9 +213,9 @@ IntermediateGroup
 #InternetMessageFolder
 InvoiceJournal
 #InvoicePurchasingParameter
-#JobLock
-#JobMessage
-#Jobs
+JobLock
+JobMessage
+Jobs
 #JournalSurvey
 #Language
 #LanguageText
@@ -302,11 +302,11 @@ QuantityDiscountCustomer
 #SalesBudget
 #SalesFigures
 #SavedDocuments
-#SavedJobs
+SavedJobs
 #SavedNotes
 #SavedPictures
 #SavedSelection
-#ScheduledComponentConfiguration
+ScheduledComponentConfiguration
 #SearchForFunction
 #SerialNo
 #SerialNoCopy
