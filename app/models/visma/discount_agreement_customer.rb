@@ -49,7 +49,11 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
   end
 
   def price_source
-    self.AgreedPrice == 0 ? "Article" : "Agreement"
+    self.AgreedPrice == 0 ? "Artikkelpris" : to_s
+  end
+
+  def discount_source
+    discount == 0 ? nil : to_s
   end
 
   # Return the discounted party
@@ -62,11 +66,20 @@ class Visma::DiscountAgreementCustomer < ActiveRecord::Base
 
   # What kind of agreement is this?
   def category
-    recipient.class.to_s
+    case recipient.class.name
+    when "Visma::Customer"
+      "Kunderabatt"
+    when "Visma::DiscountGroupCustomer"
+      "Kunderabattgruppe"
+    when "Visma::DiscountGroupArticle"
+      "Artikkelrabattgruppe"
+    when "Visma::PriceList"
+      "Prisliste"
+    end
   end
 
   def to_s
-    recipient.Name + " (#{category})"
+    "#{category} #{recipient.id}"
   end
 
   class << self

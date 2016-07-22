@@ -63,6 +63,14 @@ class Visma::Article < ActiveRecord::Base
     0
   end
 
+  def price_source
+    "Artikkelpris"
+  end
+
+  def discount_source
+    nil
+  end
+
   # Price categorization
   def category
     self.class.to_s
@@ -191,6 +199,6 @@ class Visma::Article < ActiveRecord::Base
   end
 
   def to_s
-    self.Name + " (#{self.class})"
+    "#{id} #{self.Name}"
   end
 end
