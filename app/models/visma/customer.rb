@@ -67,7 +67,7 @@ class Visma::Customer < ActiveRecord::Base
   # Return the correct price
   def price_for(artno, at=nil)
     if at.nil?
-      prices_for(artno.to_i).values.first.price
+      prices_for(artno.to_i).first.price
     else
       discounts_for(artno, at).sort_by {|p| p.price }.first.price rescue nil
     end
@@ -75,7 +75,7 @@ class Visma::Customer < ActiveRecord::Base
 
   # Return the correct price, explained
   def explained_price_for(artno)
-    prices_for(artno.to_i).collect {|reason, source| [reason, source.price] }.first
+    prices_for(artno.to_i).collect {|source| [source.to_s, source.price] }.first
   end
 
   # Find all discount agreements for given article number at a given date
