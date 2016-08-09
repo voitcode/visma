@@ -13,5 +13,5 @@ class Visma::CustomerOrder < ActiveRecord::Base
   has_many :customer_order_lines, foreign_key: :OrderNo
   alias :order_lines :customer_order_lines
 
-  enum OrderStatus: { invoiced: 1030, nullified: -1, for_picking: 1015, credit_note: 1000 }
+  enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015}
 end
