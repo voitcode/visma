@@ -14,7 +14,8 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   has_many :customer_order_line_copies, foreign_key: :OrderCopyNo
   alias :order_lines :customer_order_line_copies
 
-  enum OrderStatus: { invoiced: 1030, nullified: -1, for_picking: 1015, credit_note: 1000}
+  enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015}
+  scope :invoiced, -> { where(OrderStatus: [1030, 1000]) }
 
   # The email sent by Global if this order was billed by the system
   def system_generated_invoice_email
