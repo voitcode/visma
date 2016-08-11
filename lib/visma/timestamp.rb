@@ -4,7 +4,7 @@ module Visma
     extend ActiveSupport::Concern
 
     included do
-      before_save :set_timestamp
+      before_save :set_blame
 
       # Scope queries in time ranges
       scope :updated_between, ->(range) {
@@ -30,16 +30,21 @@ module Visma
       end
     end
 
+    def timestamp_attributes_for_update
+      [:LastUpdate]
+    end
     alias_attribute :updated_at, :LastUpdate
 
-    def set_timestamp
-      self.LastUpdate = Time.now.strftime("%Y.%m.%d %H:%M:%S")
-      self.LastUpdatedBy = 1
+    def timestamp_attributes_for_create
+      [:Created]
+    end
+    alias_attribute :created_at, :Created
+
+    # Set who to blame for the latest change when saving
+    def set_blame
+      self.CreatedBy = 1 if new_record?
+      self.LastUpdatedBy = 1 if changed?
     end
 
-    # Timestamp
-    def max_updated_column_timestamp
-      self.LastUpdate
-    end
   end
 end
