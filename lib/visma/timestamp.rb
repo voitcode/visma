@@ -4,6 +4,9 @@ module Visma
     extend ActiveSupport::Concern
 
     included do
+      skip_time_zone_conversion_for_attributes << :LastUpdate
+      skip_time_zone_conversion_for_attributes << :Created
+
       before_save :set_blame
 
       # Scope queries in time ranges
@@ -30,14 +33,7 @@ module Visma
       end
     end
 
-    def timestamp_attributes_for_update
-      [:LastUpdate]
-    end
     alias_attribute :updated_at, :LastUpdate
-
-    def timestamp_attributes_for_create
-      [:Created]
-    end
     alias_attribute :created_at, :Created
 
     # Set who to blame for the latest change when saving
@@ -46,5 +42,17 @@ module Visma
       self.LastUpdatedBy = 1 if changed?
     end
 
+    private
+    def current_time_from_proper_timezone
+      Time.now + Time.now.utc_offset
+    end
+
+    def timestamp_attributes_for_update
+      [:LastUpdate]
+    end
+
+    def timestamp_attributes_for_create
+      [:Created]
+    end
   end
 end
