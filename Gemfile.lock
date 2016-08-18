@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.2.10)
+    visma (0.2.11)
       activerecord-sqlserver-adapter (~> 4.1)
       rails (= 4.1.15)
       tiny_tds (~> 0.7)
@@ -91,4 +91,4 @@ DEPENDENCIES
   visma!
 
 BUNDLED WITH
-   1.11.2
+   1.12.5

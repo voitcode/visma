@@ -42,6 +42,11 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
     invoice_batch.map(&:TotalAmount).sum
   end
 
+  # return sum of TotalGross
+  def invoice_gross
+    invoice_batch.map(&:TotalGross).sum
+  end
+
   # compatibilty method
   def OrderNo
     self.OrderCopyNo
