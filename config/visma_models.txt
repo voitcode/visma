@@ -175,8 +175,8 @@ Employee
 #ExtraSubGroup2
 #ExtraSubGroup3
 #FactPerCurrencySettings
-#FactoringCompany
-#FactoringText
+FactoringCompany
+FactoringText
 #Fifo
 #FileAttachment
 #FileAttachmentLink
