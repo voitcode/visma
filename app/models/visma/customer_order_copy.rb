@@ -17,6 +17,15 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015}
   scope :invoiced, -> { where(OrderStatus: [1030, 1000]) }
 
+  # Form profile: Which papers to use
+  belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo
+  # Print profile: How to send papers
+  belongs_to :print_profile, foreign_key: :PrintProfileNo
+  # EDI profile: How to electronically send order data
+  belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
+  # Customer profile: How to handle the customer financially
+  belongs_to :customer_profile, foreign_key: :CustomerProfileNo
+
   # The email sent by Global if this order was billed by the system
   def system_generated_invoice_email
     Visma::MailArchive.where("Subject LIKE '%?%'", self.InvoiceNo)

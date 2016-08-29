@@ -46,11 +46,18 @@ class Visma::Customer < ActiveRecord::Base
   has_many :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
   has_many :z_usr_ruter, through: :z_usr_ruter_pr_kunde
 
-  # EDI, Form and Print profiles
+  # Form profile: Which papers to use
   belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo
+  # Print profile: How to send papers
   belongs_to :print_profile, foreign_key: :PrintProfileNo
+  # EDI profile: How to electronically send order data
   belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
+  # Customer profile: How to handle the customer financially
   belongs_to :customer_profile, foreign_key: :CustomerProfileNo
+
+  # Customers with activity in sales since given date
+  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
+  scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
 
   # Return the correct price for a given article
   def prices_for(artno)
