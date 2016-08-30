@@ -8,6 +8,13 @@ class Visma::Customer < ActiveRecord::Base
   include Visma::ChangeBy
   enum :InActiveYesNo => [ :active, :inactive ]
 
+  # Duplicating methods to work with best_in_place field for :active
+  def active; active?; end
+  def active=(val)
+    val = val.class == String ? val.downcase == "true" : val
+    self.InActiveYesNo = val ? 0 : 1
+  end
+
   has_many :customer_order, foreign_key: :CustomerNo
   alias :orders :customer_order
   has_many :customer_order_copy, foreign_key: :CustomerNo
