@@ -20,6 +20,17 @@ class Visma::Customer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: :CustomerNo
   alias :processed_orders :customer_order_copy
 
+  # Customers with activity in sales since given date
+  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
+  scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
+
+  has_many :chain_order, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
+  has_many :chain_order_copy, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
+
+  # Customers with activity in chain sales since given date
+  scope :with_chain_sales_since, ->(since_date) { joins(:chain_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
+  scope :with_no_chain_sales_since, ->(since_date) { sales_since = with_chain_sales_since(since_date).pluck(:ChainNo).uniq; where.not(ChainNo: sales_since) }
+
   has_many :transactions, foreign_key: :CustomerNo, class_name: Visma::GLAccountTransaction
   has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
 
@@ -61,10 +72,6 @@ class Visma::Customer < ActiveRecord::Base
   belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
   # Customer profile: How to handle the customer financially
   belongs_to :customer_profile, foreign_key: :CustomerProfileNo
-
-  # Customers with activity in sales since given date
-  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
-  scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
 
   # Return the correct price for a given article
   def prices_for(artno)
