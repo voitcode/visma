@@ -20,6 +20,15 @@ class Visma::Customer < ActiveRecord::Base
   has_many :customer_order_copy, foreign_key: :CustomerNo
   alias :processed_orders :customer_order_copy
 
+  # Customers with factoring enabled
+  scope :with_factoring_enabled, -> {
+    where(CustomerProfileNo: VISMA_CONFIG["factoring_customer_profile_number"]).
+    where(FormProfileCustNo: VISMA_CONFIG["factoring_form_profile_number"]).
+    where(RemittanceProfileNo: VISMA_CONFIG["factoring_remittance_profile_number"]).
+    where("FactCustomerNo = CustomerNo")
+  }
+  scope :with_factoring_disabled, -> { where.not(CustomerNo: with_factoring_enabled) }
+
   # Customers with activity in sales since given date
   scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
   scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
@@ -72,6 +81,46 @@ class Visma::Customer < ActiveRecord::Base
   belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
   # Customer profile: How to handle the customer financially
   belongs_to :customer_profile, foreign_key: :CustomerProfileNo
+
+  # Remittance profile
+  belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
+
+  # Is this Customer enabled with factoring
+  def factoring_enabled
+    [
+      self.CustomerProfileNo == VISMA_CONFIG["factoring_customer_profile_number"],
+      self.FormProfileCustNo == VISMA_CONFIG["factoring_form_profile_number"],
+      self.RemittanceProfileNo == VISMA_CONFIG["factoring_remittance_profile_number"],
+      self.CustomerNo == self.FactCustomerNo.to_i
+    ].all?
+  end
+
+  # Return factoring status
+  def factoring
+    factoring_enabled ? :enabled : :disabled
+  end
+
+  # true/false enable or disable factoring
+  def factoring=(val)
+    return enable_factoring if val
+    disable_factoring
+  end
+
+  # Enable factoring, by setting profiles and factoring customer number
+  def enable_factoring
+    self.CustomerProfileNo = VISMA_CONFIG["factoring_customer_profile_number"]
+    self.FormProfileCustNo = VISMA_CONFIG["factoring_form_profile_number"]
+    self.RemittanceProfileNo = VISMA_CONFIG["factoring_remittance_profile_number"]
+    self.FactCustomerNo = self.CustomerNo.to_s
+  end
+
+  # Disable factoring, by setting profiles to default (1) and removing factoring customer number
+  def disable_factoring
+    self.CustomerProfileNo = 1
+    self.FormProfileCustNo = 1
+    self.RemittanceProfileNo = 1
+    self.FactCustomerNo = nil
+  end
 
   # Return the correct price for a given article
   def prices_for(artno)
@@ -174,7 +223,7 @@ class Visma::Customer < ActiveRecord::Base
   # Exclude some info from json output.
   def to_json(options={})
     options[:except] ||= [:UtilityBits]
-    super(options)
+    as_json(options).merge({factoring_enabled: factoring_enabled})
   end
 
   class << self

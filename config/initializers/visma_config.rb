@@ -4,7 +4,10 @@
 #   option_key => [ explanation, default_value ]
 config = {
   table_name_prefix: ["Visma table prefix", nil],
-  employee_chain_number:  ["The Customer number employees are Chain members of", nil]
+  employee_chain_number:  ["The Customer number employees are Chain members of", nil],
+  factoring_customer_profile_number: ["The CustomerProfileNo used for factoring", nil],
+  factoring_form_profile_number: ["The FormProfileNo used for factoring", nil],
+  factoring_remittance_profile_number: ["The RemittanceProfileNo used for factoring", nil]
 }
 
 begin
@@ -14,6 +17,8 @@ rescue
   raise VismaError, "You must set up the VISMA_CONFIG values in config/visma.yml"
 end
 
-config.each do |key,val|
-  raise VismaError, "Missing option value \"#{key}\" in config/visma.yml" if VISMA_CONFIG[key.to_s].blank?
+missing = config.collect {|key, val| key if VISMA_CONFIG[key.to_s].blank? }.compact
+
+unless missing.empty?
+  raise VismaError, "\nYou need to set a value for options #{missing.join("\n\t")}\n in config/visma.yml"
 end

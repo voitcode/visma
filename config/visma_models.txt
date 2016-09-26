@@ -292,8 +292,8 @@ QuantityDiscountCustomer
 #RACRegistrationKey
 #Reason
 #RecordFile
-#ReminderProfile
-#RemittanceProfile
+ReminderProfile
+RemittanceProfile
 #ReplacementArticles
 #ReportHead
 #ReportLine
