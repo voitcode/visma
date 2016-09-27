@@ -223,7 +223,7 @@ class Visma::Customer < ActiveRecord::Base
   # Exclude some info from json output.
   def to_json(options={})
     options[:except] ||= [:UtilityBits]
-    as_json(options).merge({factoring_enabled: factoring_enabled})
+    as_json(options).merge({"factoring_enabled" => factoring_enabled})
   end
 
   class << self

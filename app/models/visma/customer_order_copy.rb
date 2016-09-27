@@ -17,6 +17,12 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015}
   scope :invoiced, -> { where(OrderStatus: [1030, 1000]) }
 
+  scope :factoring, -> {
+    where(CustomerProfileNo: VISMA_CONFIG["factoring_customer_profile_number"]).
+    where(FormProfileCustNo: VISMA_CONFIG["factoring_form_profile_number"]).
+    where("FactCustomerNo = CustomerNo")
+  }
+
   # Form profile: Which papers to use
   belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo
   # Print profile: How to send papers
