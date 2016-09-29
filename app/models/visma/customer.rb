@@ -15,6 +15,8 @@ class Visma::Customer < ActiveRecord::Base
     self.InActiveYesNo = val ? 0 : 1
   end
 
+  belongs_to :employee, foreign_key: :EmployeeNo
+
   has_many :customer_order, foreign_key: :CustomerNo
   alias :orders :customer_order
   has_many :customer_order_copy, foreign_key: :CustomerNo

@@ -11,6 +11,8 @@ class Visma::CustomerOrderCopy < ActiveRecord::Base
   belongs_to :customer, foreign_key: :CustomerNo
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
+  belongs_to :our_reference, foreign_key: :OurRef, primary_key: :Name, class_name: Visma::Employee
+
   has_many :customer_order_line_copies, foreign_key: :OrderCopyNo
   alias :order_lines :customer_order_line_copies
 

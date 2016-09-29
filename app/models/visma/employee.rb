@@ -9,4 +9,6 @@ class Visma::Employee < ActiveRecord::Base
   include Visma::ChangeBy
 
   belongs_to :logon_user, primary_key: :UserNo, foreign_key: :UserNo
+
+  has_many :customers, foreign_key: :EmployeeNo
 end
