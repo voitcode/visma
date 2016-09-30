@@ -1,4 +1,0 @@
-= Visma
-
-Need to add visma  specific database configuration
-This project rocks and uses MIT-LICENSE.
