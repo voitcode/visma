@@ -1,15 +1,25 @@
-= Visma
+# Visma
 
 This is a Ruby on Rails [Engine](http://guides.rubyonrails.org/engines.html) for integrating with [Visma Global](https://www.visma.no/programvare/okonomi/visma-global/overview/)
 
-= Dependencies
+## Usage
 
-The v0.2 series of this gem depends on rails 4.1 and activerecord-sqlserver-adapter 4.1 series.
+In your Gemfile:
 
-The reason is the sqlserver dependency supporting Microsoft SQL Server 2008.
+    gem 'visma', '~> 0.5', git: "git@git.voit.no:Voit/visma"
+    gem 'tiny_tds'
+    gem 'activerecord-sqlserver-adapter', github: 'rails-sqlserver/activerecord-sqlserver-adapter'
 
-If you want newer SQL Server support (and Ruby on Rails 5), you need a higher version of this gem.
+## Dependencies
 
-= License
+The v0.5 series of this gem depends on rails 5 and activerecord-sqlserver-adapter 5 series.
+
+We are only supporting Microsoft SQL Server 2012 and newer.
+
+If you want SQL Server 2008 support, you need an older version of this gem.
+
+To use the gem, you will have to manually specify which activerecord-sqlserver-adapter to use, until a series 5 version is released at rubygems.org.
+
+# License
 
 See MIT-LICENSE

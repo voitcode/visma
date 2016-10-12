@@ -10,17 +10,17 @@ Gem::Specification.new do |s|
   s.authors     = ["Marvin Wiik","Runar Ingebrigtsen"]
   s.email       = ["marvin@voit.no","runar@voit.no"]
   s.homepage    = "http://voit.no"
-  s.summary     = "Integrate Rails 4.1 with Visma Global, on SQL Server 2008"
-  s.description = "Visma Global ERP integration for Ruby on Rails."
+  s.summary     = "Integrate Rails 5 with Visma Global"
+  s.description = "Visma Global ERP integration for Ruby on Rails. Requires support for SQL Server 2012 and newer."
   s.license     = "MIT"
 
-  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   s.test_files = Dir["test/**/*"]
 
   # This is a Rails engine
-  s.add_dependency "rails", "4.1.16"
+  s.add_dependency "rails", "~> 5.0"
 
-  # Connect to Microsoft SQL Server 2008
-  s.add_dependency "tiny_tds", "~> 0.7"
-  s.add_dependency "activerecord-sqlserver-adapter", "~> 4.1"
+  # Connect to Microsoft SQL Server 2012
+#  s.add_dependency "tiny_tds", "~> 1.0"
+#  s.add_dependency "activerecord-sqlserver-adapter", "~> 4.2"
 end
