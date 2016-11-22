@@ -131,46 +131,46 @@ class Visma::Customer < ActiveRecord::Base
   end
 
   # Find all available prices for a given article number at a given date
-  def all_prices_for(artno, at_date=Date.today)
-    [ Visma::Article.find(artno) ] +
-    discounts_for(artno, at_date)
+  def all_prices_for(artno, at_date = Date.today)
+    disc = discounts_for(artno, at_date)
+    return [Visma::Article.find(artno)] if disc.blank?
+    disc
   end
 
   # Return the correct price
-  def price_for(artno, at=nil)
+  def price_for(artno, at = nil)
     if at.nil?
       prices_for(artno.to_i).first.price
     else
-      discounts_for(artno, at).sort_by {|p| p.price }.first.price rescue nil
+      discounts_for(artno, at).sort_by(&:price).first.price
     end
+  rescue
+    nil
   end
 
   # Return the correct price, explained
   def explained_price_for(artno)
-    prices_for(artno.to_i).collect {|source| [source.to_s, source.price] }.first
+    prices_for(artno.to_i).collect { |p| [p.to_s, p.price] }.first
   end
 
   # Find all discount agreements for given article number at a given date
   # TODO there is more discount agreements available through campaign_price_list
   # - @ringe: I have no data to work with to see how it works
-  def discounts_for(artno, at_date=Date.today)
-    Rails.cache.fetch ["discounts_for", cache_key, artno, at_date] do
-      discount_sources = ["CustomerNo"]
-      discount_sources << "PriceListNo" unless self.PriceListNo.to_i == 0
-      discount_sources << "DiscountGrpCustNo" unless self.DiscountGrpCustNo.to_i == 0
+  def discounts_for(artno, at_date = Date.today)
+    discount_sources = ['CustomerNo']
+    discount_sources << 'PriceListNo' unless self.PriceListNo.to_i.zero?
+    discount_sources << 'DiscountGrpCustNo' unless self.DiscountGrpCustNo.to_i.zero?
 
-      discount_ids = discount_sources.map {|ds| self.send(ds)}
+    discount_ids = discount_sources.map { |ds| send(ds) }
 
-      discounts = Visma::DiscountAgreementCustomer.
-        includes(:customer, :discount_group_customer, :article).
-        where("#{discount_sources.join(" = ? OR ")} = ?", *discount_ids).
-        at(at_date, artno)
+    discounts = Visma::DiscountAgreementCustomer
+                                                .where("#{discount_sources.join(' = ? OR ')} = ?", *discount_ids)
+                                                .at(at_date, artno)
 
-      if self.ChainNo == 0 or self.ChainNo == self.CustomerNo or chain.nil? 
-        discounts
-      else
-        (discounts + chain.discounts_for(artno, at_date)).uniq
-      end
+    if self.ChainNo.zero? || self.ChainNo == self.CustomerNo
+      discounts
+    else
+      (discounts + chain.discounts_for(artno, at_date)).uniq
     end
   end
 
