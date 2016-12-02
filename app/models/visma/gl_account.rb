@@ -1,4 +1,4 @@
-class Visma::GLAccount < ActiveRecord::Base
+class Visma::GLAccount < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "GLAccount"

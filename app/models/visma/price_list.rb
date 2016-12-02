@@ -1,4 +1,4 @@
-class Visma::PriceList < ActiveRecord::Base
+class Visma::PriceList < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "PriceList"

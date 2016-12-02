@@ -1,4 +1,4 @@
-class Visma::CustomerProfile < ActiveRecord::Base
+class Visma::CustomerProfile < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "CustomerProfile"

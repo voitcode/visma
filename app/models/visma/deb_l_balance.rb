@@ -1,4 +1,4 @@
-class Visma::DebLBalance < ActiveRecord::Base
+class Visma::DebLBalance < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "DebLBalance"

@@ -1,4 +1,4 @@
-class Visma::EDITransaction < ActiveRecord::Base
+class Visma::EDITransaction < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "EDITransaction"

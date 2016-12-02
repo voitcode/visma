@@ -1,4 +1,4 @@
-class Visma::FactoringText < ActiveRecord::Base
+class Visma::FactoringText < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "FactoringText"

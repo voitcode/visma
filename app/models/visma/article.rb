@@ -3,7 +3,7 @@
 #
 # This is the products table of Visma Global. Look here to find every product defined.
 #
-class Visma::Article < ActiveRecord::Base
+class Visma::Article < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "Article"

@@ -1,4 +1,4 @@
-class Visma::Contact < ActiveRecord::Base
+class Visma::Contact < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "Contact"

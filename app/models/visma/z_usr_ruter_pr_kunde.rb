@@ -1,5 +1,5 @@
 # Isonor - Isomat custom table
-class Visma::ZUsrRuterPrKunde < ActiveRecord::Base
+class Visma::ZUsrRuterPrKunde < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "ZUsrRuterPrKunde"

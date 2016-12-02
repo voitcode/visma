@@ -1,4 +1,4 @@
-class Visma::CredLHistory < ActiveRecord::Base
+class Visma::CredLHistory < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "CredLHistory"

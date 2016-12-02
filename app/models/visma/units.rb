@@ -1,4 +1,4 @@
-class Visma::Units < ActiveRecord::Base
+class Visma::Units < Visma::Base
   establish_connection(:visma)
   self.table_name = VISMA_CONFIG["table_name_prefix"]
   self.table_name += "Units"
