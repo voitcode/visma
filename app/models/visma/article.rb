@@ -2,7 +2,9 @@
 class Visma::Article < Visma::Base
   self.table_name += 'Article'
   self.primary_key = 'ArticleNo'
-  include Visma::FullTimestamp
+  include Visma::Timestamp
+  include Visma::CreatedScopes
+  include Visma::ChangeBy
 
   # default scope with strange syntax to support joins
   default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }
