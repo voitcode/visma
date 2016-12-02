@@ -7,5 +7,7 @@ class Visma::IntermediateGroup < Visma::Base
   enum InActiveYesNo: [:active, :inactive]
   default_scope { active }
 
-  has_many :article, foreign_key: 'IntermediateGroupNo', primary_key: 'IntermediateGroupNo'
+  has_many :article,
+           foreign_key: 'IntermediateGroupNo',
+           primary_key: 'IntermediateGroupNo'
 end
