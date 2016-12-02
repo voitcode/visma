@@ -1,3 +1,4 @@
+# This model is the contract stating the price agreements
 class Visma::DiscountAgreementCustomer < Visma::Base
   self.table_name += 'DiscountAgreementCustomer'
   self.primary_key = 'UniqueID'
@@ -12,14 +13,21 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
   belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
 
-  scope :active, -> { where('StartDate <= ? AND StopDate >= ?', Date.today, Date.today) }
-  scope :inactive, -> { where.not('StartDate <= ? AND StopDate >= ?', Date.today, Date.today) }
+  scope :active, lambda {
+    where('StartDate <= ? AND StopDate >= ?', Date.today, Date.today)
+  }
+  scope :inactive, lambda {
+    where.not('StartDate <= ? AND StopDate >= ?', Date.today, Date.today)
+  }
 
   # The agreed price deviates from the article price
-  scope :deviant, -> { joins(:article).where('DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)') }
+  scope :deviant, lambda {
+    joins(:article)
+      .where('DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)')
+  }
 
   # Look up all DiscountAgreementCustomer available to given Customer
-  scope :for_customer, ->(customer) {
+  scope :for_customer, lambda { |customer|
     where("CustomerNo = '#{customer.CustomerNo}'
         OR DiscountGrpCustNo = '#{customer.DiscountGrpCustNo}'
         OR PriceListNo = '#{customer.PriceListNo}'")
@@ -31,20 +39,23 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def agreed_price
-    self.AgreedPrice == 0 ? article.price : self.AgreedPrice
+    self.AgreedPrice.zero? ? article.price : self.AgreedPrice
   end
 
-  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
+  # Obviously, the discount can be more than this with three fields:
+  # DiscountI DiscountII DiscountIII
   def discount
     self.DiscountI
   end
 
-  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
+  # Obviously, the discount can be more than this with three fields:
+  # DiscountI DiscountII DiscountIII
   def discount_factor
     (self.DiscountI / 100.0).round(4)
   end
 
-  # Obviously, the discount can be more than this with three fields: DiscountI DiscountII DiscountIII
+  # Obviously, the discount can be more than this with three fields:
+  # DiscountI DiscountII DiscountIII
   def discount_amount
     agreed_price * discount_factor
   end

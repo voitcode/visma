@@ -1,10 +1,10 @@
 class Visma::PriceList < Visma::Base
   self.table_name += 'PriceList'
   self.primary_key = 'PriceListNo'
-
-  include Visma::Timestamp
-  include Visma::ChangeBy
   enum InActiveYesNo: [:active, :inactive]
+  include Visma::Timestamp
+  include Visma::CreatedScopes
+  include Visma::ChangeBy
   default_scope { active }
 
   has_many :customers, foreign_key: 'PriceListNo'
