@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.5.4)
+    visma (0.5.5)
       rails (~> 5.0)
 
 GEM
@@ -60,7 +60,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
-    minitest (5.10.0)
+    minitest (5.10.1)
     nio4r (1.2.1)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
