@@ -1,15 +1,13 @@
 class Visma::UnitType < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "UnitType"
-  self.primary_key = "UnitTypeNo"
+  self.table_name += 'UnitType'
+  self.primary_key = 'UnitTypeNo'
 
   include Visma::Timestamp
   include Visma::ArticleChange
   include Visma::ChangeBy
 
   # Don't query UnitTypes where the sales unit is inactive
-  default_scope { where("UnitInSales != 1") }
+  default_scope { where('UnitInSales != 1') }
 
   belongs_to :article, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :unit_type
   belongs_to :unit, primary_key: :UnitNo, foreign_key: :UnitNo
@@ -43,16 +41,16 @@ class Visma::UnitType < Visma::Base
     self.FactorCalcMethod = 0
     self.Weight = 0.0
     self.ComparableUnitYesNo = 0
-    self.Location = ""
+    self.Location = ''
     self.Name = Visma::Unit.find(self.UnitNo).UnitName
     self.UnitNamePurchase = self.Name
-    return self
+    self
   end
 
   # Disable unit
   def disable!
     self.UnitInSales = 1
-    self.save
+    save
   end
 
   # Return GTIN number
@@ -68,16 +66,16 @@ class Visma::UnitType < Visma::Base
   # Return Unit Status
   def status
     {
-      0 => "Kan brukes",
-      1 => "Ikke i bruk",
-      2 => "Grunnenhet",
-      9 => "Standard"
+      0 => 'Kan brukes',
+      1 => 'Ikke i bruk',
+      2 => 'Grunnenhet',
+      9 => 'Standard'
     }[self.UnitInSales]
   end
 
   # Calculation method
   def calc
-    self.FactorCalcMethod == 0 ? "*" : "/"
+    self.FactorCalcMethod == 0 ? '*' : '/'
   end
 
   # This Unit can be used in order, for sale

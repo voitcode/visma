@@ -1,14 +1,12 @@
 class Visma::CustomerOrderLine < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "CustomerOrderLine"
+  self.table_name += 'CustomerOrderLine'
   self.primary_key = :UniqueID
 
   include Visma::Timestamp
   include Visma::ChangeBy
 
   belongs_to :customer_order, foreign_key: :OrderNo, primary_key: :OrderNo
-  alias :order :customer_order
+  alias order customer_order
   belongs_to :article, foreign_key: :ArticleNo
 
   belongs_to :sub_group, foreign_key: :SubGroupNo
@@ -34,7 +32,7 @@ class Visma::CustomerOrderLine < Visma::Base
   class << self
     # Find order lines for given customer
     def for_customer_no(customer_number)
-      joins(:customer).where(customer: {CustomerNo: customer_number})
+      joins(:customer).where(customer: { CustomerNo: customer_number })
     end
   end
 end

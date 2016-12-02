@@ -1,8 +1,6 @@
 class Visma::CustomerProfile < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "CustomerProfile"
-  self.primary_key = "CustomerProfileNo"
+  self.table_name += 'CustomerProfile'
+  self.primary_key = 'CustomerProfileNo'
 
   include Visma::Timestamp
   include Visma::ChangeBy
@@ -16,6 +14,6 @@ class Visma::CustomerProfile < Visma::Base
   end
 
   def self.options
-    all.map {|p| [p.Name, p.CustomerProfileNo] }
+    all.map { |p| [p.Name, p.CustomerProfileNo] }
   end
 end

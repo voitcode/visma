@@ -4,19 +4,17 @@
 # This is the products table of Visma Global. Look here to find every product defined.
 #
 class Visma::Article < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "Article"
-  self.primary_key = "ArticleNo"
+  self.table_name += 'Article'
+  self.primary_key = 'ArticleNo'
   include Visma::Timestamp
   include Visma::CreatedScopes
   include Visma::ChangeBy
 
   # default scope with strange syntax to support joins
-  default_scope { where("Article.ArticleNo NOT like(?)", "%+%") }
+  default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }
 
   # Enable active? and inactive? methods based on InActiveYesNo being 0 or 1
-  enum :InActiveYesNo => [ :active, :inactive ]
+  enum InActiveYesNo: [:active, :inactive]
 
   has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :article
   alias_attribute :units, :unit_type
@@ -24,28 +22,28 @@ class Visma::Article < Visma::Base
   has_many :article_ean, primary_key: :ArticleNo, foreign_key: :ArticleNo
   alias_attribute :gtins, :article_ean
 
-  belongs_to :main_group, foreign_key: "MainGroupNo", primary_key: "MainGroupNo"
-  belongs_to :intermediate_group, foreign_key: "IntermediateGroupNo", primary_key: "IntermediateGroupNo"
-  belongs_to :sub_group, foreign_key: "SubGroupNo", primary_key: "SubGroupNo"
+  belongs_to :main_group, foreign_key: 'MainGroupNo', primary_key: 'MainGroupNo'
+  belongs_to :intermediate_group, foreign_key: 'IntermediateGroupNo', primary_key: 'IntermediateGroupNo'
+  belongs_to :sub_group, foreign_key: 'SubGroupNo', primary_key: 'SubGroupNo'
 
-  belongs_to :posting_template_article, foreign_key: "PostingTemplateNo", primary_key: "PostingTemplateNo"
+  belongs_to :posting_template_article, foreign_key: 'PostingTemplateNo', primary_key: 'PostingTemplateNo'
 
-  belongs_to :price_markup_group, foreign_key: "PriceMarkUpGroup"
+  belongs_to :price_markup_group, foreign_key: 'PriceMarkUpGroup'
 
   has_one :output_tax_class, through: :posting_template_article
   has_one :input_tax_class, through: :posting_template_article
 
   # Discount
-  belongs_to :discount_group, foreign_key: "DiscountGrpArtNo", class_name: DiscountGroupArticle
-  has_many :discount_agreement_customer, foreign_key: "ArticleNo"
+  belongs_to :discount_group, foreign_key: 'DiscountGrpArtNo', class_name: DiscountGroupArticle
+  has_many :discount_agreement_customer, foreign_key: 'ArticleNo'
 
-  belongs_to :supplier, foreign_key: "MainSupplierNo", primary_key: "SupplierNo"
+  belongs_to :supplier, foreign_key: 'MainSupplierNo', primary_key: 'SupplierNo'
 
   # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   scope :variable_weight, -> { where("UPPER(QuantityPerUnitTextSale) = 'KG'") }
   scope :fixed_weight, -> { where("UPPER(QuantityPerUnitTextSale) != 'KG'") }
 
-  has_many :customer_order_line_copies, foreign_key: "ArticleNo"
+  has_many :customer_order_line_copies, foreign_key: 'ArticleNo'
 
   def price
     self.Price1
@@ -64,7 +62,7 @@ class Visma::Article < Visma::Base
   end
 
   def price_source
-    "Artikkelpris"
+    'Artikkelpris'
   end
 
   def discount_source
@@ -78,7 +76,7 @@ class Visma::Article < Visma::Base
 
   # The Article is a variable weight product if the QuantityPerUnitTextSale is "KG"
   def variable_weight?
-    self.QuantityPerUnitTextSale.to_s.upcase == "KG"
+    self.QuantityPerUnitTextSale.to_s.casecmp('KG').zero?
   end
 
   # The Article is a fixed weight product is it isn't a variable weight one.
@@ -122,10 +120,10 @@ class Visma::Article < Visma::Base
       ean.update_attribute(:EANNo, value)
     end
 
-    self.reload
+    reload
 
     errors[:article_ean] = ean.errors unless ean.errors.blank?
-    return ean.try(:EANNo)
+    ean.try(:EANNo)
   end
 
   def dpak_ean
@@ -149,9 +147,9 @@ class Visma::Article < Visma::Base
       ean.update_attribute(:EANNo, value)
     end
 
-    self.reload
+    reload
     errors[:article_ean] = ean.errors unless ean.errors.blank?
-    return ean.try(:EANNo)
+    ean.try(:EANNo)
   end
 
   def tpak_ean
@@ -175,23 +173,17 @@ class Visma::Article < Visma::Base
       ean.update_attribute(:EANNo, value)
     end
 
-    self.reload
+    reload
     errors[:article_ean] = ean.errors unless ean.errors.blank?
-    return ean.try(:EANNo)
+    ean.try(:EANNo)
   end
 
   def storage_type
-    if self.StorageTypeNo == 1
-      return "Kjøl"
-    end
+    return 'Kjøl' if self.StorageTypeNo == 1
 
-    if self.StorageTypeNo == 2
-      return "Frys"
-    end
+    return 'Frys' if self.StorageTypeNo == 2
 
-    if self.StorageTypeNo == 3
-      return "Tørrvare"
-    end
+    return 'Tørrvare' if self.StorageTypeNo == 3
   end
 
   def sort_me

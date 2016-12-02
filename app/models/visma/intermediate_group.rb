@@ -1,9 +1,6 @@
 class Visma::IntermediateGroup < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "IntermediateGroup"
-  self.primary_key = "IntermediateGroupNo"
-  enum :InActiveYesNo => [ :active, :inactive ]
+  self.table_name += 'IntermediateGroup'
+  enum InActiveYesNo: [:active, :inactive]
 
-  has_many :article, foreign_key: "IntermediateGroupNo", primary_key: "IntermediateGroupNo"
+  has_many :article, foreign_key: 'IntermediateGroupNo', primary_key: 'IntermediateGroupNo'
 end

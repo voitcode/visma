@@ -1,8 +1,6 @@
 class Visma::CustomerOrder < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "CustomerOrder"
-  self.primary_key = "OrderNo"
+  self.table_name += 'CustomerOrder'
+  self.primary_key = 'OrderNo'
 
   include Visma::Timestamp
   include Visma::ChangeBy
@@ -11,7 +9,7 @@ class Visma::CustomerOrder < Visma::Base
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
   has_many :customer_order_lines, foreign_key: :OrderNo
-  alias :order_lines :customer_order_lines
+  alias order_lines customer_order_lines
 
-  enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015}
+  enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015 }
 end

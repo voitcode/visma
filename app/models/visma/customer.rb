@@ -1,49 +1,50 @@
 class Visma::Customer < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "Customer"
-  self.primary_key = "CustomerNo"
+  self.table_name += 'Customer'
+  self.primary_key = 'CustomerNo'
 
   include Visma::Timestamp
   include Visma::ChangeBy
-  enum :InActiveYesNo => [ :active, :inactive ]
+  enum InActiveYesNo: [:active, :inactive]
 
   # Duplicating methods to work with best_in_place field for :active
-  def active; active?; end
+  def active
+    active?
+  end
+
   def active=(val)
-    val = val.class == String ? val.downcase == "true" : val
+    val = val.class == String ? val.casecmp('true').zero? : val
     self.InActiveYesNo = val ? 0 : 1
   end
 
   belongs_to :employee, foreign_key: :EmployeeNo
 
   has_many :customer_order, foreign_key: :CustomerNo
-  alias :orders :customer_order
+  alias orders customer_order
   has_many :customer_order_copy, foreign_key: :CustomerNo
-  alias :processed_orders :customer_order_copy
+  alias processed_orders customer_order_copy
 
   # Customers with factoring enabled
-  scope :with_factoring_enabled, -> {
-    where(CustomerProfileNo: VISMA_CONFIG["factoring_customer_profile_number"]).
-    where(FormProfileCustNo: VISMA_CONFIG["factoring_form_profile_number"]).
-    where(RemittanceProfileNo: VISMA_CONFIG["factoring_remittance_profile_number"]).
-    where("FactCustomerNo = CustomerNo")
+  scope :with_factoring_enabled, lambda {
+    where(CustomerProfileNo: VISMA_CONFIG['factoring_customer_profile_number'])
+      .where(FormProfileCustNo: VISMA_CONFIG['factoring_form_profile_number'])
+      .where(RemittanceProfileNo: VISMA_CONFIG['factoring_remittance_profile_number'])
+      .where('FactCustomerNo = CustomerNo')
   }
   scope :with_factoring_disabled, -> { where.not(CustomerNo: with_factoring_enabled) }
 
   # Customers with activity in sales since given date
-  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
+  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where('CustomerOrderCopy.Created > ?', since_date).uniq }
   scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
 
   has_many :chain_order, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
   has_many :chain_order_copy, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
 
   # Customers with activity in chain sales since given date
-  scope :with_chain_sales_since, ->(since_date) { joins(:chain_order_copy).where("CustomerOrderCopy.Created > ?", since_date ).uniq }
+  scope :with_chain_sales_since, ->(since_date) { joins(:chain_order_copy).where('CustomerOrderCopy.Created > ?', since_date).uniq }
   scope :with_no_chain_sales_since, ->(since_date) { sales_since = with_chain_sales_since(since_date).pluck(:ChainNo).uniq; where.not(ChainNo: sales_since) }
 
   has_many :transactions, foreign_key: :CustomerNo, class_name: Visma::GLAccountTransaction
-  has_many :edi_transactions, foreign_key: "PartyID", class_name: Visma::EDITransaction
+  has_many :edi_transactions, foreign_key: 'PartyID', class_name: Visma::EDITransaction
 
   has_one :primary_delivery_address, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo, class_name: Visma::CustomerDeliveryAddresses
   accepts_nested_attributes_for :primary_delivery_address
@@ -59,20 +60,20 @@ class Visma::Customer < Visma::Base
   has_many :chain_members, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
 
   # Price list, discount group and such
-  belongs_to :price_list, foreign_key: "PriceListNo"
-  belongs_to :discount_group_customer, foreign_key: "DiscountGrpCustNo"
-  alias :discount_group :discount_group_customer
-  has_many :discount_agreement_customer, foreign_key: "CustomerNo"
-  alias :discount_agreements :discount_agreement_customer
+  belongs_to :price_list, foreign_key: 'PriceListNo'
+  belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
+  alias discount_group discount_group_customer
+  has_many :discount_agreement_customer, foreign_key: 'CustomerNo'
+  alias discount_agreements discount_agreement_customer
 
   # TODO: figure out campaigns in Visma Global, this is wrong
-  #has_many :campaign_price_list, foreign_key: "CustomerNo"
-#  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
+  # has_many :campaign_price_list, foreign_key: "CustomerNo"
+  #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
 
-  has_one :customer_sum, foreign_key: "CustomerNo"
+  has_one :customer_sum, foreign_key: 'CustomerNo'
 
   # Isonor - Isomat custom table relationships
-  has_many :z_usr_ruter_pr_kunde, foreign_key: "ZUsrCustomerNo"
+  has_many :z_usr_ruter_pr_kunde, foreign_key: 'ZUsrCustomerNo'
   has_many :z_usr_ruter, through: :z_usr_ruter_pr_kunde
 
   # Form profile: Which papers to use
@@ -90,9 +91,9 @@ class Visma::Customer < Visma::Base
   # Is this Customer enabled with factoring
   def factoring_enabled
     [
-      self.CustomerProfileNo == VISMA_CONFIG["factoring_customer_profile_number"],
-      self.FormProfileCustNo == VISMA_CONFIG["factoring_form_profile_number"],
-      self.RemittanceProfileNo == VISMA_CONFIG["factoring_remittance_profile_number"],
+      self.CustomerProfileNo == VISMA_CONFIG['factoring_customer_profile_number'],
+      self.FormProfileCustNo == VISMA_CONFIG['factoring_form_profile_number'],
+      self.RemittanceProfileNo == VISMA_CONFIG['factoring_remittance_profile_number'],
       self.CustomerNo == self.FactCustomerNo.to_i
     ].all?
   end
@@ -110,9 +111,9 @@ class Visma::Customer < Visma::Base
 
   # Enable factoring, by setting profiles and factoring customer number
   def enable_factoring
-    self.CustomerProfileNo = VISMA_CONFIG["factoring_customer_profile_number"]
-    self.FormProfileCustNo = VISMA_CONFIG["factoring_form_profile_number"]
-    self.RemittanceProfileNo = VISMA_CONFIG["factoring_remittance_profile_number"]
+    self.CustomerProfileNo = VISMA_CONFIG['factoring_customer_profile_number']
+    self.FormProfileCustNo = VISMA_CONFIG['factoring_form_profile_number']
+    self.RemittanceProfileNo = VISMA_CONFIG['factoring_remittance_profile_number']
     self.FactCustomerNo = self.CustomerNo.to_s
   end
 
@@ -126,8 +127,8 @@ class Visma::Customer < Visma::Base
 
   # Return the correct price for a given article
   def prices_for(artno)
-    all_prices_for(artno).
-       sort_by {|p| p.price }
+    all_prices_for(artno)
+      .sort_by(&:price)
   end
 
   # Find all available prices for a given article number at a given date
@@ -164,8 +165,8 @@ class Visma::Customer < Visma::Base
     discount_ids = discount_sources.map { |ds| send(ds) }
 
     discounts = Visma::DiscountAgreementCustomer
-                                                .where("#{discount_sources.join(' = ? OR ')} = ?", *discount_ids)
-                                                .at(at_date, artno)
+                .where("#{discount_sources.join(' = ? OR ')} = ?", *discount_ids)
+                .at(at_date, artno)
 
     if self.ChainNo.zero? || self.ChainNo == self.CustomerNo
       discounts
@@ -176,10 +177,10 @@ class Visma::Customer < Visma::Base
 
   # Return the discount factor for the price
   def discount_factor(artno)
-    src1,src2 = explained_price_for(artno).first.split(":")
-    return 0 if src1 == "article"
+    src1, src2 = explained_price_for(artno).first.split(':')
+    return 0 if src1 == 'article'
 
-    src = src2.nil? ? self.send(src1) : self.send(src1).send(src2)
+    src = src2.nil? ? send(src1) : send(src1).send(src2)
     src.price_for(artno).discount_factor
   end
 
@@ -188,33 +189,37 @@ class Visma::Customer < Visma::Base
   def current_invoice_address
     return invoice_address if chain.blank?
     return chain.invoice_address if self.TypeOfChain == 1
-    return invoice_address
+    invoice_address
   end
 
   def address
-    [self.Address1, self.Address2, "#{self.PostCode} #{self.PostOffice}"].join(", ")
+    [self.Address1, self.Address2, "#{self.PostCode} #{self.PostOffice}"].join(', ')
   end
 
   def active_list
-    where ["LastUpdate > ?", Date.new(Time.now.year - 1)]
+    where ['LastUpdate > ?', Date.new(Time.now.year - 1)]
   end
 
   def cleanphone(c)
-    number,cell = c.Telephone.split("/")
+    number, cell = c.Telephone.split('/')
     c.Telephone = phoneme(number)
-    cphn = phoneme(cell) rescue nil
+    cphn = begin
+             phoneme(cell)
+           rescue
+             nil
+           end
     if c.ZUsrMobilNr.blank?
       c.ZUsrMobilNr = cphn
     else
       c.Password = cphn
     end
 
-    return c
+    c
   end
 
   # Clean up phone number string
   def phoneme(number)
-    number.gsub(/-+|\s+/,"").gsub(/(\d{2,2})(\d{2,2})(\d{2,2})(\d{2,2})/, "\\1 \\2 \\3 \\4")
+    number.gsub(/-+|\s+/, '').gsub(/(\d{2,2})(\d{2,2})(\d{2,2})(\d{2,2})/, '\\1 \\2 \\3 \\4')
   end
 
   # When was the last invoice sent?
@@ -223,9 +228,9 @@ class Visma::Customer < Visma::Base
   end
 
   # Exclude some info from json output.
-  def to_json(options={})
+  def to_json(options = {})
     options[:except] ||= [:UtilityBits]
-    as_json(options).merge({"factoring_enabled" => factoring_enabled})
+    as_json(options).merge('factoring_enabled' => factoring_enabled)
   end
 
   class << self
@@ -239,7 +244,7 @@ class Visma::Customer < Visma::Base
     end
 
     # Exclude some info from json output.
-    def to_json(options={})
+    def to_json(options = {})
       options[:except] ||= [:UtilityBits]
       super(options)
     end

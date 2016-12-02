@@ -1,24 +1,22 @@
 class Visma::DiscountAgreementCustomer < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "DiscountAgreementCustomer"
-  self.primary_key = "UniqueID"
+  self.table_name += 'DiscountAgreementCustomer'
+  self.primary_key = 'UniqueID'
 
   include Visma::Timestamp
   include Visma::ChangeBy
 
-  belongs_to :price_list, foreign_key: "PriceListNo"
-  belongs_to :article, foreign_key: "ArticleNo"
-  belongs_to :customer, foreign_key: "CustomerNo"
+  belongs_to :price_list, foreign_key: 'PriceListNo'
+  belongs_to :article, foreign_key: 'ArticleNo'
+  belongs_to :customer, foreign_key: 'CustomerNo'
 
-  belongs_to :discount_group_article, foreign_key: "DiscountGrpArtNo"
-  belongs_to :discount_group_customer, foreign_key: "DiscountGrpCustNo"
+  belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
+  belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
 
-  scope :active, -> { where("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
-  scope :inactive, -> { where.not("StartDate <= ? AND StopDate >= ?", Date.today, Date.today) }
+  scope :active, -> { where('StartDate <= ? AND StopDate >= ?', Date.today, Date.today) }
+  scope :inactive, -> { where.not('StartDate <= ? AND StopDate >= ?', Date.today, Date.today) }
 
   # The agreed price deviates from the article price
-  scope :deviant, -> { joins(:article).where("DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)") }
+  scope :deviant, -> { joins(:article).where('DiscountAgreementCustomer.AgreedPrice NOT IN (Article.Price1, 0)') }
 
   # Look up all DiscountAgreementCustomer available to given Customer
   scope :for_customer, ->(customer) {
@@ -56,7 +54,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def price_source
-    self.AgreedPrice == 0 ? "Artikkelpris" : to_s
+    self.AgreedPrice == 0 ? 'Artikkelpris' : to_s
   end
 
   def discount_source
@@ -74,14 +72,14 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   # What kind of agreement is this?
   def category
     case recipient.class.name
-    when "Visma::Customer"
-      "Kunderabatt"
-    when "Visma::DiscountGroupCustomer"
-      "Kunderabattgruppe"
-    when "Visma::DiscountGroupArticle"
-      "Artikkelrabattgruppe"
-    when "Visma::PriceList"
-      "Prisliste"
+    when 'Visma::Customer'
+      'Kunderabatt'
+    when 'Visma::DiscountGroupCustomer'
+      'Kunderabattgruppe'
+    when 'Visma::DiscountGroupArticle'
+      'Artikkelrabattgruppe'
+    when 'Visma::PriceList'
+      'Prisliste'
     end
   end
 
@@ -91,18 +89,20 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   class << self
     def uniq_ids(field)
-      active.where("#{field} != 0").select(field).uniq.map {|a| a[field] }
+      active.where("#{field} != 0").select(field).uniq.map { |a| a[field] }
     end
 
     # Find discounts for a given ArticleNo
     def for(artno)
-      where(ArticleNo: artno.to_s).first rescue nil
+      where(ArticleNo: artno.to_s).first
+    rescue
+      nil
     end
     alias price_for for
 
     # Find discounts for a given date
     def at(date, artno)
-      where(ArticleNo: "#{artno}").where("StartDate <= ? AND StopDate >= ?", date.to_date, date.to_date)
+      where(ArticleNo: artno.to_s).where('StartDate <= ? AND StopDate >= ?', date.to_date, date.to_date)
     end
   end
 end

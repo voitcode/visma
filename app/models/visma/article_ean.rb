@@ -1,8 +1,6 @@
 class Visma::ArticleEan < Visma::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG["table_name_prefix"]
-  self.table_name += "ArticleEAN"
-  self.primary_key = "UnitTypeNo"
+  self.table_name += 'ArticleEAN'
+  self.primary_key = 'UnitTypeNo'
 
   include Visma::ArticleChange
 
@@ -18,7 +16,7 @@ class Visma::ArticleEan < Visma::Base
     set_sequence
     self.SmallestSalesUnitYesNo = 0
     self.EANGeneratedYesNo = 0
-    return self
+    self
   end
 
   # Find other ArticleEan on the same Article
@@ -28,13 +26,17 @@ class Visma::ArticleEan < Visma::Base
 
   # Define the sequence numbering for all siblings
   def sequence
-    siblings.map(&:SeqNo).collect {|n| n.to_s.sub(/0+$/,'').to_i }.sort
+    siblings.map(&:SeqNo).collect { |n| n.to_s.sub(/0+$/, '').to_i }.sort
   end
 
   # Set the sequence number to the next in range
   def set_sequence
-    seq = ( sequence.last rescue 1000 ) + 1
-    self.SeqNo = ("%08d" % seq.to_s.reverse).reverse.to_i
+    seq = (begin
+              sequence.last
+            rescue
+              1000
+            end) + 1
+    self.SeqNo = ('%08d' % seq.to_s.reverse).reverse.to_i
   end
 
   # Return the GTIN number
