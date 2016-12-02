@@ -6,11 +6,11 @@ class Visma::Article < Visma::Base
   include Visma::CreatedScopes
   include Visma::ChangeBy
 
-  # default scope with strange syntax to support joins
-  default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }
-
   # Enable active? and inactive? methods based on InActiveYesNo being 0 or 1
   enum InActiveYesNo: [:active, :inactive]
+
+  # default scope with strange syntax to support joins
+  default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }
 
   has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :article
   alias_attribute :units, :unit_type
