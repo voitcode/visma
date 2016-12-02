@@ -1,14 +1,8 @@
-#
-# = Article
-#
-# This is the products table of Visma Global. Look here to find every product defined.
-#
+# This is the products table of Visma Global.
 class Visma::Article < Visma::Base
   self.table_name += 'Article'
   self.primary_key = 'ArticleNo'
-  include Visma::Timestamp
-  include Visma::CreatedScopes
-  include Visma::ChangeBy
+  include Visma::FullTimestamp
 
   # default scope with strange syntax to support joins
   default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }

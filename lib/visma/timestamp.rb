@@ -10,10 +10,10 @@ module Visma
       before_save :set_blame
 
       # Scope queries in time ranges
-      scope :updated_between, ->(range) {
-        first = range.first.strftime("%Y-%m-%d %H:%M:%S")
-        last  =  range.last.strftime("%Y-%m-%d %H:%M:%S")
-        where("LastUpdate BETWEEN ? AND ?", first, last)
+      scope :updated_between, lambda { |range|
+        first = range.first.strftime('%Y-%m-%d %H:%M:%S')
+        last = range.last.strftime('%Y-%m-%d %H:%M:%S')
+        where('LastUpdate BETWEEN ? AND ?', first, last)
       }
       scope :updated_today,           -> { updated_between(Time.now.beginning_of_day..Time.now) }
       scope :updated_yesterday,       -> { updated_between(1.day.ago.beginning_of_day..1.day.ago.end_of_day) }
@@ -43,6 +43,7 @@ module Visma
     end
 
     private
+
     def current_time_from_proper_timezone
       Time.now + Time.now.utc_offset
     end

@@ -1,9 +1,9 @@
+# Visma Global customers table
 class Visma::Customer < Visma::Base
   self.table_name += 'Customer'
   self.primary_key = 'CustomerNo'
+  include Visma::FullTimestamp
 
-  include Visma::Timestamp
-  include Visma::ChangeBy
   enum InActiveYesNo: [:active, :inactive]
 
   # Duplicating methods to work with best_in_place field for :active

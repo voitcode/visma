@@ -8,10 +8,9 @@ module Visma
     end
 
     def touch_article
-      if a = self.article
+      if a = article
         a.update_attribute(:LastUpdatedBy, 1)
       end
     end
   end
 end
-
