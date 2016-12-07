@@ -45,7 +45,7 @@ module Visma
     private
 
     def current_time_from_proper_timezone
-      Time.now + Time.now.utc_offset
+      (Time.now + Time.now.utc_offset).utc
     end
 
     def timestamp_attributes_for_update
