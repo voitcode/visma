@@ -90,6 +90,10 @@ class Visma::Customer < Visma::Base
   # Remittance profile
   belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
 
+  validates :CustomerNo, :Name, presence: true
+
+  after_initialize :set_customer_number
+
   # Is this Customer enabled with factoring
   def factoring_enabled
     [
@@ -250,5 +254,20 @@ class Visma::Customer < Visma::Base
       options[:except] ||= [:UtilityBits]
       super(options)
     end
+
+    # Return the first unused CustomerNo higher than 10000
+    def first_unused_customer_number
+      numbers = 10_000..last.CustomerNo
+      existing = pluck(:CustomerNo).sort
+      new_number = numbers.detect { |n| !existing.include?(n) }
+      new_number || existing.last + 1
+    end
+  end
+
+  private
+
+  # Set a new CustomerNo
+  def set_customer_number
+    self.CustomerNo ||= self.class.first_unused_customer_number
   end
 end
