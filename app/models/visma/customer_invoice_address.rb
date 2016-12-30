@@ -1,6 +1,9 @@
 class Visma::CustomerInvoiceAddress < Visma::Base
   self.table_name += 'CustomerInvoiceAdresses'
   self.primary_key = 'InvoiceAdressNo'
+  include Visma::Timestamp
+  include Visma::CreatedScopes
+  include Visma::ChangeBy
 
   # Norwegian formatting
   def to_s

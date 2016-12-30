@@ -1,6 +1,9 @@
 class Visma::CustomerDeliveryAddress < Visma::Base
   self.table_name += 'CustomerDeliveryAddresses'
   self.primary_key = :DeliveryAddressNo
+  include Visma::Timestamp
+  include Visma::CreatedScopes
+  include Visma::ChangeBy
 
   # Norwegian formatting
   def to_s
