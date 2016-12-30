@@ -1,6 +1,6 @@
-class Visma::CustomerInvoiceAdresses < Visma::Base
-  self.table_name += 'CustomerInvoiceAdresses'
-  self.primary_key = 'InvoiceAdressNo'
+class Visma::CustomerDeliveryAddress < Visma::Base
+  self.table_name += 'CustomerDeliveryAddresses'
+  self.primary_key = :DeliveryAddressNo
 
   # Norwegian formatting
   def to_s
@@ -13,26 +13,26 @@ class Visma::CustomerInvoiceAdresses < Visma::Base
 
   # Common names for different address models
   def name
-    self.InvoiceAdressName
+    self.DeliveryName
   end
 
   def line1
-    self.InvoiceAdress1
+    self.DeliveryAddress1
   end
 
   def line2
-    self.InvoiceAdress2
+    self.DeliveryAddress2
   end
 
   def line3
-    self.InvoiceAdress3
+    self.DeliveryAddress3
   end
 
   def zip
-    self.InvoiceAdressPostCode
+    self.DeliveryPostCode
   end
 
   def city
-    self.InvoiceAdressPostoffice
+    self.DeliveryPostOffice
   end
 end
