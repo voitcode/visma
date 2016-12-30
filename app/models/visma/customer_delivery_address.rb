@@ -8,6 +8,19 @@ class Visma::CustomerDeliveryAddress < Visma::Base
   belongs_to :customer, foreign_key: :CustomerNo
   scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
 
+  # Is this address the primary delivery address for the customer?
+  def primary
+    customer.DeliveryAddressNo == id
+  end
+
+  # Change the Customer's primary delivery address to this one
+  # Accepts any truthy value, does nothing on negative
+  def primary=(bool)
+    return unless bool
+    customer.DeliveryAddressNo = id
+    customer.save
+  end
+
   # Norwegian formatting
   def to_s
     lines = [

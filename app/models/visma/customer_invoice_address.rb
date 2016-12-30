@@ -8,6 +8,19 @@ class Visma::CustomerInvoiceAddress < Visma::Base
   belongs_to :customer, foreign_key: :InvoiceAdressCustomerNo
   scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
 
+  # Is this address the primary invoice address for the customer?
+  def primary
+    customer.InvoiceAdressNo == id
+  end
+
+  # Change the Customer's primary invoice address to this one
+  # Accepts any truthy value, does nothing on negative
+  def primary=(bool)
+    return unless bool
+    customer.InvoiceAdressNo = id
+    customer.save
+  end
+
   # Norwegian formatting
   def to_s
     lines = [
