@@ -1,4 +1,4 @@
-class Visma::CustomerInvoiceAdress < Visma::Base
+class Visma::CustomerInvoiceAddress < Visma::Base
   self.table_name += 'CustomerInvoiceAdresses'
   self.primary_key = 'InvoiceAdressNo'
 
