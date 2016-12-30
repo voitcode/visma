@@ -5,6 +5,9 @@ class Visma::CustomerInvoiceAddress < Visma::Base
   include Visma::CreatedScopes
   include Visma::ChangeBy
 
+  belongs_to :customer, foreign_key: :InvoiceAdressCustomerNo
+  scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
+
   # Norwegian formatting
   def to_s
     lines = [
