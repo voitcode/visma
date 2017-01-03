@@ -14,10 +14,14 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
 
   scope :active, lambda {
-    where('StartDate <= ? AND StopDate >= ?', Date.today, Date.today)
+    where('StartDate <= ? AND StopDate >= ?',
+          Date.today.strftime('%Y-%m-%d %H:%M:%S'),
+          Date.today.strftime('%Y-%m-%d %H:%M:%S'))
   }
   scope :inactive, lambda {
-    where.not('StartDate <= ? AND StopDate >= ?', Date.today, Date.today)
+    where.not('StartDate <= ? AND StopDate >= ?',
+              Date.today.strftime('%Y-%m-%d %H:%M:%S'),
+              Date.today.strftime('%Y-%m-%d %H:%M:%S'))
   }
 
   # The agreed price deviates from the article price
