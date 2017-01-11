@@ -257,8 +257,8 @@ class Visma::Customer < Visma::Base
 
     # Return the first unused CustomerNo higher than 10000
     def first_unused_customer_number
-      numbers = 10_000..last.CustomerNo
       existing = pluck(:CustomerNo).sort
+      numbers = 10_000..existing.last
       new_number = numbers.detect { |n| !existing.include?(n) }
       new_number || existing.last + 1
     end
@@ -268,6 +268,6 @@ class Visma::Customer < Visma::Base
 
   # Set a new CustomerNo
   def set_customer_number
-    self.CustomerNo ||= self.class.first_unused_customer_number
+    self.CustomerNo ||= Visma::Customer.first_unused_customer_number
   end
 end
