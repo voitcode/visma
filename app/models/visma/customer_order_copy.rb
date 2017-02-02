@@ -100,7 +100,7 @@ module Visma
       where(ChainNo: VISMA_CONFIG['employee_chain_number'])
         .where(TypeOfChain: 1)
         .where(InvoiceDate: DateTime.new(2014)..DateTime.now)
-        .where('TotalGross > 0')
+        .where('TotalGross != 0')
     end
 
     # All employee orders, since PrintBatchNo
