@@ -302,35 +302,46 @@ class Visma::Customer < Visma::Base
   # Default values for a new record
   def self.defaults
     zeroes = %w(
-      Balance WareHouseNo FixedAddnDedNo TermsOfDeliveryNo
-      DeliveryMethodsNo BuContactNo BusinessNo ChainNo EmployeeNo CustomerGrpNo
-      DistrictNo ContactNoInvoice LastMovementDate GrossInvoicingYesNo
-      DiscountGrpCustNo LockedYesNo OurSupplNo CustomerTypeNo InActiveYesNo
-      ContactNoDelivery AccessLevel ChainLeaderYesNo TypeOfChain ProductNo
-      ProjectNo DepNo SupplierNo RoundingCode PriceListNo ExtraCostUnitIVNo
-      ExtraCostUnitIIINo ExtraCostUnitIINo ExtraCostUnitINo
-      CustomerBonusProfileNo LocalGovernmentNo ChartererCompanyNo AgentNo
-      CommissionProfileNo LastSubscriptionInvoiceDate SubscriptionProfileNo
-      NoOfSubscription AgentYesNo EbusinessType ShipmentTypeNo
-      AcceptReplacementArticleYesNo NotBreakageYesNo AverageCreditPeriod
-      PaymentPattern UpperAmountAltPriceList AltPriceListYesNo AltPriceListNo
-      MergeToCustomerNo ContactNoListOfContents ContactNoReminder
-      AgreementGiroType EdiProfileNo EinvoiceStatus AgreementOrderCusGrpNo
-      ChainPriceTypeHasPriorityYesNo ZpiderImportProfileNo EdiTestYesNo
-      EDITestMode CreditControlLastActionTime ElectronicInvoiceActive
+      Balance WareHouseNo FixedAddnDedNo TermsOfDeliveryNo DeliveryMethodsNo
+      BuContactNo BusinessNo ChainNo EmployeeNo CustomerGrpNo DistrictNo
+      ContactNoInvoice GrossInvoicingYesNo DiscountGrpCustNo LockedYesNo
+      OurSupplNo CustomerTypeNo InActiveYesNo ContactNoDelivery AccessLevel
+      ChainLeaderYesNo TypeOfChain ProductNo ProjectNo DepNo SupplierNo
+      RoundingCode PriceListNo ExtraCostUnitIVNo ExtraCostUnitIIINo
+      ExtraCostUnitIINo ExtraCostUnitINo CustomerBonusProfileNo
+      LocalGovernmentNo ChartererCompanyNo AgentNo CommissionProfileNo
+      SubscriptionProfileNo NoOfSubscription AgentYesNo EbusinessType
+      ShipmentTypeNo AcceptReplacementArticleYesNo NotBreakageYesNo
+      AverageCreditPeriod PaymentPattern UpperAmountAltPriceList
+      AltPriceListYesNo AltPriceListNo MergeToCustomerNo
+      ContactNoListOfContents ContactNoReminder AgreementGiroType EdiProfileNo
+      EinvoiceStatus AgreementOrderCusGrpNo ChainPriceTypeHasPriorityYesNo
+      ZpiderImportProfileNo EdiTestYesNo EDITestMode ElectronicInvoiceActive
       ElectronicInvoiceByMailYesNo CustProfilesOverrideChainProfiles
-      ZUsrEDIProfile SwiftCodeNo ContactsUpdatedInBizWeb DateUpdatedContactData
-      DateUpdatedFinancialData FinancialDataUpdatedInBizWeb
-      MaindataUpdatedInBizWeb LastUpdatedInBizWeb LastupdatedFromBizWeb
-      DateLastFinancialStatement AnnualSales Result NoOfEmployees
-      CreditBlockAllowOfferAndNewOrders ContactNoConfirmOrder
+      ZUsrEDIProfile SwiftCodeNo ContactsUpdatedInBizWeb
+      FinancialDataUpdatedInBizWeb MaindataUpdatedInBizWeb AnnualSales Result
+      NoOfEmployees CreditBlockAllowOfferAndNewOrders ContactNoConfirmOrder
       ContactNoPickingList MDM_Deleted MDM_Version MDM_SyncVersion ZUsrVisPaaWeb
     )
 
-    zeroes.each_with_object({}) do |name, attributes|
+    dates = %w(
+      LastMovementDate RegistrationDate LastSubscriptionInvoiceDate
+      CreditControlLastActionTime DateUpdatedContactData
+      DateUpdatedFinancialData LastUpdatedInBizWeb LastupdatedFromBizWeb
+      DateLastFinancialStatement
+    )
+
+    zeroed = zeroes.each_with_object({}) do |name, attributes|
       attributes[name] = 0
       attributes
-    end.merge(
+    end
+
+    dated = dates.each_with_object({}) do |name, atts|
+      atts[name] = Time.at(0).utc
+      atts
+    end.merge(zeroed)
+
+    dated.merge(
       FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 1,
       PriceCode: 1, CurrencyNo: 578, CreditLimit: 99_999_999.99,
       GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
