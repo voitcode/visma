@@ -7,6 +7,7 @@ require 'visma/timestamp'
 require 'visma/static_timestamp'
 require 'visma/article_change'
 require 'visma/gtin_validator'
+require 'visma/primary_key'
 
 # This is the Visma Global ERP integration module
 module Visma
