@@ -344,11 +344,12 @@ class Visma::Customer < Visma::Base
 
   # Set default values for known fields
   def set_default_values
-    attributes.merge!(Visma::Customer.defaults) do |_key, existing, default|
-      existing.blank? ? default : existing
-    end
-
     self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
+
+    att = attributes.merge(Visma::Customer.defaults) do |_key, existing, default|
+      existing.blank? ? default : existing
+    end
+    self.attributes = att
   end
 end
