@@ -92,7 +92,7 @@ class Visma::Customer < Visma::Base
 
   validates :CustomerNo, :Name, presence: true
 
-  after_initialize :set_customer_number
+  after_initialize :set_default_values
 
   # Is this Customer enabled with factoring
   def factoring_enabled
@@ -264,10 +264,55 @@ class Visma::Customer < Visma::Base
     end
   end
 
+  # Default values for a new record
+  def self.defaults
+    zeroes = %w(
+      Balance WareHouseNo FixedAddnDedNo TermsOfDeliveryNo
+      DeliveryMethodsNo BuContactNo BusinessNo ChainNo EmployeeNo CustomerGrpNo
+      DistrictNo ContactNoInvoice LastMovementDate GrossInvoicingYesNo
+      DiscountGrpCustNo LockedYesNo OurSupplNo CustomerTypeNo InActiveYesNo
+      ContactNoDelivery AccessLevel ChainLeaderYesNo TypeOfChain ProductNo
+      ProjectNo DepNo SupplierNo RoundingCode PriceListNo ExtraCostUnitIVNo
+      ExtraCostUnitIIINo ExtraCostUnitIINo ExtraCostUnitINo
+      CustomerBonusProfileNo LocalGovernmentNo ChartererCompanyNo AgentNo
+      CommissionProfileNo LastSubscriptionInvoiceDate SubscriptionProfileNo
+      NoOfSubscription AgentYesNo EbusinessType ShipmentTypeNo
+      AcceptReplacementArticleYesNo NotBreakageYesNo AverageCreditPeriod
+      PaymentPattern UpperAmountAltPriceList AltPriceListYesNo AltPriceListNo
+      MergeToCustomerNo ContactNoListOfContents ContactNoReminder
+      AgreementGiroType EdiProfileNo EinvoiceStatus AgreementOrderCusGrpNo
+      ChainPriceTypeHasPriorityYesNo ZpiderImportProfileNo EdiTestYesNo
+      EDITestMode CreditControlLastActionTime ElectronicInvoiceActive
+      ElectronicInvoiceByMailYesNo CustProfilesOverrideChainProfiles
+      ZUsrEDIProfile SwiftCodeNo ContactsUpdatedInBizWeb DateUpdatedContactData
+      DateUpdatedFinancialData FinancialDataUpdatedInBizWeb
+      MaindataUpdatedInBizWeb LastUpdatedInBizWeb LastupdatedFromBizWeb
+      DateLastFinancialStatement AnnualSales Result NoOfEmployees
+      CreditBlockAllowOfferAndNewOrders ContactNoConfirmOrder
+      ContactNoPickingList MDM_Deleted MDM_Version MDM_SyncVersion ZUsrVisPaaWeb
+    )
+
+    zeroes.each_with_object({}) do |name, attributes|
+      attributes[name] = 0
+      attributes
+    end.merge(
+      FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 8,
+      PriceCode: 1, CurrencyNo: 578, CreditLimit: 99_999_999.99,
+      GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
+      DebtCollectionGrpNo: 1, UtilityBits: "\x00\x00\x00\x00\x00\x00",
+      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 1
+    )
+  end
+
   private
 
-  # Set a new CustomerNo
-  def set_customer_number
+  # Set default values for known fields
+  def set_default_values
+    attributes.merge(Visma::Customer.defaults) do |_key, existing, default|
+      existing.blank? ? default : existing
+    end
+
+    self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
   end
 end
