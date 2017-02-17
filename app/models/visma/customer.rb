@@ -90,7 +90,41 @@ class Visma::Customer < Visma::Base
   # Remittance profile
   belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
 
-  validates :CustomerNo, :Name, presence: true
+  validates :CustomerNo, :Name, :Balance, :WareHouseNo, :FixedAddnDedNo,
+            :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
+            :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
+            :ContactNoInvoice, :LastMovementDate, :GrossInvoicingYesNo,
+            :DiscountGrpCustNo, :LockedYesNo, :OurSupplNo, :CustomerTypeNo,
+            :InActiveYesNo, :ContactNoDelivery, :AccessLevel, :SortName,
+            :ChainLeaderYesNo, :TypeOfChain, :ProductNo, :ProjectNo, :DepNo,
+            :SupplierNo, :RoundingCode, :PriceListNo, :ExtraCostUnitIVNo,
+            :ExtraCostUnitIIINo, :ExtraCostUnitIINo, :ExtraCostUnitINo,
+            :CustomerBonusProfileNo, :LocalGovernmentNo, :ChartererCompanyNo,
+            :AgentNo, :CommissionProfileNo, :LastSubscriptionInvoiceDate,
+            :SubscriptionProfileNo, :NoOfSubscription, :AgentYesNo,
+            :EbusinessType, :ShipmentTypeNo, :AcceptReplacementArticleYesNo,
+            :NotBreakageYesNo, :AverageCreditPeriod, :PaymentPattern,
+            :UpperAmountAltPriceList, :AltPriceListYesNo, :AltPriceListNo,
+            :MergeToCustomerNo, :ContactNoListOfContents, :ContactNoReminder,
+            :AgreementGiroType, :EdiProfileNo, :EinvoiceStatus,
+            :AgreementOrderCusGrpNo, :ChainPriceTypeHasPriorityYesNo,
+            :ZpiderImportProfileNo, :EdiTestYesNo, :EDITestMode,
+            :CreditControlLastActionTime, :ElectronicInvoiceActive,
+            :ElectronicInvoiceByMailYesNo, :CustProfilesOverrideChainProfiles,
+            :ZUsrEDIProfile, :SwiftCodeNo, :ContactsUpdatedInBizWeb,
+            :DateUpdatedContactData, :DateUpdatedFinancialData,
+            :FinancialDataUpdatedInBizWeb, :MaindataUpdatedInBizWeb,
+            :LastUpdatedInBizWeb, :LastupdatedFromBizWeb,
+            :DateLastFinancialStatement, :AnnualSales, :Result, :NoOfEmployees,
+            :CreditBlockAllowOfferAndNewOrders, :ContactNoConfirmOrder,
+            :ContactNoPickingList, :MDM_Deleted, :MDM_Version,
+            :MDM_SyncVersion, :ZUsrVisPaaWeb, :FormProfileCustNo,
+            :CustomerProfileNo, :TermsOfPayCustNo, :PriceCode, :CurrencyNo,
+            :CreditLimit, :GLAccountRec, :CountryNo, :RegistrationDate,
+            :DebtCollectionGrpNo, :UtilityBits, :RemittanceProfileNo,
+            :RemainderOrderYesNo, :PrintProfileNo, :InvoiceAdressNo,
+            :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo,
+            presence: true
 
   after_initialize :set_default_values
 
@@ -123,7 +157,8 @@ class Visma::Customer < Visma::Base
     self.FactCustomerNo = self.CustomerNo.to_s
   end
 
-  # Disable factoring, by setting profiles to default (1) and removing factoring customer number
+  # Disable factoring, by setting profiles to default (1) and removing
+  # factoring customer number
   def disable_factoring
     self.CustomerProfileNo = 1
     self.FormProfileCustNo = 1
@@ -296,11 +331,12 @@ class Visma::Customer < Visma::Base
       attributes[name] = 0
       attributes
     end.merge(
-      FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 8,
+      FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 1,
       PriceCode: 1, CurrencyNo: 578, CreditLimit: 99_999_999.99,
       GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
       DebtCollectionGrpNo: 1, UtilityBits: "\x00\x00\x00\x00\x00\x00",
-      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 1
+      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 1,
+      BusinessNo: 15, CustomerGrpNo: 5
     )
   end
 
@@ -308,7 +344,7 @@ class Visma::Customer < Visma::Base
 
   # Set default values for known fields
   def set_default_values
-    attributes.merge(Visma::Customer.defaults) do |_key, existing, default|
+    attributes.merge!(Visma::Customer.defaults) do |_key, existing, default|
       existing.blank? ? default : existing
     end
 
