@@ -94,10 +94,10 @@ class Visma::Customer < Visma::Base
             :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
             :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
             :ContactNoInvoice, :LastMovementDate, :GrossInvoicingYesNo,
-            :DiscountGrpCustNo, :LockedYesNo, :OurSupplNo, :CustomerTypeNo,
+            :LockedYesNo, :OurSupplNo, :CustomerTypeNo,
             :InActiveYesNo, :ContactNoDelivery, :AccessLevel, :SortName,
             :ChainLeaderYesNo, :TypeOfChain, :ProductNo, :ProjectNo, :DepNo,
-            :SupplierNo, :RoundingCode, :PriceListNo, :ExtraCostUnitIVNo,
+            :SupplierNo, :RoundingCode, :ExtraCostUnitIVNo,
             :ExtraCostUnitIIINo, :ExtraCostUnitIINo, :ExtraCostUnitINo,
             :CustomerBonusProfileNo, :LocalGovernmentNo, :ChartererCompanyNo,
             :AgentNo, :CommissionProfileNo, :LastSubscriptionInvoiceDate,
@@ -358,9 +358,8 @@ class Visma::Customer < Visma::Base
     self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
-    att = attributes.merge(Visma::Customer.defaults) do |_key, existing, default|
+    self.attributes.merge!(Visma::Customer.defaults) do |_key, existing, default|
       existing.blank? ? default : existing
     end
-    self.attributes = att
   end
 end

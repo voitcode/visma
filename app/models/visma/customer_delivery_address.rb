@@ -4,6 +4,7 @@ class Visma::CustomerDeliveryAddress < Visma::Base
   include Visma::Timestamp
   include Visma::CreatedScopes
   include Visma::ChangeBy
+  include Visma::PrimaryKey
 
   belongs_to :customer, foreign_key: :CustomerNo
   scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
