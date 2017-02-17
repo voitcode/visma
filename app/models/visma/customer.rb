@@ -90,7 +90,7 @@ class Visma::Customer < Visma::Base
   # Remittance profile
   belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
 
-  validates :CustomerNo, :Name, :Balance, :WareHouseNo, :FixedAddnDedNo,
+  validates :CustomerNo, :Name, :WareHouseNo, :FixedAddnDedNo,
             :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
             :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
             :ContactNoInvoice, :LastMovementDate, :GrossInvoicingYesNo,
@@ -120,7 +120,7 @@ class Visma::Customer < Visma::Base
             :ContactNoPickingList, :MDM_Deleted, :MDM_Version,
             :MDM_SyncVersion, :ZUsrVisPaaWeb, :FormProfileCustNo,
             :CustomerProfileNo, :TermsOfPayCustNo, :PriceCode, :CurrencyNo,
-            :CreditLimit, :GLAccountRec, :CountryNo, :RegistrationDate,
+            :GLAccountRec, :CountryNo, :RegistrationDate,
             :DebtCollectionGrpNo, :UtilityBits, :RemittanceProfileNo,
             :RemainderOrderYesNo, :PrintProfileNo, :InvoiceAdressNo,
             :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo, :EmailAddress,
@@ -343,7 +343,7 @@ class Visma::Customer < Visma::Base
 
     dated.merge(
       FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 1,
-      PriceCode: 1, CurrencyNo: 578, CreditLimit: 99_999_999.99,
+      PriceCode: 1, CurrencyNo: 578, CreditLimit: 10_000,
       GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
       DebtCollectionGrpNo: 1, UtilityBits: "\x00\x00\x00\x00\x00\x00",
       RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 2,
