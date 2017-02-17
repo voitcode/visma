@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.5.19)
+    visma (0.5.20)
       rails (~> 5.0)
 
 GEM

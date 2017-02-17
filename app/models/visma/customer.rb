@@ -123,7 +123,7 @@ class Visma::Customer < Visma::Base
             :CreditLimit, :GLAccountRec, :CountryNo, :RegistrationDate,
             :DebtCollectionGrpNo, :UtilityBits, :RemittanceProfileNo,
             :RemainderOrderYesNo, :PrintProfileNo, :InvoiceAdressNo,
-            :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo,
+            :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo, :EmailAddress,
             presence: true
 
   after_initialize :set_default_values
@@ -346,7 +346,7 @@ class Visma::Customer < Visma::Base
       PriceCode: 1, CurrencyNo: 578, CreditLimit: 99_999_999.99,
       GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
       DebtCollectionGrpNo: 1, UtilityBits: "\x00\x00\x00\x00\x00\x00",
-      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 1,
+      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 2,
       BusinessNo: 15, CustomerGrpNo: 5
     )
   end
