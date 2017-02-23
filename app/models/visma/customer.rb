@@ -299,7 +299,14 @@ class Visma::Customer < Visma::Base
     end
   end
 
-  # Default values for a new record
+  # Default values for a new Visma::Customer record
+  #
+  # A lot of fields are zero by default in Visma Global
+  # Many date/time fields are unix epoch
+  #
+  # Then there are the actual default valules.
+  # We have not looked it up in the database, so this is specific for the
+  # customer me were working on at the time.
   def self.defaults
     zeroes = %w(
       Balance WareHouseNo FixedAddnDedNo TermsOfDeliveryNo DeliveryMethodsNo
@@ -359,7 +366,7 @@ class Visma::Customer < Visma::Base
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
     self.attributes.merge!(Visma::Customer.defaults) do |_key, existing, default|
-      existing.blank? ? default : existing
+      existing.nil? ? default : existing
     end
   end
 end
