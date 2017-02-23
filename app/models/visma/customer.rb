@@ -365,8 +365,8 @@ class Visma::Customer < Visma::Base
     self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
-    self.attributes.merge!(Visma::Customer.defaults) do |_key, existing, default|
-      existing.nil? ? default : existing
+    attributes.merge(Visma::Customer.defaults) do |key, val, default|
+      val.blank? ? send("#{key})=", default) : val
     end
   end
 end
