@@ -366,7 +366,7 @@ class Visma::Customer < Visma::Base
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
     attributes.merge(Visma::Customer.defaults) do |key, val, default|
-      val.blank? ? send("#{key})=", default) : val
+      val.blank? ? send("#{key}=", default) : val
     end
   end
 end
