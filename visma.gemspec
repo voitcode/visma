@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["test/**/*"]
 
   # This is a Rails engine
-  s.add_dependency "rails", "~> 5.0"
+#  s.add_dependency "rails", "~> 5.0"
 
   # Connect to Microsoft SQL Server 2012
 #  s.add_dependency "tiny_tds", "~> 1.0"
