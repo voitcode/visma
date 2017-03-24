@@ -56,6 +56,7 @@ class Visma::Customer < Visma::Base
   accepts_nested_attributes_for :primary_invoice_address
   has_many :invoice_addresses, foreign_key: :InvoiceAdressCustomerNo, class_name: Visma::CustomerInvoiceAddress
 
+  has_many :contacts, foreign_key: :CustomerNo
   has_one :invoice_contact, foreign_key: :ContactNo, primary_key: :ContactNoInvoice, class_name: Visma::Contact
 
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer

@@ -5,5 +5,5 @@ class Visma::StorageType < Visma::Base
   include Visma::CreatedScopes
   include Visma::ChangeBy
 
-  belongs_to :article, foreign_key: :StorageTypeNo, primary_key: :StorageTypeNo
+  belongs_to :article, foreign_key: :StorageTypeNo
 end
