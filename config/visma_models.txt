@@ -345,8 +345,8 @@ TaxClass
 TaxRate
 #Template
 #TemplateType
-#TermsOfDelivery
-#TermsOfPayCustomer
+TermsOfDelivery
+TermsOfPayCustomer
 #TermsOfPaySupplier
 #TimeActivity
 #TimeActivityCategory
