@@ -90,6 +90,7 @@ class Visma::Customer < Visma::Base
   # Remittance profile
   belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
 
+  after_initialize :set_default_values
   validates :CustomerNo, :Name, :WareHouseNo, :FixedAddnDedNo,
             :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
             :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
@@ -125,8 +126,6 @@ class Visma::Customer < Visma::Base
             :RemainderOrderYesNo, :PrintProfileNo, :InvoiceAdressNo,
             :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo, :EmailAddress,
             presence: true
-
-  after_initialize :set_default_values
 
   # Is this Customer enabled with factoring
   def factoring_enabled
@@ -349,24 +348,24 @@ class Visma::Customer < Visma::Base
     end.merge(zeroed)
 
     dated.merge(
-      FormProfileCustNo: 1, CustomerProfileNo: 1, TermsOfPayCustNo: 1,
-      PriceCode: 1, CurrencyNo: 578, CreditLimit: 10_000,
-      GLAccountRec: 1210, CountryNo: 578, RegistrationDate: Date.today,
-      DebtCollectionGrpNo: 1, UtilityBits: "\x00\x00\x00\x00\x00\x00",
-      RemittanceProfileNo: 1, RemainderOrderYesNo: 2, PrintProfileNo: 2,
-      BusinessNo: 15, CustomerGrpNo: 5
+      'FormProfileCustNo' => 1, 'CustomerProfileNo' => 1, 'CountryNo' => 578,
+      'TermsOfPayCustNo' => 1, 'PriceCode' => 1, 'CurrencyNo' => 578,
+      'RegistrationDate' => Date.today, 'DebtCollectionGrpNo' => 1,
+      'UtilityBits' => "\x00\x00\x00\x00\x00\x00", 'RemittanceProfileNo' => 1,
+      'RemainderOrderYesNo' => 2, 'PrintProfileNo' => 2, 'BusinessNo' => 15,
+      'GLAccountRec' => 1210, 'CustomerGrpNo' => 5
     )
   end
 
-  private
+  protected
 
   # Set default values for known fields
   def set_default_values
     self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
-    attributes.merge(Visma::Customer.defaults) do |key, val, default|
-      val.blank? ? send("#{key}=", default) : val
+    self.class.defaults.each do |key, default|
+      self[key] ||= default
     end
   end
 end
