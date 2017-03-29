@@ -6,7 +6,7 @@ class Visma::CustomerInvoiceAddress < Visma::Base
   include Visma::ChangeBy
   include Visma::PrimaryKey
 
-  belongs_to :customer, foreign_key: :InvoiceAdressCustomerNo
+  belongs_to :customer, foreign_key: :InvoiceAdressCustomerNo, touch: true
   scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
 
   # Is this address the primary invoice address for the customer?

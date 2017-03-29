@@ -92,6 +92,7 @@ class Visma::Customer < Visma::Base
   belongs_to :remittance_profile, foreign_key: :RemittanceProfileNo
 
   after_initialize :set_default_values
+  before_validation :set_sort_name
   validates :CustomerNo, :Name, :WareHouseNo, :FixedAddnDedNo,
             :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
             :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
@@ -360,9 +361,13 @@ class Visma::Customer < Visma::Base
 
   protected
 
+  # Always set sortname equal to name
+  def set_sort_name
+    self.SortName = self.Name
+  end
+
   # Set default values for known fields
   def set_default_values
-    self.SortName = self.Name
     self.CustomerNo ||= Visma::Customer.first_unused_customer_number
 
     self.class.defaults.each do |key, default|
