@@ -1,3 +1,4 @@
+# Customer contact persons
 class Visma::Contact < Visma::Base
   self.table_name += 'Contact'
   self.primary_key = 'ContactNo'
@@ -24,6 +25,6 @@ class Visma::Contact < Visma::Base
   private
 
   def set_primary_key
-    self.ContactNo = Visma::Contact.first_unused_contact_number
+    self.ContactNo ||= Visma::Contact.first_unused_contact_number
   end
 end
