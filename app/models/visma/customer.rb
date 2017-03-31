@@ -128,8 +128,6 @@ class Visma::Customer < Visma::Base
             :RemainderOrderYesNo, :PrintProfileNo,
             :BusinessNo, :CustomerGrpNo, :EmailAddress,
             presence: true
-  validates :DeliveryAddressNo, :InvoiceAdressNo, :ContactNoInvoice,
-            presence: true, unless: :new_record?
 
   # Is this Customer enabled with factoring
   def factoring_enabled
