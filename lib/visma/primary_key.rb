@@ -10,16 +10,16 @@ module Visma
     def generate_primary_key
       self[self.class.primary_key] ||= self.class.new_primary_key
     end
-  end
 
-  # Methods included at the class level
-  module ClassMethods
-    # Retrieve a new primary key
-    def new_primary_key(minimum = 1)
-      existing = unscoped.pluck(primary_key).sort
-      numbers = minimum..existing.last
-      new_number = numbers.detect { |n| !existing.include?(n) }
-      new_number || existing.last + 1
+    # Methods included at the class level
+    module ClassMethods
+      # Retrieve a new primary key
+      def new_primary_key(minimum = 1)
+        existing = unscoped.pluck(primary_key).sort
+        numbers = minimum..existing.last
+        new_number = numbers.detect { |n| !existing.include?(n) }
+        new_number || existing.last + 1
+      end
     end
   end
 end
