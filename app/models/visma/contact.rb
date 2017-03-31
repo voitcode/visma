@@ -12,4 +12,7 @@ class Visma::Contact < Visma::Base
   belongs_to :customer, foreign_key: :CustomerNo
 
   validates :ContactNo, :EmailAddress, :MobileTelephone, presence: true
+
+  scope :customer, -> { where.not(CustomerNo: 0).where.not(CustomerNo: nil) }
+  scope :supplier, -> { where.not(SupplierNo: 0).where.not(SupplierNo: nil) }
 end
