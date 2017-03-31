@@ -5,6 +5,7 @@ class Visma::Customer < Visma::Base
   include Visma::Timestamp
   include Visma::CreatedScopes
   include Visma::ChangeBy
+  include Visma::PrimaryKey
 
   enum InActiveYesNo: [:active, :inactive]
 
@@ -290,14 +291,6 @@ class Visma::Customer < Visma::Base
       options[:except] ||= [:UtilityBits]
       super(options)
     end
-
-    # Return the first unused CustomerNo higher than 10000
-    def first_unused_customer_number
-      existing = unscoped.pluck(:CustomerNo).sort
-      numbers = 10_000..existing.last
-      new_number = numbers.detect { |n| !existing.include?(n) }
-      new_number || existing.last + 1
-    end
   end
 
   # Default values for a new Visma::Customer record
@@ -361,6 +354,11 @@ class Visma::Customer < Visma::Base
 
   protected
 
+  # New primary key minium 10 000
+  def generate_primary_key
+    self[primary_key] ||= self.class.new_primary_key(10_000)
+  end
+
   # Always set sortname equal to name
   def set_sort_name
     self.SortName = self.Name
@@ -368,8 +366,6 @@ class Visma::Customer < Visma::Base
 
   # Set default values for known fields
   def set_default_values
-    self.CustomerNo ||= Visma::Customer.first_unused_customer_number
-
     self.class.defaults.each do |key, default|
       self[key] ||= default
     end
