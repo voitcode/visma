@@ -15,7 +15,7 @@ module Visma
   # Methods included at the class level
   module ClassMethods
     # Retrieve a new primary key
-    def self.new_primary_key(minimum = 1)
+    def new_primary_key(minimum = 1)
       existing = unscoped.pluck(primary_key).sort
       numbers = minimum..existing.last
       new_number = numbers.detect { |n| !existing.include?(n) }
