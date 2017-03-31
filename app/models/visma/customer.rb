@@ -356,7 +356,7 @@ class Visma::Customer < Visma::Base
 
   # New primary key minium 10 000
   def generate_primary_key
-    self[primary_key] ||= self.class.new_primary_key(10_000)
+    self[self.class.primary_key] ||= self.class.new_primary_key(10_000)
   end
 
   # Always set sortname equal to name

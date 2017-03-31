@@ -8,7 +8,7 @@ module Visma
     end
 
     def generate_primary_key
-      self[primary_key] ||= self.class.new_primary_key
+      self[self.class.primary_key] ||= self.class.new_primary_key
     end
   end
 
