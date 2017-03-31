@@ -96,7 +96,7 @@ class Visma::Customer < Visma::Base
   validates :CustomerNo, :Name, :WareHouseNo, :FixedAddnDedNo,
             :TermsOfDeliveryNo, :DeliveryMethodsNo, :BuContactNo, :BusinessNo,
             :ChainNo, :EmployeeNo, :CustomerGrpNo, :DistrictNo,
-            :ContactNoInvoice, :LastMovementDate, :GrossInvoicingYesNo,
+            :LastMovementDate, :GrossInvoicingYesNo,
             :LockedYesNo, :OurSupplNo, :CustomerTypeNo,
             :InActiveYesNo, :ContactNoDelivery, :AccessLevel, :SortName,
             :ChainLeaderYesNo, :TypeOfChain, :ProductNo, :ProjectNo, :DepNo,
@@ -125,9 +125,11 @@ class Visma::Customer < Visma::Base
             :CustomerProfileNo, :TermsOfPayCustNo, :PriceCode, :CurrencyNo,
             :GLAccountRec, :CountryNo, :RegistrationDate,
             :DebtCollectionGrpNo, :UtilityBits, :RemittanceProfileNo,
-            :RemainderOrderYesNo, :PrintProfileNo, :InvoiceAdressNo,
-            :DeliveryAddressNo, :BusinessNo, :CustomerGrpNo, :EmailAddress,
+            :RemainderOrderYesNo, :PrintProfileNo,
+            :BusinessNo, :CustomerGrpNo, :EmailAddress,
             presence: true
+  validates :DeliveryAddressNo, :InvoiceAdressNo, :ContactNoInvoice,
+            presence: true, unless: :new_record?
 
   # Is this Customer enabled with factoring
   def factoring_enabled
