@@ -354,6 +354,12 @@ class Visma::Customer < Visma::Base
 
   protected
 
+  # New primary key minium 10000
+  # TODO maximum 50000
+  def generate_primary_key
+    self[self.class.primary_key] ||= self.class.new_primary_key(10_000)
+  end
+
   # Always set sortname equal to name
   def set_sort_name
     self.SortName = self.Name
