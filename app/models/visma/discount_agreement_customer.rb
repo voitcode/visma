@@ -46,6 +46,10 @@ class Visma::DiscountAgreementCustomer < Visma::Base
     self.AgreedPrice.zero? ? article.price : self.AgreedPrice
   end
 
+  def agreed_price=(price)
+    self.AgreedPrice = price
+  end
+
   # Obviously, the discount can be more than this with three fields:
   # DiscountI DiscountII DiscountIII
   def discount
