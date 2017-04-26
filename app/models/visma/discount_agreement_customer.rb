@@ -41,6 +41,8 @@ class Visma::DiscountAgreementCustomer < Visma::Base
         OR PriceListNo = '#{customer.PriceListNo}'")
   }
 
+  after_initialize :set_default_values
+
   # This discount is currently active
   def active?
     self.StartDate <= Date.today && self.StopDate >= Date.today
