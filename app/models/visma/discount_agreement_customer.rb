@@ -5,6 +5,8 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   include Visma::Timestamp
   include Visma::ChangeBy
+  include Visma::CreatedScopes
+  include Visma::PrimaryKey
 
   belongs_to :price_list, foreign_key: 'PriceListNo'
   belongs_to :article, foreign_key: 'ArticleNo'
@@ -12,6 +14,8 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
   belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
+
+  validates :SeqNo, :ArticleNo, presence: true
 
   scope :active, lambda {
     where('StartDate <= ? AND StopDate >= ?',
@@ -104,6 +108,56 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   def to_s
     "#{category} #{recipient.id}"
+  end
+
+  def set_default_values
+    self.AgreedPrice = 0.0
+    self.BonusPercent = 0.0
+    self.CurrencyNo = 0
+    self.DiscountGrpArtNo = 0
+    self.DiscountGrpCustNo = 0
+    self.DiscountI = 0.0
+    self.DiscountII = 0.0
+    self.DiscountIII = 0.0
+    self.DiscountType = 1
+    self.FromQuantity = 0.0
+    self.GrossPrice = 0.0
+    self.IntermediateGroupNo = 0
+    self.LoanPrice = 0.0
+    self.MainGroupNo = 0
+    self.Markup1 = 0.0
+    self.PriceListNo = 0
+    self.SubGroupNo = 0
+    self.ToQuantity = 0.0
+    self.UnitTypeNo = 0
+    self.UtilityBits = "\x00\x00\x00\x00\x00\x00"
+    self.ProjectNo = 0
+    self.Priority = 0
+    self.PriceLabeled = 0.0
+    self.ZUsrPaaslagProsent = 0.0
+    self.ZUsrPaaslagKroner = 0.0
+    set_sequence
+  end
+
+  # Set the sequence number to the next in range
+  def set_sequence
+    seq = (begin
+              sequence.last
+            rescue
+              1000
+            end) + 1
+    self.SeqNo = ('%08d' % seq.to_s.reverse).reverse.to_i
+  end
+
+  def siblings
+    self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.to_i.zero?
+    self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.to_i.zero?
+    self.class.where(PriceListNo: self.PriceListNo) unless self.PriceListNo.to_i.zero?
+  end
+
+  # Define the sequence numbering for all siblings
+  def sequence
+    siblings.map(&:SeqNo).collect { |n| n.to_s.sub(/0+$/, '').to_i }.sort
   end
 
   class << self
