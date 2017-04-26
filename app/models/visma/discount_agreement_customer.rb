@@ -15,8 +15,6 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
   belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
 
-  validates :SeqNo, :ArticleNo, presence: true
-
   scope :active, lambda {
     where('StartDate <= ? AND StopDate >= ?',
           Date.today.strftime('%Y-%m-%d %H:%M:%S'),
