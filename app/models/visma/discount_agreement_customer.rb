@@ -38,7 +38,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
         OR PriceListNo = '#{customer.PriceListNo}'")
   }
 
-  after_initialize :set_default_values
+  after_initialize :set_default_values, if: :new_record?
 
   # This discount is currently active
   def active?
