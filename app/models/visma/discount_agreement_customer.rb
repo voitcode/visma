@@ -149,8 +149,8 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def siblings
-    self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.to_i.zero?
-    self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.to_i.zero?
+    return self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.to_i.zero?
+    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.to_i.zero?
     self.class.where(PriceListNo: self.PriceListNo) unless self.PriceListNo.to_i.zero?
   end
 
