@@ -110,31 +110,31 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def set_default_values
-    self.AgreedPrice = 0.0
-    self.BonusPercent = 0.0
-    self.CurrencyNo = 0
-    self.DiscountGrpArtNo = 0
-    self.DiscountGrpCustNo = 0
-    self.DiscountI = 0.0
-    self.DiscountII = 0.0
-    self.DiscountIII = 0.0
-    self.DiscountType = 1
-    self.FromQuantity = 0.0
-    self.GrossPrice = 0.0
-    self.IntermediateGroupNo = 0
-    self.LoanPrice = 0.0
-    self.MainGroupNo = 0
-    self.Markup1 = 0.0
-    self.PriceListNo = 0
-    self.SubGroupNo = 0
-    self.ToQuantity = 0.0
-    self.UnitTypeNo = 0
-    self.UtilityBits = "\x00\x00\x00\x00\x00\x00"
-    self.ProjectNo = 0
-    self.Priority = 0
-    self.PriceLabeled = 0.0
-    self.ZUsrPaaslagProsent = 0.0
-    self.ZUsrPaaslagKroner = 0.0
+    self.AgreedPrice ||= 0.0
+    self.BonusPercent ||= 0.0
+    self.CurrencyNo ||= 0
+    self.DiscountGrpArtNo ||= 0
+    self.DiscountGrpCustNo ||= 0
+    self.DiscountI ||= 0.0
+    self.DiscountII ||= 0.0
+    self.DiscountIII ||= 0.0
+    self.DiscountType ||= 1
+    self.FromQuantity ||= 0.0
+    self.GrossPrice ||= 0.0
+    self.IntermediateGroupNo ||= 0
+    self.LoanPrice ||= 0.0
+    self.MainGroupNo ||= 0
+    self.Markup1 ||= 0.0
+    self.PriceListNo ||= 0
+    self.SubGroupNo ||= 0
+    self.ToQuantity ||= 0.0
+    self.UnitTypeNo ||= 0
+    self.UtilityBits ||= "\x00\x00\x00\x00\x00\x00"
+    self.ProjectNo ||= 0
+    self.Priority ||= 0
+    self.PriceLabeled ||= 0.0
+    self.ZUsrPaaslagProsent ||= 0.0
+    self.ZUsrPaaslagKroner ||= 0.0
     set_sequence
   end
 
@@ -149,9 +149,9 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def siblings
-    return self.class.where(CustomerNo: self.CustomerNo) if self.CustomerNo
-    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) if self.DiscountGrpCustNo
-    return self.class.where(PriceListNo: self.PriceListNo) if self.PriceListNo
+    return self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.zero?
+    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.zero?
+    return self.class.where(PriceListNo: self.PriceListNo) unless self.PriceListNo.zero?
   end
 
   # Define the sequence numbering for all siblings
