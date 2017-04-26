@@ -6,7 +6,6 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   include Visma::Timestamp
   include Visma::ChangeBy
   include Visma::CreatedScopes
-  include Visma::PrimaryKey
 
   belongs_to :price_list, foreign_key: 'PriceListNo'
   belongs_to :article, foreign_key: 'ArticleNo'
