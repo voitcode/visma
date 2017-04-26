@@ -149,14 +149,14 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def siblings
-    return self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.to_i.zero?
-    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.to_i.zero?
-    self.class.where(PriceListNo: self.PriceListNo) unless self.PriceListNo.to_i.zero?
+    return self.class.where(CustomerNo: self.CustomerNo) if self.CustomerNo
+    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) if self.DiscountGrpCustNo
+    return self.class.where(PriceListNo: self.PriceListNo) if self.PriceListNo
   end
 
   # Define the sequence numbering for all siblings
   def sequence
-    siblings.map(&:SeqNo).collect { |n| n.to_s.sub(/0+$/, '').to_i }.sort
+    siblings.pluck(:SeqNo).collect { |n| n.to_s.sub(/0+$/, '').to_i }.sort
   end
 
   class << self
