@@ -1,13 +1,8 @@
-class Visma::CustomerInvoiceAddress < Visma::Base
+class Visma::CustomerInvoiceAddress < Visma::Address
   self.table_name += 'CustomerInvoiceAdresses'
   self.primary_key = 'InvoiceAdressNo'
-  include Visma::Timestamp
-  include Visma::CreatedScopes
-  include Visma::ChangeBy
-  include Visma::PrimaryKey
 
   belongs_to :customer, foreign_key: :InvoiceAdressCustomerNo
-  scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
 
   # Is this address the primary invoice address for the customer?
   def primary
@@ -54,5 +49,11 @@ class Visma::CustomerInvoiceAddress < Visma::Base
 
   def city
     self.InvoiceAdressPostoffice
+  end
+
+  def unique_address_per_customer
+    return true unless customer.invoice_addresses.to_a.include?(self)
+    errors.add(:InvoiceAdress1, 'Not Unique')
+    false
   end
 end

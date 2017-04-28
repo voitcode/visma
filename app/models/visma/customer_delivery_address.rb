@@ -1,13 +1,8 @@
-class Visma::CustomerDeliveryAddress < Visma::Base
+class Visma::CustomerDeliveryAddress < Visma::Address
   self.table_name += 'CustomerDeliveryAddresses'
   self.primary_key = :DeliveryAddressNo
-  include Visma::Timestamp
-  include Visma::CreatedScopes
-  include Visma::ChangeBy
-  include Visma::PrimaryKey
 
   belongs_to :customer, foreign_key: :CustomerNo
-  scope :active, -> { joins(:customer).where(customer: { InActiveYesNo: 0 }) }
 
   # Is this address the primary delivery address for the customer?
   def primary
@@ -54,5 +49,11 @@ class Visma::CustomerDeliveryAddress < Visma::Base
 
   def city
     self.DeliveryPostOffice
+  end
+
+  def unique_address_per_customer
+    return true unless customer.delivery_addresses.to_a.include?(self)
+    errors.add(:DeliveryAddress1, 'Not Unique')
+    false
   end
 end
