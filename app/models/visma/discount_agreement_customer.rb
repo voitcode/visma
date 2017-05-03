@@ -40,9 +40,9 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   after_initialize :set_default_values, if: :new_record?
 
-  validates :SeqNo, scope: [
+  validates_uniqueness_of :SeqNo, scope: [
     :DiscountType, :CustomerNo, :DiscountGrpCustNo, :PriceListNo
-  ], unique: true
+  ]
 
   # This discount is currently active
   def active?
