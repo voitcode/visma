@@ -6,6 +6,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   include Visma::Timestamp
   include Visma::ChangeBy
   include Visma::CreatedScopes
+  include Visma::SequenceNumber
 
   belongs_to :price_list, foreign_key: 'PriceListNo'
   belongs_to :article, foreign_key: 'ArticleNo'
@@ -142,25 +143,13 @@ class Visma::DiscountAgreementCustomer < Visma::Base
     set_sequence
   end
 
-  # Set the sequence number to the next in range
-  def set_sequence
-    seq = (begin
-              sequence.last
-            rescue
-              1000
-            end) + 1
-    self.SeqNo = ('%08d' % seq.to_s.reverse).reverse.to_i
-  end
-
   def siblings
-    return self.class.where(CustomerNo: self.CustomerNo) unless self.CustomerNo.zero?
-    return self.class.where(DiscountGrpCustNo: self.DiscountGrpCustNo) unless self.DiscountGrpCustNo.zero?
-    return self.class.where(PriceListNo: self.PriceListNo) unless self.PriceListNo.zero?
-  end
-
-  # Define the sequence numbering for all siblings
-  def sequence
-    siblings.pluck(:SeqNo).collect { |n| n.to_s.sub(/0+$/, '').to_i }.sort
+    self.class.where(
+      DiscountType: self.DiscountType,
+      CustomerNo: self.CustomerNo,
+      DiscountGrpCustNo: self.DiscountGrpCustNo,
+      PriceListNo: self.PriceListNo
+    )
   end
 
   class << self
