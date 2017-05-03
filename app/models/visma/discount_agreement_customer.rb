@@ -40,6 +40,10 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   after_initialize :set_default_values, if: :new_record?
 
+  validates :SeqNo, scope: [
+    :DiscountType, :CustomerNo, :DiscountGrpCustNo, :PriceListNo
+  ], unique: true
+
   # This discount is currently active
   def active?
     self.StartDate <= Date.today && self.StopDate >= Date.today
