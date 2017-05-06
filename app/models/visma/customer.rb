@@ -33,35 +33,86 @@ class Visma::Customer < Visma::Base
       .where(RemittanceProfileNo: VISMA_CONFIG['factoring_remittance_profile_number'])
       .where('FactCustomerNo = CustomerNo')
   }
-  scope :with_factoring_disabled, -> { where.not(CustomerNo: with_factoring_enabled) }
+  scope :with_factoring_disabled, lambda {
+    where.not(CustomerNo: with_factoring_enabled.pluck(:CustomerNo))
+  }
 
   # Customers with activity in sales since given date
-  scope :with_sales_since, ->(since_date) { joins(:customer_order_copy).where('CustomerOrderCopy.Created > ?', since_date).uniq }
-  scope :with_no_sales_since, ->(since_date) { sales_since = with_sales_since(since_date).pluck(:CustomerNo).uniq; where.not(CustomerNo: sales_since) }
+  scope :with_sales_since, lambda { |since_date|
+    joins(:customer_order_copy)
+      .where('CustomerOrderCopy.Created > ?', since_date)
+      .uniq
+  }
+  scope :with_no_sales_since, lambda { |since_date|
+    sales_since = with_sales_since(since_date)
+                  .pluck(:CustomerNo)
+                  .uniq
+    where.not(CustomerNo: sales_since)
+  }
 
-  has_many :chain_order, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
-  has_many :chain_order_copy, foreign_key: :ChainNo, class_name: Visma::CustomerOrderCopy
+  has_many :chain_order,
+           foreign_key: :ChainNo,
+           class_name: Visma::CustomerOrderCopy
+  has_many :chain_order_copy,
+           foreign_key: :ChainNo,
+           class_name: Visma::CustomerOrderCopy
 
   # Customers with activity in chain sales since given date
-  scope :with_chain_sales_since, ->(since_date) { joins(:chain_order_copy).where('CustomerOrderCopy.Created > ?', since_date).uniq }
-  scope :with_no_chain_sales_since, ->(since_date) { sales_since = with_chain_sales_since(since_date).pluck(:ChainNo).uniq; where.not(ChainNo: sales_since) }
+  scope :with_chain_sales_since, lambda { |since_date|
+    joins(:chain_order_copy)
+      .where('CustomerOrderCopy.Created > ?', since_date)
+      .uniq
+  }
+  scope :with_no_chain_sales_since, lambda { |since_date|
+    sales_since = with_chain_sales_since(since_date)
+                  .pluck(:ChainNo)
+                  .uniq
+    where.not(ChainNo: sales_since)
+  }
 
-  has_many :transactions, foreign_key: :CustomerNo, class_name: Visma::GLAccountTransaction
-  has_many :edi_transactions, foreign_key: 'PartyID', class_name: Visma::EDITransaction
+  has_many :transactions,
+           foreign_key: :CustomerNo,
+           class_name: Visma::GLAccountTransaction
+  has_many :edi_transactions,
+           foreign_key: 'PartyID',
+           class_name: Visma::EDITransaction
 
-  has_one :primary_delivery_address, foreign_key: :DeliveryAddressNo, primary_key: :DeliveryAddressNo, class_name: Visma::CustomerDeliveryAddress
+  has_one :primary_delivery_address,
+          foreign_key: :DeliveryAddressNo,
+          primary_key: :DeliveryAddressNo,
+          class_name: Visma::CustomerDeliveryAddress
   accepts_nested_attributes_for :primary_delivery_address
-  has_many :delivery_addresses, foreign_key: :CustomerNo, class_name: Visma::CustomerDeliveryAddress
+  has_many :delivery_addresses,
+           foreign_key: :CustomerNo,
+           class_name: Visma::CustomerDeliveryAddress
 
-  has_one :primary_invoice_address, foreign_key: :InvoiceAdressNo, primary_key: :InvoiceAdressNo, class_name: Visma::CustomerInvoiceAddress
+  has_one :primary_invoice_address,
+          foreign_key: :InvoiceAdressNo,
+          primary_key: :InvoiceAdressNo,
+          class_name: Visma::CustomerInvoiceAddress
   accepts_nested_attributes_for :primary_invoice_address
-  has_many :invoice_addresses, foreign_key: :InvoiceAdressCustomerNo, class_name: Visma::CustomerInvoiceAddress
+  has_many :invoice_addresses,
+           foreign_key: :InvoiceAdressCustomerNo,
+           class_name: Visma::CustomerInvoiceAddress
 
   has_many :contacts, foreign_key: :CustomerNo
-  has_one :invoice_contact, foreign_key: :ContactNo, primary_key: :ContactNoInvoice, class_name: Visma::Contact
+  has_one :invoice_contact,
+          foreign_key: :ContactNo,
+          primary_key: :ContactNoInvoice,
+          class_name: Visma::Contact
+  has_one :delivery_contact,
+          foreign_key: :ContactNo,
+          primary_key: :ContactNoDelivery,
+          class_name: Visma::Contact
 
-  belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
-  has_many :chain_members, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: Visma::Customer
+  belongs_to :chain,
+             foreign_key: :ChainNo,
+             primary_key: :CustomerNo,
+             class_name: Visma::Customer
+  has_many :chain_members,
+           foreign_key: :ChainNo,
+           primary_key: :CustomerNo,
+           class_name: Visma::Customer
 
   # Price list, discount group and such
   belongs_to :price_list, foreign_key: 'PriceListNo'
