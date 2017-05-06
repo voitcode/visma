@@ -11,12 +11,12 @@ class Visma::Contact < Visma::Base
 
   belongs_to :customer, foreign_key: :CustomerNo
   has_many :customers_as_invoice_contact,
-           foreign_key: :CustomerNo,
-           primary_key: :ContactNoInvoice,
+           primary_key: :CustomerNo,
+           foreign_key: :ContactNoInvoice,
            class_name: Visma::Customer
   has_many :customers_as_delivery_contact,
-           foreign_key: :CustomerNo,
-           primary_key: :ContactNoDelivery,
+           primary_key: :CustomerNo,
+           foreign_key: :ContactNoDelivery,
            class_name: Visma::Customer
 
   validates :ContactNo, :EmailAddress, :MobileTelephone, presence: true
