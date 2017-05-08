@@ -11,11 +11,9 @@ class Visma::Contact < Visma::Base
 
   belongs_to :customer, foreign_key: :CustomerNo
   has_many :customers_as_invoice_contact,
-           primary_key: :CustomerNo,
            foreign_key: :ContactNoInvoice,
            class_name: Visma::Customer
   has_many :customers_as_delivery_contact,
-           primary_key: :CustomerNo,
            foreign_key: :ContactNoDelivery,
            class_name: Visma::Customer
 

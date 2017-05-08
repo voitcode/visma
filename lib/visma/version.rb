@@ -1,3 +1,3 @@
 module Visma
-  VERSION = '0.5.51'.freeze
+  VERSION = '0.5.52'.freeze
 end
