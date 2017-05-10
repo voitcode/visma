@@ -55,7 +55,7 @@ class Visma::CustomerInvoiceAddress < Visma::Address
     addresses = Visma::CustomerInvoiceAddress
                 .where(InvoiceAdressCustomerNo: self.InvoiceAdressCustomerNo)
                 .to_a - [self]
-    errors.add(:customer_invoice_address, _('is already in use.')) if
+    errors.add(:customer_invoice_address, :is_already_in_use) if
       addresses.include? self
   end
 end
