@@ -52,9 +52,10 @@ class Visma::CustomerInvoiceAddress < Visma::Address
   end
 
   def unique_address_per_customer
-    return true if customer.nil?
-    return true unless customer.invoice_addresses.to_a.include?(self)
-    errors.add(:InvoiceAdress1, 'Not Unique')
-    false
+    addresses = Visma::CustomerInvoiceAddress
+                .where(InvoiceAdressCustomerNo: self.InvoiceAdressCustomerNo)
+                .to_a - [self]
+    errors.add(:customer_invoice_address, _('is already in use.')) if
+      addresses.include? self
   end
 end
