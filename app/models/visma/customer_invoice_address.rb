@@ -52,6 +52,7 @@ class Visma::CustomerInvoiceAddress < Visma::Address
   end
 
   def unique_address_per_customer
+    return true if customer.nil?
     return true unless customer.invoice_addresses.to_a.include?(self)
     errors.add(:InvoiceAdress1, 'Not Unique')
     false

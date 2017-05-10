@@ -16,26 +16,22 @@ module Visma
 
     # comparison
     def ==(other)
-      hash == other.hash
+      comparable_attributes == other.comparable_attributes
     end
 
     def eql?(other)
-      hash == other.hash
+      comparable_attributes == other.comparable_attributes
     end
 
     def <=>(other)
-      hash <=> other.hash
-    end
-
-    def hash
-      comparable_attributes.hash
+      comparable_attributes <=> other.comparable_attributes
     end
 
     # Array of address attributes that matters when comparing
     def comparable_attributes
       [line1, line2, zip, city].map do |n|
-        n.to_s.mb_chars.downcase.strip
-      end.join
+        n.to_s.mb_chars.downcase.squish
+      end
     end
   end
 end
