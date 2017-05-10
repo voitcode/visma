@@ -55,7 +55,7 @@ class Visma::CustomerDeliveryAddress < Visma::Address
     addresses = Visma::CustomerDeliveryAddress
                 .where(CustomerNo: self.CustomerNo)
                 .to_a - [self]
-    errors.add(:customer_delivery_address, :is_already_in_use) if
+    errors.add(:DeliveryAddress1, :is_already_in_use) if
       addresses.include? self
   end
 end
