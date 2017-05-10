@@ -259,7 +259,7 @@ MainGroup
 #PeriodDefinition
 #PickingList
 #PostGiro
-#PostOffice
+PostOffice
 #PostRegion
 #PostRegionLine
 #PostRegionZoneMap
