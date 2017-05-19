@@ -6,8 +6,8 @@ module Visma
 
     include Visma::StaticTimestamp
     include Visma::CreatedBy
-
     include Visma::CreatedScopes
+
     belongs_to :customer, foreign_key: :CustomerNo
     belongs_to :chain,
                foreign_key: :ChainNo,
@@ -146,6 +146,16 @@ module Visma
     # Selected columns for CSV and employee_orders
     def self.csv_columns
       %w(InvoiceNo InvoiceDate TotalGross CustomerNo SortName PrintBatchNo)
+    end
+
+    # Visma::MailArchive message reference for this invoice
+    def mail_archive_reference
+      "#{self.InvoiceNo}, Print #{self.PrintBatchNo}"
+    end
+
+    # Emails that belongs to this invoice
+    def emails
+      MailArchive.where(MessageReference: mail_archive_reference)
     end
   end
 end

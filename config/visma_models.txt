@@ -232,8 +232,8 @@ LogonUser
 #LogonUserInGroup
 #Lot
 MailArchive
-MailArchiveAttachemts
-MailRecipients
+## MailArchiveAttachemts -- included as Visma::MailArchiveAttachment
+## MailRecipients  -- included as Visma::MailRecipient
 MainGroup
 #MaventaCompanies
 #NotesIndex
