@@ -7,12 +7,12 @@ module Visma
     include Visma::ChangeBy
     include Visma::CreatedScopes
 
-    has_many :attachments,
-             foreign_key: :MailArchieveId,
-             class_name: Visma::MailArchiveAttachment
-    has_many :recipients,
-             foreign_key: :MailArchiveId,
-             class_name: Visma::MailRecipient
+    has_one :attachment,
+            foreign_key: :MailArchieveId,
+            class_name: Visma::MailArchiveAttachment
+    has_one :recipient,
+            foreign_key: :MailArchiveId,
+            class_name: Visma::MailRecipient
 
     belongs_to :customer_order_copy,
                primary_key: :InvoiceNo,

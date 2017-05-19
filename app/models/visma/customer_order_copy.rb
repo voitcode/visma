@@ -157,5 +157,15 @@ module Visma
     def emails
       MailArchive.where(MessageReference: mail_archive_reference)
     end
+
+    # Fetch the email attached PDF invoice
+    def to_pdf
+      return nil unless File.directory?(Rails.root.join('tmp'))
+      return nil if emails.blank?
+      file = "tmp/#{self.InvoiceNo}.pdf"
+      File.open(Rails.root.join(*file), 'w:ASCII-8BIT') do |pdf|
+        pdf.write emails.first.attachment.Data
+      end
+    end
   end
 end
