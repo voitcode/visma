@@ -19,6 +19,15 @@ module Visma
                primary_key: :Name,
                class_name: Visma::Employee
 
+    # Form profile: Which papers to use
+    belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo
+    # Print profile: How to send papers
+    belongs_to :print_profile, foreign_key: :PrintProfileNo
+    # EDI profile: How to electronically send order data
+    belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
+    # Customer profile: How to handle the customer financially
+    belongs_to :customer_profile, foreign_key: :CustomerProfileNo
+
     has_many :customer_order_line_copies, foreign_key: :OrderCopyNo
     alias order_lines customer_order_line_copies
 
@@ -36,15 +45,6 @@ module Visma
         .where(FormProfileCustNo: VISMA_CONFIG['factoring_form_profile_number'])
         .where('FactCustomerNo = CustomerNo')
     }
-
-    # Form profile: Which papers to use
-    belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo
-    # Print profile: How to send papers
-    belongs_to :print_profile, foreign_key: :PrintProfileNo
-    # EDI profile: How to electronically send order data
-    belongs_to :customer_edi_profile, foreign_key: :EdiProfileNo
-    # Customer profile: How to handle the customer financially
-    belongs_to :customer_profile, foreign_key: :CustomerProfileNo
 
     # The email sent by Global if this order was billed by the system
     def system_generated_invoice_email
