@@ -166,6 +166,7 @@ module Visma
       File.open(Rails.root.join(*file), 'w:ASCII-8BIT') do |pdf|
         pdf.write emails.first.attachment.Data
       end
+      self.InvoiceNo
     end
   end
 end
