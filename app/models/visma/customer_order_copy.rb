@@ -82,11 +82,6 @@ module Visma
       self.OrderCopyNo
     end
 
-    # Find the Huldt & Lillevik employee
-    def employee
-      Hlonn::Personer.find_by_name(self.SortName) || Hlonn::Personer.new
-    end
-
     # Recalculate TotalAmount
     def recalculate_total_amount
       total = invoice_lines.map(&:AmountNotRounded).sum
