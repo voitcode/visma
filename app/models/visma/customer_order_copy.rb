@@ -85,11 +85,11 @@ module Visma
     end
 
     # Recalculate TotalAmount
-    def recalculate_total_amount
-      total = invoice_lines.map(&:AmountNotRounded).sum
-      self.TotalAmount = (total * 100).ceil / 100.0
-      rounding = self.TotalGross - total - self.TotalVAT
-      self.RoundingAmount = (rounding * 100).ceil / 100.0
+    def calculate_rounding_amount
+      tot = self.TotalGross
+      amt = (self.TotalAmount + self.TotalVAT)
+      sum = (amt * 100).ceil / 100.0
+      self.RoundingAmount = (tot - sum).round(2)
     end
 
     # Select all employee orders
