@@ -11,7 +11,7 @@ module Visma
 
     belongs_to :edi_provider,
                foreign_key: 'EDIProviderNo',
-               class_name: Visma::EDIProvider
+               class_name: Visma::EdiProvider
     belongs_to :edi_profile,
                foreign_key: 'EDIProfileNo',
                class_name: Visma::CustomerEdiProfile

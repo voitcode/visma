@@ -75,7 +75,7 @@ class Visma::Customer < Visma::Base
            class_name: Visma::GLAccountTransaction
   has_many :edi_transactions,
            foreign_key: 'PartyID',
-           class_name: Visma::EDITransaction
+           class_name: Visma::EdiTransaction
 
   has_one :primary_delivery_address,
           foreign_key: :DeliveryAddressNo,
