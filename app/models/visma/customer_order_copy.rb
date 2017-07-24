@@ -31,6 +31,8 @@ module Visma
     has_many :customer_order_line_copies, foreign_key: :OrderCopyNo
     alias order_lines customer_order_line_copies
 
+    has_many :edi_transactions, primary_key: :InvoiceNo, foreign_key: :DocNo
+
     enum OrderStatus: {
       system_invoiced: 1030,
       user_invoiced: 1000,
