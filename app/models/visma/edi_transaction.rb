@@ -1,6 +1,6 @@
 module Visma
   # EDI message logs
-  class EDITransaction < Visma::Base
+  class EdiTransaction < Visma::Base
     self.table_name += 'EDITransaction'
     self.primary_key = 'UniqueNo'
 

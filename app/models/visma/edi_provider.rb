@@ -1,4 +1,4 @@
-class Visma::EDIProvider < Visma::Base
+class Visma::EdiProvider < Visma::Base
   self.table_name += 'EDIProvider'
   self.primary_key = 'EDIProviderNo'
 
