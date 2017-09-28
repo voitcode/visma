@@ -70,6 +70,12 @@ class Visma::Customer < Visma::Base
     where.not(ChainNo: sales_since)
   }
 
+  scope :missing_info, lambda {
+    where(EmployeeNo: 0)
+      .or(where(BusinessNo: 0))
+      .or(where(PostCode: [nil, '']))
+  }
+
   has_many :transactions,
            foreign_key: :CustomerNo,
            class_name: Visma::GLAccountTransaction
