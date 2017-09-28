@@ -14,6 +14,7 @@ module Visma
                primary_key: :CustomerNo,
                class_name: Visma::Customer
 
+    belongs_to :employee, foreign_key: :EmployeeNo
     belongs_to :our_reference,
                foreign_key: :OurRef,
                primary_key: :Name,
