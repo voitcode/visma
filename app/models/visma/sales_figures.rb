@@ -1,17 +1,16 @@
 module Visma
-  # Debitor transactions
-  class DebLTransaction < Visma::Base
-    self.table_name += 'DebLTransaction'
+  # Sales statistics
+  class SalesFigures < Visma::Base
+    self.table_name += 'SalesFigures'
     self.primary_key = 'UniqueNo'
-    belongs_to :batch,
-               foreign_key: :BatchNo,
-               class_name: Visma::BatchInformationCopy
 
     include Visma::Timestamp
     include Visma::CreatedScopes
     include Visma::CreatedBy
     include Visma::ChangeBy
+    belongs_to :chain, foreign_key: :ChainNo
     belongs_to :customer, foreign_key: :CustomerNo
     belongs_to :employee, foreign_key: :EmployeeNo
+    belongs_to :article, foreign_key: :ArticleNo
   end
 end
