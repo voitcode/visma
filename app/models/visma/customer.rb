@@ -226,63 +226,59 @@ module Visma
       self.FactCustomerNo = nil
     end
 
-    # Return the correct price for a given article
+    # Return an array of the current prices available for a given article
     def prices_for(artno)
-      all_prices_for(artno)
-        .sort_by(&:price)
+      discounts_for(artno).sort_by(&:price)
     end
 
-    # Find all available prices for a given article number at a given date
-    def all_prices_for(artno, at_date = Date.today)
-      disc = discounts_for(artno, at_date)
-      return [Visma::Article.find(artno)] if disc.blank?
-      disc
-    end
-
-    # Return the correct price
-    def price_for(artno, at = nil)
-      if at.nil?
-        prices_for(artno.to_i).first.price
-      else
-        discounts_for(artno, at).sort_by(&:price).first.price
-      end
-    rescue
-      nil
+    # Return the correct price for a given article at a given date
+    def price_for(artno, at = Date.today)
+      discounts_for(artno, at).sort_by(&:price).first.price
     end
 
     # Return the correct price, explained
     def explained_price_for(artno)
-      prices_for(artno.to_i).collect { |p| [p.to_s, p.price] }.first
+      prices_for(artno.to_i).first.explained_price
     end
 
     # Find all discount agreements for given article number at a given date
-    # TODO there is more discount agreements available through campaign_price_list
-    # - @ringe: I have no data to work with to see how it works
     def discounts_for(artno, at_date = Date.today)
-      discount_sources = ['CustomerNo']
-      discount_sources << 'PriceListNo' unless self.PriceListNo.to_i.zero?
-      discount_sources << 'DiscountGrpCustNo' unless self.DiscountGrpCustNo.to_i.zero?
-
-      discount_ids = discount_sources.map { |ds| send(ds) }
-
-      discounts = Visma::DiscountAgreementCustomer
-                  .where("#{discount_sources.join(' = ? OR ')} = ?", *discount_ids)
-                  .at(at_date, artno)
-
-      if self.ChainNo.zero? || self.ChainNo == self.CustomerNo
-        discounts
-      else
-        (discounts + chain.discounts_for(artno, at_date)).uniq
-      end
+      discounts = discount_agreements.at(at_date).for(artno)
+      discounts += chain.discount_agreements.at(at_date).for(artno) if chain_member?
+      discounts.uniq.sort_by(&:price)
     end
 
-    # Return the discount factor for the price
-    def discount_factor(artno)
-      src1, src2 = explained_price_for(artno).first.split(':')
-      return 0 if src1 == 'article'
+    # The attributes to use for looking up DiscountAgreementCustomer
+    def discount_sources
+      s = ['CustomerNo']
+      s << 'PriceListNo' if list?
+      s << 'DiscountGrpCustNo' if group?
+      s
+    end
 
-      src = src2.nil? ? send(src1) : send(src1).send(src2)
-      src.price_for(artno).discount_factor
+    # The discount sources SQL query string
+    def discount_sources_sql_str
+      "#{discount_sources.join(' = ? OR ')} = ?"
+    end
+
+    # The values to use for looking up DiscountAgreementCustomer
+    def discount_ids
+      discount_sources.map { |att| send(att) }
+    end
+
+    # Member of a DiscountGroupCustomer?
+    def group?
+      !self.DiscountGrpCustNo.zero?
+    end
+
+    # Member of a PriceList?
+    def list?
+      !self.PriceListNo.zero?
+    end
+
+    # Member of a chain?
+    def chain_member?
+      not_chain_leader? and not self.ChainNo.zero?
     end
 
     # The current invoice address.
