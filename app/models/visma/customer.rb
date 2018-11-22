@@ -9,6 +9,7 @@ module Visma
     include Visma::PrimaryKey
 
     enum InActiveYesNo: %i[active inactive]
+    enum ChainLeaderYesNo: %i[not_chain_leader chain_leader]
 
     # Duplicating methods to work with best_in_place field for :active
     def active
