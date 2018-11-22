@@ -124,8 +124,7 @@ module Visma
     belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
     alias discount_group discount_group_customer
     has_many :discount_agreement_customer,
-             -> (cu) { unscope(:where).for_customer(cu) },
-             foreign_key: :CustomerNo
+             -> (cu) { unscope(:where).for_customer(cu) }
     alias discount_agreements discount_agreement_customer
 
     # TODO: figure out campaigns in Visma Global, this is wrong
