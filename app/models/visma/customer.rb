@@ -113,11 +113,9 @@ module Visma
 
     belongs_to :chain,
                foreign_key: :ChainNo,
-               primary_key: :CustomerNo,
                class_name: Visma::Customer
     has_many :chain_members,
              foreign_key: :ChainNo,
-             primary_key: :CustomerNo,
              class_name: Visma::Customer
 
     # Price list, discount group and such
