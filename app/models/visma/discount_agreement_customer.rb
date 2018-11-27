@@ -1,19 +1,22 @@
-# This model is the contract stating the price agreements
+# A DiscountAgreementCustomer describes the gross price, discount
+# and net price that was agreed with a given party for an Article.
+#
+# The party is a Customer, a DiscountGroupCustomer or a PriceList
 class Visma::DiscountAgreementCustomer < Visma::Base
-  self.table_name += 'DiscountAgreementCustomer'
-  self.primary_key = 'UniqueID'
+  self.table_name += :DiscountAgreementCustomer
+  self.primary_key = :UniqueID
 
   include Visma::Timestamp
   include Visma::ChangeBy
   include Visma::CreatedScopes
   include Visma::SequenceNumber
 
-  belongs_to :price_list, foreign_key: 'PriceListNo'
-  belongs_to :article, foreign_key: 'ArticleNo'
-  belongs_to :customer, foreign_key: 'CustomerNo'
+  belongs_to :article, foreign_key: :ArticleNo
 
-  belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
-  belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
+  belongs_to :customer, foreign_key: :CustomerNo
+  belongs_to :price_list, foreign_key: :PriceListNo
+  belongs_to :discount_group_article, foreign_key: :DiscountGrpArtNo
+  belongs_to :discount_group_customer, foreign_key: :DiscountGrpCustNo
 
   scope :active, -> { at(Date.today) }
   scope :inactive, -> { where.not('? BETWEEN StartDate AND StopDate', Date.today.to_date) }
