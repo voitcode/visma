@@ -3,8 +3,8 @@
 #
 # The party is a Customer, a DiscountGroupCustomer or a PriceList
 class Visma::DiscountAgreementCustomer < Visma::Base
-  self.table_name += :DiscountAgreementCustomer
-  self.primary_key = :UniqueID
+  self.table_name += 'DiscountAgreementCustomer'
+  self.primary_key = 'UniqueID'
 
   include Visma::Timestamp
   include Visma::ChangeBy
