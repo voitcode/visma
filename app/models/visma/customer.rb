@@ -130,7 +130,7 @@ module Visma
 
     # TODO: figure out campaigns in Visma Global, this is wrong
     # has_many :campaign_price_list, foreign_key: "CustomerNo"
-    #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
+    #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: 'Visma::CampaignPriceList'
 
     has_one :customer_sum, foreign_key: 'CustomerNo'
 
