@@ -9,14 +9,14 @@ module Visma
     include Visma::CreatedBy
     include Visma::ChangeBy
 
-    belongs_to :account, foreign_key: :GLAccountNo, class_name: Visma::GLAccount
+    belongs_to :account, foreign_key: :GLAccountNo, class_name: 'Visma::GLAccount'
     belongs_to :supplier, foreign_key: :SupplierNo
     belongs_to :customer, foreign_key: :CustomerNo
     belongs_to :voucher, foreign_key: :VoucherID
     belongs_to :voucher_type, foreign_key: :VoucherTypeNo
     belongs_to :employee, foreign_key: :EmployeeNo
 
-    belongs_to :batch, foreign_key: :BatchNo, class_name: Visma::BatchInformationCopy
+    belongs_to :batch, foreign_key: :BatchNo, class_name: 'Visma::BatchInformationCopy'
 
     scope :credit, -> { where('Amount >= 0') }
     scope :debit, -> { where('Amount < 0') }
