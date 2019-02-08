@@ -12,13 +12,13 @@ module Visma
     belongs_to :chain,
                foreign_key: :ChainNo,
                primary_key: :CustomerNo,
-               class_name: Visma::Customer
+               class_name: 'Visma::Customer'
 
     belongs_to :employee, foreign_key: :EmployeeNo
     belongs_to :our_reference,
                foreign_key: :OurRef,
                primary_key: :Name,
-               class_name: Visma::Employee
+               class_name: 'Visma::Employee'
 
     # Form profile: Which papers to use
     belongs_to :form_profile_customer, foreign_key: :FormProfileCustNo

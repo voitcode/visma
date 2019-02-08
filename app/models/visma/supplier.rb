@@ -3,5 +3,5 @@ class Visma::Supplier < Visma::Base
   self.primary_key = 'SupplierNo'
   enum InActiveYesNo: [:active, :inactive]
 
-  has_many :transactions, foreign_key: :SupplierNo, class_name: Visma::GLAccountTransaction
+  has_many :transactions, foreign_key: :SupplierNo, class_name: 'Visma::GLAccountTransaction'
 end

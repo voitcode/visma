@@ -9,10 +9,10 @@ module Visma
 
     has_one :attachment,
             foreign_key: :MailArchieveId,
-            class_name: Visma::MailArchiveAttachment
+            class_name: 'Visma::MailArchiveAttachment'
     has_one :recipient,
             foreign_key: :MailArchiveId,
-            class_name: Visma::MailRecipient
+            class_name: 'Visma::MailRecipient'
 
     belongs_to :customer_order_copy,
                primary_key: :InvoiceNo,

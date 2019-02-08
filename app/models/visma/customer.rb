@@ -9,6 +9,7 @@ module Visma
     include Visma::PrimaryKey
 
     enum InActiveYesNo: %i[active inactive]
+    enum ChainLeaderYesNo: %i[not_chain_leader chain_leader]
 
     # Duplicating methods to work with best_in_place field for :active
     def active
@@ -53,10 +54,10 @@ module Visma
 
     has_many :chain_order,
              foreign_key: :ChainNo,
-             class_name: Visma::CustomerOrderCopy
+             class_name: 'Visma::CustomerOrderCopy'
     has_many :chain_order_copy,
              foreign_key: :ChainNo,
-             class_name: Visma::CustomerOrderCopy
+             class_name: 'Visma::CustomerOrderCopy'
 
     # Customers with activity in chain sales since given date
     scope :with_chain_sales_since, lambda { |since_date|
@@ -77,58 +78,59 @@ module Visma
 
     has_many :transactions,
              foreign_key: :CustomerNo,
-             class_name: Visma::GLAccountTransaction
+             class_name: 'Visma::GLAccountTransaction'
     has_many :edi_transactions,
              foreign_key: 'PartyID',
-             class_name: Visma::EdiTransaction
+             class_name: 'Visma::EdiTransaction'
 
     has_one :primary_delivery_address,
             foreign_key: :DeliveryAddressNo,
             primary_key: :DeliveryAddressNo,
-            class_name: Visma::CustomerDeliveryAddress
+            class_name: 'Visma::CustomerDeliveryAddress'
     accepts_nested_attributes_for :primary_delivery_address
     has_many :delivery_addresses,
              foreign_key: :CustomerNo,
-             class_name: Visma::CustomerDeliveryAddress
+             class_name: 'Visma::CustomerDeliveryAddress'
 
     has_one :primary_invoice_address,
             foreign_key: :InvoiceAdressNo,
             primary_key: :InvoiceAdressNo,
-            class_name: Visma::CustomerInvoiceAddress
+            class_name: 'Visma::CustomerInvoiceAddress'
     accepts_nested_attributes_for :primary_invoice_address
     has_many :invoice_addresses,
              foreign_key: :InvoiceAdressCustomerNo,
-             class_name: Visma::CustomerInvoiceAddress
+             class_name: 'Visma::CustomerInvoiceAddress'
 
     has_many :contacts, foreign_key: :CustomerNo
     has_one :invoice_contact,
             foreign_key: :ContactNo,
             primary_key: :ContactNoInvoice,
-            class_name: Visma::Contact
+            class_name: 'Visma::Contact'
     has_one :delivery_contact,
             foreign_key: :ContactNo,
             primary_key: :ContactNoDelivery,
-            class_name: Visma::Contact
+            class_name: 'Visma::Contact'
 
     belongs_to :chain,
                foreign_key: :ChainNo,
-               primary_key: :CustomerNo,
-               class_name: Visma::Customer
+               class_name: 'Visma::Customer'
     has_many :chain_members,
              foreign_key: :ChainNo,
-             primary_key: :CustomerNo,
-             class_name: Visma::Customer
+             class_name: 'Visma::Customer'
 
     # Price list, discount group and such
     belongs_to :price_list, foreign_key: 'PriceListNo'
     belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
     alias discount_group discount_group_customer
-    has_many :discount_agreement_customer, foreign_key: 'CustomerNo'
+    has_many :discount_agreement_customer,
+             -> (cu) { unscope(:where).for_customer(cu) }
     alias discount_agreements discount_agreement_customer
+
+    belongs_to :customer_bonus_profile, foreign_key: :CustomerBonusProfileNo
 
     # TODO: figure out campaigns in Visma Global, this is wrong
     # has_many :campaign_price_list, foreign_key: "CustomerNo"
-    #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: Visma::CampaignPriceList
+    #  has_many :chain_campaign_price_list, foreign_key: "ChainNo", class_name: 'Visma::CampaignPriceList'
 
     has_one :customer_sum, foreign_key: 'CustomerNo'
 
@@ -224,63 +226,59 @@ module Visma
       self.FactCustomerNo = nil
     end
 
-    # Return the correct price for a given article
+    # Return an array of the current prices available for a given article
     def prices_for(artno)
-      all_prices_for(artno)
-        .sort_by(&:price)
+      discounts_for(artno).sort_by(&:price)
     end
 
-    # Find all available prices for a given article number at a given date
-    def all_prices_for(artno, at_date = Date.today)
-      disc = discounts_for(artno, at_date)
-      return [Visma::Article.find(artno)] if disc.blank?
-      disc
-    end
-
-    # Return the correct price
-    def price_for(artno, at = nil)
-      if at.nil?
-        prices_for(artno.to_i).first.price
-      else
-        discounts_for(artno, at).sort_by(&:price).first.price
-      end
-    rescue
-      nil
+    # Return the correct price for a given article at a given date
+    def price_for(artno, at = Date.today)
+      discounts_for(artno, at).sort_by(&:price).first.price
     end
 
     # Return the correct price, explained
     def explained_price_for(artno)
-      prices_for(artno.to_i).collect { |p| [p.to_s, p.price] }.first
+      prices_for(artno.to_i).first.explained_price
     end
 
     # Find all discount agreements for given article number at a given date
-    # TODO there is more discount agreements available through campaign_price_list
-    # - @ringe: I have no data to work with to see how it works
     def discounts_for(artno, at_date = Date.today)
-      discount_sources = ['CustomerNo']
-      discount_sources << 'PriceListNo' unless self.PriceListNo.to_i.zero?
-      discount_sources << 'DiscountGrpCustNo' unless self.DiscountGrpCustNo.to_i.zero?
-
-      discount_ids = discount_sources.map { |ds| send(ds) }
-
-      discounts = Visma::DiscountAgreementCustomer
-                  .where("#{discount_sources.join(' = ? OR ')} = ?", *discount_ids)
-                  .at(at_date, artno)
-
-      if self.ChainNo.zero? || self.ChainNo == self.CustomerNo
-        discounts
-      else
-        (discounts + chain.discounts_for(artno, at_date)).uniq
-      end
+      discounts = discount_agreements.at(at_date).for(artno)
+      discounts += chain.discount_agreements.at(at_date).for(artno) if chain_member?
+      discounts.uniq.sort_by(&:price)
     end
 
-    # Return the discount factor for the price
-    def discount_factor(artno)
-      src1, src2 = explained_price_for(artno).first.split(':')
-      return 0 if src1 == 'article'
+    # The attributes to use for looking up DiscountAgreementCustomer
+    def discount_sources
+      s = ['CustomerNo']
+      s << 'PriceListNo' if list?
+      s << 'DiscountGrpCustNo' if group?
+      s
+    end
 
-      src = src2.nil? ? send(src1) : send(src1).send(src2)
-      src.price_for(artno).discount_factor
+    # The discount sources SQL query string
+    def discount_sources_sql_str
+      "#{discount_sources.join(' = ? OR ')} = ?"
+    end
+
+    # The values to use for looking up DiscountAgreementCustomer
+    def discount_ids
+      discount_sources.map { |att| send(att) }
+    end
+
+    # Member of a DiscountGroupCustomer?
+    def group?
+      !self.DiscountGrpCustNo.zero?
+    end
+
+    # Member of a PriceList?
+    def list?
+      !self.PriceListNo.zero?
+    end
+
+    # Member of a chain?
+    def chain_member?
+      not_chain_leader? and not self.ChainNo.zero?
     end
 
     # The current invoice address.

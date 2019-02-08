@@ -11,13 +11,13 @@ module Visma
 
     belongs_to :edi_provider,
                foreign_key: 'EDIProviderNo',
-               class_name: Visma::EdiProvider
+               class_name: 'Visma::EdiProvider'
     belongs_to :edi_profile,
                foreign_key: 'EDIProfileNo',
-               class_name: Visma::CustomerEdiProfile
+               class_name: 'Visma::CustomerEdiProfile'
     belongs_to :customer,
                foreign_key: 'PartyID',
-               class_name: Visma::Customer
+               class_name: 'Visma::Customer'
     belongs_to :customer_order_copy,
                foreign_key: 'DocNo',
                primary_key: 'InvoiceNo'

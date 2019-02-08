@@ -1,4 +1,7 @@
-# This model is the contract stating the price agreements
+# A DiscountAgreementCustomer describes the gross price, discount
+# and net price that was agreed with a given party for an Article.
+#
+# The party is a Customer, a DiscountGroupCustomer or a PriceList
 class Visma::DiscountAgreementCustomer < Visma::Base
   self.table_name += 'DiscountAgreementCustomer'
   self.primary_key = 'UniqueID'
@@ -8,23 +11,15 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   include Visma::CreatedScopes
   include Visma::SequenceNumber
 
-  belongs_to :price_list, foreign_key: 'PriceListNo'
-  belongs_to :article, foreign_key: 'ArticleNo'
-  belongs_to :customer, foreign_key: 'CustomerNo'
+  belongs_to :article, foreign_key: :ArticleNo
 
-  belongs_to :discount_group_article, foreign_key: 'DiscountGrpArtNo'
-  belongs_to :discount_group_customer, foreign_key: 'DiscountGrpCustNo'
+  belongs_to :customer, foreign_key: :CustomerNo
+  belongs_to :price_list, foreign_key: :PriceListNo
+  belongs_to :discount_group_article, foreign_key: :DiscountGrpArtNo
+  belongs_to :discount_group_customer, foreign_key: :DiscountGrpCustNo
 
-  scope :active, lambda {
-    where('StartDate <= ? AND StopDate >= ?',
-          Date.today.strftime('%Y-%m-%d %H:%M:%S'),
-          Date.today.strftime('%Y-%m-%d %H:%M:%S'))
-  }
-  scope :inactive, lambda {
-    where.not('StartDate <= ? AND StopDate >= ?',
-              Date.today.strftime('%Y-%m-%d %H:%M:%S'),
-              Date.today.strftime('%Y-%m-%d %H:%M:%S'))
-  }
+  scope :active, -> { at(Date.today) }
+  scope :inactive, -> { where.not('? BETWEEN StartDate AND StopDate', Date.today.to_date) }
 
   # The agreed price deviates from the article price
   scope :deviant, lambda {
@@ -34,9 +29,15 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   # Look up all DiscountAgreementCustomer available to given Customer
   scope :for_customer, lambda { |customer|
-    where("CustomerNo = '#{customer.CustomerNo}'
-        OR DiscountGrpCustNo = '#{customer.DiscountGrpCustNo}'
-        OR PriceListNo = '#{customer.PriceListNo}'")
+    where(customer.discount_sources_sql_str, *customer.discount_ids)
+  }
+
+  # Find discounts for a given ArticleNo
+  scope :for, ->(article_number) { where(ArticleNo: article_number.to_s) }
+
+  # Find discounts that are active at a given date
+  scope :at, lambda { |date|
+    where('? BETWEEN StartDate AND StopDate', date.to_date)
   }
 
   after_initialize :set_default_values, if: :new_record?
@@ -47,7 +48,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   # This discount is currently active
   def active?
-    self.StartDate <= Date.today && self.StopDate >= Date.today
+    Date.today.between? self.StartDate, self.StopDate
   end
 
   def agreed_price
@@ -58,19 +59,19 @@ class Visma::DiscountAgreementCustomer < Visma::Base
     self.AgreedPrice = price
   end
 
-  # Obviously, the discount can be more than this with three fields:
+  # TODO: Obviously, the discount can be more than this with three fields:
   # DiscountI DiscountII DiscountIII
   def discount
     self.DiscountI
   end
 
-  # Obviously, the discount can be more than this with three fields:
+  # TODO: Obviously, the discount can be more than this with three fields:
   # DiscountI DiscountII DiscountIII
   def discount_factor
     (self.DiscountI / 100.0).round(4)
   end
 
-  # Obviously, the discount can be more than this with three fields:
+  # TODO: Obviously, the discount can be more than this with three fields:
   # DiscountI DiscountII DiscountIII
   def discount_amount
     agreed_price * discount_factor
@@ -82,6 +83,10 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   def price_source
     self.AgreedPrice == 0 ? 'Artikkelpris' : to_s
+  end
+
+  def explained_price
+    [to_s, price]
   end
 
   def discount_source
@@ -155,19 +160,6 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   class << self
     def uniq_ids(field)
       active.where("#{field} != 0").select(field).uniq.map { |a| a[field] }
-    end
-
-    # Find discounts for a given ArticleNo
-    def for(artno)
-      where(ArticleNo: artno.to_s).first
-    rescue
-      nil
-    end
-    alias price_for for
-
-    # Find discounts for a given date
-    def at(date, artno)
-      where(ArticleNo: artno.to_s).where('StartDate <= ? AND StopDate >= ?', date.to_date, date.to_date)
     end
   end
 end

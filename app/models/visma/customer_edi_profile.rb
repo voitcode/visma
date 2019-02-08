@@ -8,10 +8,10 @@ class Visma::CustomerEdiProfile < Visma::Base
   belongs_to :edi_provider,
              primary_key: 'EDIProviderNo',
              foreign_key: 'EDIProviderNo',
-             class_name: Visma::EdiProvider
+             class_name: 'Visma::EdiProvider'
   has_many :edi_transactions,
            foreign_key: 'EDIProfileNo',
-           class_name: Visma::EdiTransaction
+           class_name: 'Visma::EdiTransaction'
   has_many :customers, foreign_key: :EdiProfileNo
 
   # => { "EdiProfileNo" => "Name }
