@@ -33,5 +33,29 @@ module Visma
         n.to_s.mb_chars.downcase.squish
       end
     end
+
+    # Catch common address attribute names, return correct value
+    def method_missing(m, *args, &block)
+      att = _real_attribute_name(m)
+      raise NoMethodError, "The method :#{m} does not exist" unless att
+      if m =~ /=$/
+        return self.send "#{att}=", *args
+      end
+      self.send attribute_aliases[m]
+    end
+
+    # Define common names for different address models
+    # This method must be defined in the inheriting class
+    def attribute_aliases
+      raise NotImplementedError, self.class.name
+    end
+
+    private
+
+    # Look up the aliased attribute name
+    def _real_attribute_name(m)
+      att = m.to_s.sub(/=/, '').to_sym
+      attribute_aliases[att]
+    end
   end
 end

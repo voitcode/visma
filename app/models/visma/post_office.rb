@@ -1,7 +1,5 @@
 # the post office table
-class Visma::PostOffice < ActiveRecord::Base
-  establish_connection(:visma)
-  self.table_name = VISMA_CONFIG['table_name_prefix']
+class Visma::PostOffice < Visma::Base
   self.table_name += 'PostOffice'
   self.primary_key = 'PostCode'
 end

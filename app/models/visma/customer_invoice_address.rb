@@ -11,8 +11,8 @@ class Visma::CustomerInvoiceAddress < Visma::Address
 
   # Change the Customer's primary invoice address to this one
   # Accepts any truthy value, does nothing on negative
-  def primary=(bool)
-    return unless bool
+  def primary=(set_primary)
+    return unless set_primary
     customer.InvoiceAdressNo = id
     customer.save
   end
@@ -26,36 +26,24 @@ class Visma::CustomerInvoiceAddress < Visma::Address
     lines.join("\n")
   end
 
-  # Common names for different address models
-  def name
-    self.InvoiceAdressName
-  end
-
-  def line1
-    self.InvoiceAdress1
-  end
-
-  def line2
-    self.InvoiceAdress2
-  end
-
-  def line3
-    self.InvoiceAdress3
-  end
-
-  def zip
-    self.InvoiceAdressPostCode
-  end
-
-  def city
-    self.InvoiceAdressPostoffice
-  end
-
   def unique_address_per_customer
     addresses = Visma::CustomerInvoiceAddress
                 .where(InvoiceAdressCustomerNo: self.InvoiceAdressCustomerNo)
                 .to_a - [self]
     errors.add(:InvoiceAdress1, :is_already_in_use) if
       addresses.include? self
+  end
+
+  # Defines which common address attributes goes where
+  def attribute_aliases
+    {
+      name:  :InvoiceAdressName,
+      line1: :InvoiceAdress1,
+      line2: :InvoiceAdress2,
+      line3: :InvoiceAdress3,
+      zip:   :InvoiceAdressPostCode,
+      city:  :InvoiceAdressPostoffice,
+      gln:   :InvoiceEANLocationNo
+    }
   end
 end
