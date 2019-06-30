@@ -13,8 +13,7 @@ class Visma::CustomerInvoiceAddress < Visma::Address
   # Accepts any truthy value, does nothing on negative
   def primary=(set_primary)
     return unless set_primary
-    customer.InvoiceAdressNo = id
-    customer.save
+    customer.update(InvoiceAdressNo: id)
   end
 
   # Norwegian formatting
@@ -45,5 +44,9 @@ class Visma::CustomerInvoiceAddress < Visma::Address
       city:  :InvoiceAdressPostoffice,
       gln:   :InvoiceEANLocationNo
     }
+  end
+
+  def type
+    'KundeFakturaAdresse'
   end
 end

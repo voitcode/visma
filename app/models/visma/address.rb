@@ -35,12 +35,11 @@ module Visma
     end
 
     # Catch common address attribute names, return correct value
+    # If the common name is used as a setter, set the real attribute
     def method_missing(m, *args, &block)
       att = _real_attribute_name(m)
       raise NoMethodError, "The method :#{m} does not exist" unless att
-      if m =~ /=$/
-        return self.send "#{att}=", *args
-      end
+      return self.send "#{att}=", *args if m =~ /=$/
       self.send attribute_aliases[m]
     end
 

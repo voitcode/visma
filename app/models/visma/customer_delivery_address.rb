@@ -13,8 +13,7 @@ class Visma::CustomerDeliveryAddress < Visma::Address
   # Accepts any truthy value, does nothing on negative
   def primary=(set_primary)
     return unless set_primary
-    customer.DeliveryAddressNo = id
-    customer.save
+    customer.update(DeliveryAddressNo: id)
   end
 
   # Norwegian formatting
@@ -45,5 +44,9 @@ class Visma::CustomerDeliveryAddress < Visma::Address
       city:  :DeliveryPostOffice,
       gln:   :DeliveryEANLocationNo
     }
+  end
+
+  def type
+    'KundeLeveringsAdresse'
   end
 end
