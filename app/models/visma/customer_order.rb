@@ -6,7 +6,7 @@ class Visma::CustomerOrder < Visma::Base
   include Visma::ChangeBy
 
   belongs_to :customer, foreign_key: :CustomerNo
-  belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, 'class_name: Visma::Customer'
+  belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: 'Visma::Customer'
 
   belongs_to :employee, foreign_key: :EmployeeNo
   belongs_to :our_reference,
