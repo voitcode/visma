@@ -174,12 +174,13 @@ class Visma::Article < Visma::Base
     ean.try(:EANNo)
   end
 
+  enum StorageTypeNo: { cooled_goods: 1, frozen_goods: 2, dry_goods: 3 }
   def storage_type
-    return 'Kjøl' if self.StorageTypeNo == 1
+    return 'Kjøl' if cooled_goods?
 
-    return 'Frys' if self.StorageTypeNo == 2
+    return 'Frys' if frozen_goods?
 
-    return 'Tørrvare' if self.StorageTypeNo == 3
+    return 'Tørrvare' if dry_goods?
   end
 
   def sort_me
