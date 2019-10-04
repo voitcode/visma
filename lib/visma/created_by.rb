@@ -4,7 +4,7 @@ module Visma
     extend ActiveSupport::Concern
 
     included do
-      belongs_to :created_by, foreign_key: 'CreatedBy', 'class_name: :LogonUser'
+      belongs_to :created_by, foreign_key: 'CreatedBy', class_name: 'LogonUser'
     end
 
     def updated_by
