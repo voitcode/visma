@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.5.77)
+    visma (0.5.78)
 
 GEM
   remote: https://rubygems.org/

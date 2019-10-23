@@ -233,7 +233,9 @@ module Visma
 
     # Return the correct price for a given article at a given date
     def price_for(artno, at = Date.today)
-      discounts_for(artno, at).sort_by(&:price).first.price
+      discounts_for(artno, at).min_by(&:price).price
+    rescue NoMethodError
+      nil
     end
 
     # Return the correct price, explained
