@@ -227,8 +227,8 @@ module Visma
     end
 
     # Return an array of the current prices available for a given article
-    def prices_for(artno)
-      discounts_for(artno).sort_by(&:price)
+    def prices_for(artno, at = Date.today)
+      discounts_for(artno, at).sort_by(&:price)
     end
 
     # Return the correct price for a given article at a given date
