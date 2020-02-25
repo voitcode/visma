@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A DiscountAgreementCustomer describes the gross price, discount
 # and net price that was agreed with a given party for an Article.
 #
@@ -13,13 +15,22 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   belongs_to :article, foreign_key: :ArticleNo
 
-  belongs_to :customer, foreign_key: :CustomerNo
-  belongs_to :price_list, foreign_key: :PriceListNo
-  belongs_to :discount_group_article, foreign_key: :DiscountGrpArtNo
-  belongs_to :discount_group_customer, foreign_key: :DiscountGrpCustNo
+  belongs_to :customer,
+             foreign_key: :CustomerNo, optional: true
+  belongs_to :price_list,
+             foreign_key: :PriceListNo, optional: true
+  belongs_to :discount_group_article,
+             foreign_key: :DiscountGrpArtNo, optional: true
+  belongs_to :discount_group_customer,
+             foreign_key: :DiscountGrpCustNo, optional: true
 
   scope :active, -> { at(Date.today) }
-  scope :inactive, -> { where.not('? BETWEEN StartDate AND StopDate', Date.today.to_date) }
+  scope :inactive, lambda {
+    where.not('? BETWEEN StartDate AND StopDate', Date.today.to_date)
+  }
+  scope :future, lambda {
+    where('StartDate > ?', Date.today.to_date)
+  }
 
   # The agreed price deviates from the article price
   scope :deviant, lambda {
@@ -42,8 +53,8 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   after_initialize :set_default_values, if: :new_record?
 
-  validates_uniqueness_of :SeqNo, scope: [
-    :DiscountType, :CustomerNo, :DiscountGrpCustNo, :PriceListNo
+  validates_uniqueness_of :SeqNo, scope: %I[
+    DiscountType CustomerNo DiscountGrpCustNo PriceListNo
   ]
 
   # This discount is currently active
