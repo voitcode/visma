@@ -53,6 +53,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   after_initialize :set_default_values, if: :new_record?
 
+  validates_with DiscountPartyValidator
   validates_uniqueness_of :SeqNo, scope: %I[
     DiscountType CustomerNo DiscountGrpCustNo PriceListNo
   ]
