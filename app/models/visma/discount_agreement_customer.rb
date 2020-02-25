@@ -53,7 +53,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   after_initialize :set_default_values, if: :new_record?
 
-  validates_with DiscountPartyValidator
+  validates_with Visma::DiscountPartyValidator
   validates_uniqueness_of :SeqNo, scope: %I[
     DiscountType CustomerNo DiscountGrpCustNo PriceListNo
   ]
@@ -107,9 +107,9 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   # Return the discounted party
   def discounted_party
-    return customer if self.CustomerNo != 0
-    return discount_group_customer if self.DiscountGrpCustNo != 0
-    return discount_group_article if self.DiscountGrpArtNo != 0
+    return customer unless self.CustomerNo.to_i.zero?
+    return discount_group_customer unless self.DiscountGrpCustNo.to_i.zero?
+    return discount_group_article unless self.DiscountGrpArtNo.to_i.zero?
 
     price_list
   end

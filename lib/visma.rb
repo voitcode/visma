@@ -9,6 +9,7 @@ require 'visma/article_change'
 require 'visma/gtin_validator'
 require 'visma/primary_key'
 require 'visma/sequence_number'
+require 'visma/discount_party_validator'
 
 # This is the Visma Global ERP integration module
 module Visma
