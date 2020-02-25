@@ -105,16 +105,17 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   # Return the discounted party
-  def recipient
+  def discounted_party
     return customer if self.CustomerNo != 0
     return discount_group_customer if self.DiscountGrpCustNo != 0
     return discount_group_article if self.DiscountGrpArtNo != 0
+
     price_list
   end
 
   # What kind of agreement is this?
   def category
-    case recipient.class.name
+    case discounted_party.class.name
     when 'Visma::Customer'
       'Kunderabatt'
     when 'Visma::DiscountGroupCustomer'
@@ -127,7 +128,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def to_s
-    "#{category} #{recipient.id}"
+    "#{category} #{discounted_party.id}"
   end
 
   def set_default_values
