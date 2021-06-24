@@ -4,6 +4,8 @@ class Visma::CustomerDeliveryAddress < Visma::Address
 
   belongs_to :customer, foreign_key: :CustomerNo
 
+  scope :primary, -> { joins(:customer).where('Customer.DeliveryAddressNo = CustomerDeliveryAddresses.DeliveryAddressNo') }
+
   # Is this address the primary delivery address for the customer?
   def primary
     customer.DeliveryAddressNo == id
