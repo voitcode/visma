@@ -99,7 +99,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def price_source
-    self.AgreedPrice == 0 ? 'Artikkelpris' : to_s
+    self.AgreedPrice.zero? ? 'Artikkelpris' : to_s
   end
 
   def explained_price
@@ -107,7 +107,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   end
 
   def discount_source
-    discount == 0 ? nil : to_s
+    discount.zero? ? nil : to_s
   end
 
   # Return the discounted party
