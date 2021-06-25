@@ -14,9 +14,34 @@ class Visma::CustomerOrderLine < Visma::Base
 
   has_one :customer, through: :customer_order
 
+  # The NetPrice discount
+  def net_price_discount
+    self.NetPrice * self.DiscountI / 100
+  end
+
   # The net price after discount
+  def net_price_not_rounded
+    self.NetPrice - net_price_discount
+  end
+
+  # The net price after discount, rounded to two decimals
   def net_price
-    (self.NetPrice - (self.NetPrice * self.DiscountI / 100)).round(2)
+    net_price_not_rounded.round(2)
+  end
+
+  # The net price plus VAT
+  def net_price_including_vat
+    net_price_not_rounded * vat_factor
+  end
+
+  # The VAT factor for price calculations
+  def vat_factor
+    1 + self.VATPer / 100
+  end
+
+  # The VAT amount on this order line
+  def vat_amount
+    (net_price_including_vat - net_price_not_rounded).round(2)
   end
 
   # The margin per unit
