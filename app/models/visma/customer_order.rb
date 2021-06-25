@@ -4,6 +4,8 @@ class Visma::CustomerOrder < Visma::Base
 
   include Visma::Timestamp
   include Visma::ChangeBy
+  include Visma::CreatedBy
+  include Visma::CreatedScopes
 
   belongs_to :customer, foreign_key: :CustomerNo
   belongs_to :chain, foreign_key: :ChainNo, primary_key: :CustomerNo, class_name: 'Visma::Customer'
@@ -18,4 +20,12 @@ class Visma::CustomerOrder < Visma::Base
   alias order_lines customer_order_lines
 
   enum OrderStatus: { system_invoiced: 1030, user_invoiced: 1000, nullified: -1, for_picking: 1015 }
+  enum EdiStatus: %i[not_edi edi]
+
+  scope :with_order_number_in_reference, -> {
+    where("NameContactNoInvoice like '%Ordrenr%'")
+  }
+  scope :without_order_number_in_reference, -> {
+    where("NameContactNoInvoice not like '%Ordrenr%'")
+  }
 end
