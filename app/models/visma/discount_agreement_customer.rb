@@ -32,7 +32,7 @@ class Visma::DiscountAgreementCustomer < Visma::Base
     where('StartDate > ?', Date.today.to_date)
   }
 
-  enum :DiscountType, [
+  enum DiscountType: [
        1 => :customer_discount,
        3 => :group_discount,
        10 => :pricelist_discount
