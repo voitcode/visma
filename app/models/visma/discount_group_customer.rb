@@ -10,7 +10,7 @@ class DiscountGroupCustomer < Visma::Base
   include Visma::Timestamp
   include Visma::CreatedScopes
   include Visma::ChangeBy
-  include Visma::PolymorhpicName
+  include Visma::PolymorphicName
   default_scope { active }
 
   has_many :customers, foreign_key: :DiscountGrpCustNo
