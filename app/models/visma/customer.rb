@@ -7,6 +7,7 @@ module Visma
     include Visma::CreatedScopes
     include Visma::ChangeBy
     include Visma::PrimaryKey
+    include Visma::PolymorhpicName
 
     enum InActiveYesNo: %i[active inactive]
     enum ChainLeaderYesNo: %i[not_chain_leader chain_leader]

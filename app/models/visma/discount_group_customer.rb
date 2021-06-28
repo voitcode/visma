@@ -7,10 +7,11 @@ class DiscountGroupCustomer < Visma::Base
   self.table_name += 'DiscountGroupCustomer'
   self.primary_key = 'DiscountGrpCustNo'
   enum InActiveYesNo: %i[active inactive]
-  default_scope { active }
   include Visma::Timestamp
   include Visma::CreatedScopes
   include Visma::ChangeBy
+  include Visma::PolymorhpicName
+  default_scope { active }
 
   has_many :customers, foreign_key: :DiscountGrpCustNo
 
