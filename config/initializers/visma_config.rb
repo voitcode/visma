@@ -14,11 +14,11 @@ begin
   VISMA_CONFIG = YAML.load_file('config/visma.yml')
 rescue
   File.write 'config/visma.yml', config.collect {|k,v| "# #{v.first}\n#{k}: #{v.last}" }.join("\n")
-  raise VismaError, "You must set up the VISMA_CONFIG values in config/visma.yml"
+  raise Visma::Error, "You must set up the VISMA_CONFIG values in config/visma.yml"
 end
 
 missing = config.collect {|key, val| key if VISMA_CONFIG[key.to_s].blank? }.compact
 
 unless missing.empty?
-  raise VismaError, "\nYou need to set a value for options #{missing.join("\n\t")}\n in config/visma.yml"
+  raise Visma::Error, "\nYou need to set a value for options #{missing.join("\n\t")}\n in config/visma.yml"
 end
