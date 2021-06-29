@@ -4,6 +4,10 @@ This is a Ruby on Rails [Engine](http://guides.rubyonrails.org/engines.html) for
 
 ## Usage
 
+Use Ubuntu. :) To be able to install the tiny_tds gem, you need:
+
+    apt install freetds-dev
+
 In your Gemfile:
 
     gem 'visma', '~> 0.6', git: "https://github.com/voitcode/visma"
