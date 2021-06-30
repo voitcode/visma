@@ -1,2 +1,2 @@
-class VismaError < StandardError
+class Visma::Error < StandardError
 end

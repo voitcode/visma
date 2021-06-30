@@ -17,10 +17,8 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
   s.test_files = Dir['test/**/*']
 
-  # This is a Rails engine
-  #  s.add_dependency "rails", "~> 5.0"
+  s.add_runtime_dependency('zeitwerk', '~> 2.4')
 
-  # Connect to Microsoft SQL Server 2012
-  #  s.add_dependency "tiny_tds", "~> 1.0"
-  #  s.add_dependency "activerecord-sqlserver-adapter", "~> 4.2"
+  s.add_dependency "rails", "~> 6.0"
+  s.add_dependency 'activerecord-sqlserver-adapter', '~> 6.1'
 end
