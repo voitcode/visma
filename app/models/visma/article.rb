@@ -11,6 +11,7 @@ class Visma::Article < Visma::Base
 
   # default scope with strange syntax to support joins
   default_scope { where('Article.ArticleNo NOT like(?)', '%+%') }
+  scope :order_by_article_no, -> { order(Arel.sql('CAST(Article.ArticleNo AS INT)')) }
 
   has_many :unit_type, primary_key: :ArticleNo, foreign_key: :ArticleNo, inverse_of: :article
   alias_attribute :units, :unit_type
