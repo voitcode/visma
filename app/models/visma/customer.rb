@@ -128,7 +128,7 @@ module Visma
     alias discount_agreements discount_agreement_customer
 
     scope :all_with_discount_agreements, -> {
-      joins("INNER JOIN DiscountAgreementCustomer ON DiscountAgreementCustomer.CustomerNo = Customer.CustomerNo")
+      joins("INNER JOIN #{Visma::DiscountAgreementCustomer.table_name} ON  #{Visma::DiscountAgreementCustomer.table_name}.CustomerNo = #{Visma::Customer.table_name}.CustomerNo")
         .merge(Visma::DiscountAgreementCustomer.active).distinct
     }
 
