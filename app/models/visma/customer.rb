@@ -127,6 +127,11 @@ module Visma
              -> (cu) { unscope(:where).for_customer(cu) }
     alias discount_agreements discount_agreement_customer
 
+    scope :all_with_discount_agreements, -> {
+      joins("INNER JOIN DiscountAgreementCustomer ON DiscountAgreementCustomer.CustomerNo = Customer.CustomerNo")
+        .merge(Visma::DiscountAgreementCustomer.active).distinct
+    }
+
     belongs_to :customer_bonus_profile, foreign_key: :CustomerBonusProfileNo
 
     # TODO: figure out campaigns in Visma Global, this is wrong
@@ -337,10 +342,6 @@ module Visma
       # Find ICA stores by postcode
       def ica(postcode)
         where(PostCode: postcode.to_s).where("Name like '%rimi%' or Name like '%matkrok%' or Name like '%ica%'").all
-      end
-
-      def all_with_discount_agreements
-        find(Visma::DiscountAgreementCustomer.uniq_ids(:CustomerNo))
       end
 
       # Exclude some info from json output.

@@ -31,9 +31,5 @@ class Visma::PriceList < Visma::Base
     discount_agreements.for(artno)
   end
 
-  class << self
-    def all_with_discount_agreements
-      find(Visma::DiscountAgreementCustomer.uniq_ids(:PriceListNo))
-    end
-  end
+  scope :all_with_discount_agreements, -> { active.joins(:discount_agreement_customer).distinct(:PriceListNo) }
 end

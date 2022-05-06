@@ -175,10 +175,4 @@ class Visma::DiscountAgreementCustomer < Visma::Base
       PriceListNo: self.PriceListNo
     )
   end
-
-  class << self
-    def uniq_ids(field)
-      active.where("#{field} != 0").select(field).uniq.map { |a| a[field] }
-    end
-  end
 end
