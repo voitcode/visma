@@ -15,14 +15,10 @@ class Visma::DiscountAgreementCustomer < Visma::Base
 
   belongs_to :article, foreign_key: :ArticleNo
 
-  belongs_to :customer,
-             foreign_key: :CustomerNo
-  belongs_to :price_list,
-             foreign_key: :PriceListNo
-  belongs_to :discount_group_article,
-             foreign_key: :DiscountGrpArtNo
-  belongs_to :discount_group_customer,
-             foreign_key: :DiscountGrpCustNo
+  belongs_to :customer, foreign_key: :CustomerNo
+  belongs_to :price_list, foreign_key: :PriceListNo
+  belongs_to :discount_group_article, foreign_key: :DiscountGrpArtNo
+  belongs_to :discount_group_customer, foreign_key: :DiscountGrpCustNo
 
   scope :active, -> { at(Date.today) }
   scope :inactive, lambda {
@@ -33,9 +29,9 @@ class Visma::DiscountAgreementCustomer < Visma::Base
   }
 
   enum DiscountType: {
-       1 => :customer_discount,
-       3 => :group_discount,
-       10 => :pricelist_discount
+    customer_discount: 1,
+    group_discount: 3,
+    pricelist_discount: 10
   }
 
   # The agreed price deviates from the article price
