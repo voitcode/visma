@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.authors     = ['Runar Ingebrigtsen', 'Marvin Wiik']
   s.email       = ['runar@voit.no', 'marvin@voit.no']
   s.homepage    = 'https://voit.no'
-  s.summary     = 'Integrate Rails 5 with Visma Global'
+  s.summary     = 'Integrate Rails 6 with Visma Global'
   s.description = 'Visma Global ERP integration for Ruby on Rails. Requires support for SQL Server 2012 and newer.'
   s.license     = 'MIT'
 
