@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    visma (0.6.3)
+    visma (0.6.4)
       activerecord-sqlserver-adapter (~> 6.1)
       rails (~> 6.0)
       zeitwerk (~> 2.4)
@@ -138,7 +138,7 @@ GEM
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    zeitwerk (2.6.1)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   ruby
