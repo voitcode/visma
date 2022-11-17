@@ -18,6 +18,12 @@ module Visma
 
     has_one :customer, through: :customer_order_copy
 
+    scope :real, ->() {
+      where.not(ArticleNo: nil)
+        .where.not(InvoiceNo: 0)
+        .where.not(EmployeeNo: 0)
+    }
+
     # The net price after discount
     def net_price
       (self.NetPrice - (self.NetPrice * self.DiscountI / 100)).round(2)
