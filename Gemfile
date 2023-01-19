@@ -13,4 +13,4 @@ gemspec
 # To use debugger
 # gem 'debugger'
 
-gem "rack", "= 2.2.4"
+gem "rack", "2.2.6.2"
